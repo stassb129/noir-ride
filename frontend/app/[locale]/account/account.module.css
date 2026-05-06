@@ -1,0 +1,110 @@
+.accountPage {
+  min-height: 100vh;
+  padding: 140px 0 var(--spacing-2xl);
+  background: var(--bg-primary);
+}
+
+.container {
+  max-width: var(--container-max);
+  margin: 0 auto;
+  padding: 0 var(--spacing-lg);
+}
+
+.heading {
+  font-family: var(--font-display);
+  font-size: clamp(48px, 6vw, 64px);
+  font-weight: 700;
+  margin-bottom: var(--spacing-2xl);
+  color: var(--text-primary);
+}
+
+.bookingsList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.bookingCard {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--spacing-lg);
+  border: 1px solid var(--border-subtle);
+  transition: var(--transition);
+  flex-wrap: wrap;
+  gap: var(--spacing-md);
+}
+
+.bookingCard:hover {
+  border-color: var(--accent-gold);
+  box-shadow: 0 0 20px rgba(201, 161, 93, 0.15);
+}
+
+.bookingInfo {
+  flex: 1;
+  min-width: 280px;
+}
+
+.bookingRoute {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-xs);
+  flex-wrap: wrap;
+}
+
+.bookingCity {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.bookingArrow {
+  color: var(--text-muted);
+}
+
+.bookingDate {
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+
+.bookingMeta {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xl);
+}
+
+.bookingStatus {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.statusConfirmed {
+  color: var(--accent-gold);
+}
+
+.statusPending {
+  color: var(--text-secondary);
+}
+
+.statusCancelled {
+  color: var(--text-muted);
+}
+
+.bookingPrice {
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+@media (max-width: 768px) {
+  .bookingCard {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .bookingMeta {
+    width: 100%;
+    justify-content: space-between;
+  }
+}

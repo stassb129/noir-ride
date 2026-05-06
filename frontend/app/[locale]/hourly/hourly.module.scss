@@ -1,0 +1,111 @@
+@use '../../../styles/scss/variables' as *;
+@use '../../../styles/scss/mixins' as *;
+
+.hourlyPage {
+  min-height: 100vh;
+  padding: 140px 0 $spacing-2xl;
+  background: $bg-primary;
+}
+
+.container {
+  max-width: $container-max;
+  margin: 0 auto;
+  padding: 0 $spacing-lg;
+}
+
+.heading {
+  font-family: $font-display;
+  font-size: clamp(48px, 6vw, 64px);
+  font-weight: 800;
+  margin-bottom: $spacing-md;
+  color: $text-primary;
+  letter-spacing: -0.03em;
+}
+
+.subheading {
+  font-size: 20px;
+  color: $text-secondary;
+  margin-bottom: $spacing-2xl;
+  font-weight: 400;
+}
+
+.loading {
+  text-align: center;
+  font-size: 18px;
+  color: $text-secondary;
+  padding: $spacing-2xl 0;
+}
+
+.pricingGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: $spacing-lg;
+  
+  @include mobile {
+    grid-template-columns: 1fr;
+    gap: $spacing-md;
+  }
+}
+
+.priceCard {
+  background: $bg-secondary;
+  border: 1px solid $border-subtle;
+  border-radius: $radius-lg;
+  padding: $spacing-xl;
+  transition: $transition;
+
+  &:hover {
+    border-color: $accent-gold;
+    box-shadow: 0 0 30px rgba($accent-gold, 0.15);
+    transform: translateY(-4px);
+  }
+
+  @include mobile {
+    padding: $spacing-lg;
+  }
+}
+
+.vehicleName {
+  font-family: $font-display;
+  font-size: 24px;
+  font-weight: 700;
+  color: $text-primary;
+  margin-bottom: $spacing-md;
+  letter-spacing: -0.02em;
+
+  @include mobile {
+    font-size: 20px;
+  }
+}
+
+.priceAmount {
+  font-size: 48px;
+  font-weight: 800;
+  color: $accent-gold;
+  line-height: 1;
+  margin-bottom: $spacing-xs;
+  letter-spacing: -0.03em;
+
+  @include mobile {
+    font-size: 36px;
+  }
+}
+
+.perHour {
+  font-size: 18px;
+  color: $text-secondary;
+  font-weight: 400;
+  margin-left: $spacing-xs;
+
+  @include mobile {
+    font-size: 16px;
+  }
+}
+
+.minimum {
+  font-size: 14px;
+  color: $text-muted;
+  font-weight: 400;
+  margin-top: $spacing-md;
+}
+

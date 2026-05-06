@@ -1,0 +1,147 @@
+@use '../../styles/scss/variables' as *;
+@use '../../styles/scss/mixins' as *;
+
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  transition: $transition;
+  @include gpu-accelerate;
+  isolation: isolate;
+  contain: layout style paint;
+
+  &.scrolled {
+    background: rgba(11, 11, 11, 0.95);
+    border-bottom: 1px solid $border-subtle;
+  }
+}
+
+.container {
+  max-width: $container-max;
+  margin: 0 auto;
+  padding: 0 $spacing-lg;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 80px;
+
+  @include mobile {
+    height: 60px;
+    padding: 0 $spacing-sm;
+  }
+}
+
+.logo {
+  font-family: $font-display;
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  display: flex;
+  gap: $spacing-xs;
+}
+
+.logoNoir {
+  color: $accent-gold;
+}
+
+.logoRide {
+  color: $text-primary;
+}
+
+.nav {
+  display: none;
+  align-items: center;
+  gap: 40px;
+
+  @include tablet {
+    display: flex;
+  }
+}
+
+.navLink {
+  color: $text-secondary;
+  font-size: 14px;
+  font-weight: 500;
+  transition: $transition;
+  position: relative;
+
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    width: 0;
+    height: 1px;
+    background: $accent-gold;
+    transition: $transition;
+  }
+
+  &:hover {
+    color: $text-primary;
+
+    &::after {
+      width: 100%;
+    }
+  }
+}
+
+.ctaButton {
+  padding: 10px 24px;
+  background: $accent-gold;
+  color: $bg-primary;
+  font-size: 14px;
+  font-weight: 600;
+  transition: $transition;
+  border-radius: $radius-sm;
+
+  &:hover {
+    background: $accent-gold-hover;
+    box-shadow: 0 0 20px rgba($accent-gold, 0.3);
+  }
+}
+
+.langSwitch {
+  color: $text-secondary;
+  font-size: 14px;
+  font-weight: 500;
+  transition: $transition;
+
+  &:hover {
+    color: $accent-gold;
+  }
+}
+
+.menuButton {
+  display: block;
+  color: $text-primary;
+
+  @include tablet {
+    display: none;
+  }
+}
+
+.mobileMenu {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xs;
+  padding: $spacing-lg $spacing-md;
+  border-top: 1px solid $border-subtle;
+
+  @include tablet {
+    display: none;
+  }
+
+  .navLink,
+  .langSwitch {
+    padding: $spacing-sm 0;
+    font-size: 16px;
+    display: block;
+    width: 100%;
+  }
+
+  .langSwitch {
+    text-align: left;
+  }
+}

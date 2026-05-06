@@ -1,0 +1,21 @@
+@use 'sass:math';
+
+// Convert px to rem
+@function rem($pixels, $base: 16) {
+  @return math.div($pixels, $base) * 1rem;
+}
+
+// Lighten color
+@function lighten-color($color, $amount) {
+  @return mix(white, $color, $amount);
+}
+
+// Darken color
+@function darken-color($color, $amount) {
+  @return mix(black, $color, $amount);
+}
+
+// Alpha transparency
+@function alpha($color, $opacity) {
+  @return rgba($color, $opacity);
+}

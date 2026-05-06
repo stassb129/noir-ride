@@ -1,0 +1,209 @@
+@use '../../../../styles/scss/variables' as *;
+@use '../../../../styles/scss/mixins' as *;
+
+.bookingsPage {
+  max-width: 1400px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: $spacing-2xl;
+  gap: $spacing-lg;
+  flex-wrap: wrap;
+}
+
+.title {
+  font-family: $font-display;
+  font-size: clamp(28px, 4vw, 36px);
+  font-weight: 800;
+  color: $text-primary;
+  letter-spacing: -0.02em;
+}
+
+.loading,
+.empty {
+  text-align: center;
+  padding: $spacing-2xl;
+  color: $text-secondary;
+  font-size: 18px;
+}
+
+.filters {
+  display: flex;
+  gap: $spacing-md;
+}
+
+.filterSelect {
+  height: 40px;
+  background: $bg-secondary;
+  border: 1px solid $border-subtle;
+  border-radius: $radius-main;
+  padding: 0 $spacing-md;
+  color: $text-primary;
+  font-size: 14px;
+  cursor: pointer;
+  transition: $transition;
+
+  &:focus {
+    outline: none;
+    border-color: $accent-gold;
+  }
+}
+
+.bookingsList {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-lg;
+}
+
+.bookingCard {
+  background: $bg-secondary;
+  border: 1px solid $border-subtle;
+  border-radius: $radius-lg;
+  padding: $spacing-xl;
+  transition: $transition;
+
+  &:hover {
+    border-color: $accent-gold;
+    box-shadow: 0 0 20px rgba($accent-gold, 0.1);
+  }
+}
+
+.bookingHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: $spacing-lg;
+  gap: $spacing-md;
+  flex-wrap: wrap;
+}
+
+.bookingRoute {
+  display: flex;
+  align-items: center;
+  gap: $spacing-md;
+  font-size: 20px;
+  font-weight: 700;
+  color: $text-primary;
+}
+
+.arrow {
+  color: $text-muted;
+}
+
+.statusBadge {
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+
+  &.statusPending {
+    background: rgba(255, 217, 61, 0.2);
+    color: #ffd93d;
+  }
+
+  &.statusConfirmed {
+    background: rgba(107, 207, 127, 0.2);
+    color: #6bcf7f;
+  }
+
+  &.statusCompleted {
+    background: rgba(77, 159, 255, 0.2);
+    color: #4d9fff;
+  }
+
+  &.statusCancelled {
+    background: rgba(255, 107, 107, 0.2);
+    color: #ff6b6b;
+  }
+}
+
+.bookingDetails {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: $spacing-md;
+  margin-bottom: $spacing-lg;
+}
+
+.detailRow {
+  display: flex;
+  gap: $spacing-xs;
+}
+
+.detailLabel {
+  font-size: 13px;
+  color: $text-secondary;
+  font-weight: 500;
+  min-width: 80px;
+}
+
+.detailValue {
+  font-size: 14px;
+  color: $text-primary;
+}
+
+.price {
+  font-size: 18px;
+  font-weight: 700;
+  color: $accent-gold;
+}
+
+.notes {
+  grid-column: 1 / -1;
+  padding-top: $spacing-md;
+  border-top: 1px solid $border-subtle;
+  
+  p {
+    font-size: 14px;
+    color: $text-secondary;
+    margin-top: $spacing-xs;
+    line-height: 1.6;
+  }
+}
+
+.bookingActions {
+  display: flex;
+  gap: $spacing-md;
+  padding-top: $spacing-lg;
+  border-top: 1px solid $border-subtle;
+}
+
+.statusSelect {
+  flex: 1;
+  height: 40px;
+  background: $bg-primary;
+  border: 1px solid $border-subtle;
+  border-radius: $radius-main;
+  padding: 0 $spacing-md;
+  color: $text-primary;
+  font-size: 14px;
+  cursor: pointer;
+  transition: $transition;
+
+  &:focus {
+    outline: none;
+    border-color: $accent-gold;
+  }
+}
+
+.deleteButton {
+  padding: 0 $spacing-lg;
+  height: 40px;
+  background: transparent;
+  border: 1px solid rgba(255, 107, 107, 0.3);
+  color: #ff6b6b;
+  font-size: 14px;
+  font-weight: 500;
+  border-radius: $radius-main;
+  cursor: pointer;
+  transition: $transition;
+
+  &:hover {
+    background: rgba(255, 107, 107, 0.1);
+    border-color: #ff6b6b;
+  }
+}

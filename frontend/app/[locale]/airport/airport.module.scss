@@ -1,0 +1,133 @@
+@use '../../../styles/scss/variables' as *;
+@use '../../../styles/scss/mixins' as *;
+
+.airportPage {
+  min-height: 100vh;
+  padding: 140px 0 $spacing-2xl;
+  background: $bg-primary;
+}
+
+.container {
+  max-width: $container-max;
+  margin: 0 auto;
+  padding: 0 $spacing-lg;
+}
+
+.heading {
+  font-family: $font-display;
+  font-size: clamp(48px, 6vw, 64px);
+  font-weight: 800;
+  margin-bottom: $spacing-2xl;
+  color: $text-primary;
+  letter-spacing: -0.03em;
+}
+
+.section {
+  margin-bottom: 80px;
+}
+
+.sectionTitle {
+  font-size: 24px;
+  font-weight: 600;
+  color: $text-secondary;
+  margin-bottom: $spacing-lg;
+  font-family: $font-body;
+}
+
+.loading {
+  text-align: center;
+  font-size: 18px;
+  color: $text-secondary;
+  padding: $spacing-2xl 0;
+}
+
+.airportGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: $spacing-sm;
+
+  @include mobile {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.airportCard {
+  border: 1px solid $border-subtle;
+  padding: $spacing-md;
+  transition: $transition;
+  background: $bg-primary;
+  cursor: pointer;
+  width: 100%;
+  text-align: left;
+
+  &:hover {
+    border-color: $accent-gold;
+    box-shadow: 0 0 20px rgba($accent-gold, 0.15);
+  }
+
+  &.active {
+    border-color: $accent-gold;
+    background: rgba($accent-gold, 0.05);
+  }
+}
+
+.airportCode {
+  font-size: 20px;
+  font-weight: 600;
+  color: $text-primary;
+  margin-bottom: 4px;
+}
+
+.airportName {
+  font-size: 14px;
+  color: $text-secondary;
+}
+
+.pricingList {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-sm;
+}
+
+.pricingItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: $spacing-lg;
+  border: 1px solid $border-subtle;
+  transition: $transition;
+
+  @include mobile {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: $spacing-md;
+  }
+
+  &:hover {
+    border-color: $accent-gold;
+    box-shadow: 0 0 20px rgba($accent-gold, 0.15);
+  }
+}
+
+.pricingInfo {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xs;
+}
+
+.pricingType {
+  font-size: 24px;
+  font-weight: 600;
+  color: $text-primary;
+}
+
+.pricingModel {
+  font-size: 15px;
+  color: $text-secondary;
+}
+
+.pricingPrice {
+  font-size: 32px;
+  font-weight: 600;
+  color: $accent-gold;
+}

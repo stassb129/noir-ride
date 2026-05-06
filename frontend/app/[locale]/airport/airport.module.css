@@ -1,0 +1,115 @@
+.airportPage {
+  min-height: 100vh;
+  padding: 140px 0 var(--spacing-2xl);
+  background: var(--bg-primary);
+}
+
+.container {
+  max-width: var(--container-max);
+  margin: 0 auto;
+  padding: 0 var(--spacing-lg);
+}
+
+.heading {
+  font-family: var(--font-display);
+  font-size: clamp(48px, 6vw, 64px);
+  font-weight: 700;
+  margin-bottom: var(--spacing-2xl);
+  color: var(--text-primary);
+}
+
+.section {
+  margin-bottom: 80px;
+}
+
+.sectionTitle {
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-bottom: var(--spacing-lg);
+  font-family: var(--font-body);
+}
+
+.airportGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--spacing-sm);
+}
+
+.airportCard {
+  border: 1px solid var(--border-subtle);
+  padding: var(--spacing-md);
+  transition: var(--transition);
+}
+
+.airportCard:hover {
+  border-color: var(--accent-gold);
+  box-shadow: 0 0 20px rgba(201, 161, 93, 0.15);
+}
+
+.airportCode {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+}
+
+.airportName {
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+
+.pricingList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.pricingItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--spacing-lg);
+  border: 1px solid var(--border-subtle);
+  transition: var(--transition);
+}
+
+.pricingItem:hover {
+  border-color: var(--accent-gold);
+  box-shadow: 0 0 20px rgba(201, 161, 93, 0.15);
+}
+
+.pricingInfo {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.pricingType {
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.pricingModel {
+  font-size: 15px;
+  color: var(--text-secondary);
+}
+
+.pricingPrice {
+  font-size: 32px;
+  font-weight: 600;
+  color: var(--accent-gold);
+}
+
+@media (max-width: 768px) {
+  .airportGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .pricingItem {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-md);
+  }
+}

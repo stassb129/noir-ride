@@ -1,0 +1,173 @@
+@use '../../../styles/scss/variables' as *;
+@use '../../../styles/scss/mixins' as *;
+
+.routesPage {
+  min-height: 100vh;
+  padding: 140px 0 $spacing-2xl;
+  background: $bg-primary;
+}
+
+.container {
+  max-width: $container-max;
+  margin: 0 auto;
+  padding: 0 $spacing-lg;
+}
+
+.heading {
+  font-family: $font-display;
+  font-size: clamp(48px, 6vw, 64px);
+  font-weight: 800;
+  margin-bottom: $spacing-2xl;
+  color: $text-primary;
+  letter-spacing: -0.03em;
+}
+
+.loading,
+.loadingSeats,
+.noRoutes {
+  text-align: center;
+  font-size: 18px;
+  color: $text-secondary;
+  padding: $spacing-xl 0;
+}
+
+.dateSelector {
+  margin-bottom: $spacing-2xl;
+}
+
+.dateLabel {
+  display: block;
+  font-size: 13px;
+  color: $text-secondary;
+  margin-bottom: $spacing-xs;
+  font-weight: 500;
+}
+
+.dateInput {
+  height: 56px;
+  background: $bg-secondary;
+  border: 1px solid $border-subtle;
+  border-radius: $radius-main;
+  padding: 0 $spacing-sm;
+  color: $text-primary;
+  font-size: 15px;
+  transition: $transition;
+  outline: none;
+  max-width: 240px;
+
+  &:focus {
+    border-color: $accent-gold;
+  }
+}
+
+.routesList {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-2xl;
+}
+
+.route {
+  border-top: 1px solid $border-subtle;
+  padding-top: $spacing-2xl;
+}
+
+.routeHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: $spacing-xl;
+  flex-wrap: wrap;
+  gap: $spacing-md;
+
+  @include mobile {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+.routeDirection {
+  display: flex;
+  align-items: center;
+  gap: $spacing-md;
+}
+
+.routeCity {
+  font-family: $font-display;
+  font-size: clamp(28px, 4vw, 36px);
+  font-weight: 700;
+  color: $text-primary;
+  letter-spacing: -0.02em;
+}
+
+.routeArrow {
+  color: $text-muted;
+  font-size: 24px;
+}
+
+.routePrice {
+  font-size: 20px;
+  color: $accent-gold;
+  font-weight: 600;
+}
+
+.seatsInfo {
+  display: flex;
+  align-items: center;
+  gap: $spacing-lg;
+  margin-bottom: $spacing-lg;
+  flex-wrap: wrap;
+}
+
+
+.seatIndicators {
+  display: flex;
+  gap: $spacing-xs;
+}
+
+.seatDot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  transition: $transition;
+}
+
+.seatAvailable {
+  background: $accent-gold;
+}
+
+.seatTaken {
+  background: $border-subtle;
+}
+
+.seatStatus {
+  color: $text-secondary;
+  font-size: 15px;
+}
+
+.selectButton {
+  padding: 12px 32px;
+  background: $accent-gold;
+  color: $bg-primary;
+  font-weight: 600;
+  border-radius: $radius-main;
+  transition: $transition;
+
+  @include mobile {
+    width: 100%;
+  }
+
+  &:hover {
+    background: $accent-gold-hover;
+    box-shadow: 0 0 20px rgba($accent-gold, 0.3);
+  }
+
+  &:disabled {
+    background: $border-subtle;
+    color: $text-muted;
+    cursor: not-allowed;
+
+    &:hover {
+      box-shadow: none;
+    }
+  }
+}

@@ -1,0 +1,92 @@
+@use '../../styles/scss/variables' as *;
+@use '../../styles/scss/mixins' as *;
+
+.footer {
+  background: $bg-primary;
+  border-top: 1px solid $border-subtle;
+  padding: $spacing-2xl 0;
+}
+
+.container {
+  max-width: $container-max;
+  margin: 0 auto;
+  padding: 0 $spacing-lg;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: $spacing-xl;
+  margin-bottom: $spacing-xl;
+
+  @include tablet {
+    grid-template-columns: 2fr 1fr 1fr;
+    gap: 60px;
+  }
+}
+
+.brand {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-sm;
+}
+
+.logo {
+  font-family: $font-display;
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  display: flex;
+  gap: $spacing-xs;
+}
+
+.logoNoir {
+  color: $accent-gold;
+}
+
+.logoRide {
+  color: $text-primary;
+}
+
+.tagline {
+  font-size: 14px;
+  color: $text-muted;
+}
+
+.column {
+  h4 {
+    font-size: 14px;
+    font-weight: 600;
+    color: $text-secondary;
+    margin-bottom: $spacing-sm;
+    font-family: $font-body;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+}
+
+.links {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xs;
+}
+
+.link {
+  font-size: 14px;
+  color: $text-muted;
+  transition: $transition;
+
+  &:hover {
+    color: $text-primary;
+  }
+}
+
+.bottom {
+  padding-top: $spacing-lg;
+  border-top: 1px solid $border-subtle;
+}
+
+.copyright {
+  font-size: 12px;
+  color: $text-muted;
+}

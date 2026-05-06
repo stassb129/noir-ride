@@ -1,0 +1,103 @@
+.hourlyPage {
+  min-height: 100vh;
+  padding: 140px 0 var(--spacing-2xl);
+  background: var(--bg-primary);
+}
+
+.container {
+  max-width: var(--container-max);
+  margin: 0 auto;
+  padding: 0 var(--spacing-lg);
+}
+
+.heading {
+  font-family: var(--font-display);
+  font-size: clamp(48px, 6vw, 64px);
+  font-weight: 700;
+  margin-bottom: var(--spacing-md);
+  color: var(--text-primary);
+}
+
+.subheading {
+  font-size: 20px;
+  color: var(--text-secondary);
+  margin-bottom: var(--spacing-2xl);
+  font-weight: 400;
+}
+
+.tableWrapper {
+  overflow-x: auto;
+}
+
+.pricingTable {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.pricingTable thead th {
+  text-align: left;
+  padding: var(--spacing-md);
+  border-bottom: 1px solid var(--border-subtle);
+  color: var(--text-secondary);
+  font-weight: 600;
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.pricingTable thead th:not(:first-child) {
+  text-align: right;
+}
+
+.pricingTable tbody tr {
+  border-bottom: 1px solid var(--border-subtle);
+  transition: var(--transition);
+}
+
+.pricingTable tbody tr:hover {
+  background: var(--bg-secondary);
+  box-shadow: 0 0 20px rgba(201, 161, 93, 0.1);
+}
+
+.pricingTable tbody td {
+  padding: var(--spacing-md);
+  font-size: 20px;
+  color: var(--text-primary);
+}
+
+.pricingTable tbody td:not(:first-child) {
+  text-align: right;
+}
+
+.hoursCell {
+  font-weight: 600;
+}
+
+.minimumBadge {
+  display: inline-block;
+  margin-left: var(--spacing-xs);
+  font-size: 12px;
+  color: var(--text-muted);
+  font-weight: 400;
+}
+
+.priceGold {
+  color: var(--accent-gold);
+  font-weight: 600;
+}
+
+@media (max-width: 768px) {
+  .pricingTable {
+    font-size: 14px;
+  }
+  
+  .pricingTable tbody td {
+    font-size: 16px;
+    padding: var(--spacing-sm);
+  }
+  
+  .pricingTable thead th {
+    padding: var(--spacing-sm);
+    font-size: 12px;
+  }
+}

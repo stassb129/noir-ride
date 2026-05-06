@@ -1,0 +1,100 @@
+{
+  "nav": {
+    "home": "Home",
+    "routes": "Routes",
+    "airport": "Airport Transfer",
+    "hourly": "Hourly Rental",
+    "account": "Account",
+    "language": "Language"
+  },
+  "hero": {
+    "title": "NOIR RIDE",
+    "subtitle": "Premium Chauffeur Service",
+    "description": "Experience luxury and comfort with our exclusive transportation service. Professional drivers, premium vehicles, impeccable service.",
+    "bookNow": "Book Now"
+  },
+  "services": {
+    "title": "Our Services",
+    "intercity": {
+      "title": "Intercity Routes",
+      "description": "Comfortable rides between cities. Fixed rates, professional drivers.",
+      "button": "View Routes"
+    },
+    "airport": {
+      "title": "Airport Transfer",
+      "description": "Reliable airport transfers with flight tracking and meet & greet service.",
+      "button": "Book Transfer"
+    },
+    "hourly": {
+      "title": "Hourly Rental",
+      "description": "Rent a car with a driver for any duration. Flexible rates and premium vehicles.",
+      "button": "Learn More"
+    }
+  },
+  "fleet": {
+    "title": "Our Fleet",
+    "description": "Premium vehicles for your comfort",
+    "business": "Business Class",
+    "premium": "Premium Class",
+    "luxury": "Luxury Class"
+  },
+  "booking": {
+    "title": "Book Your Ride",
+    "from": "From",
+    "to": "To",
+    "date": "Date",
+    "time": "Time",
+    "passengers": "Passengers",
+    "service": "Service Type",
+    "submit": "Book Now",
+    "success": "Booking request sent successfully!",
+    "error": "An error occurred. Please try again."
+  },
+  "routes": {
+    "title": "Intercity Routes",
+    "subtitle": "Fixed rates for popular destinations",
+    "moscowSpb": "Moscow ↔ Saint Petersburg",
+    "pricePerSeat": "per seat",
+    "duration": "Duration",
+    "hours": "hours",
+    "book": "Book"
+  },
+  "airport": {
+    "title": "Airport Transfer",
+    "subtitle": "Reliable service with flight tracking",
+    "features": {
+      "tracking": "Flight Tracking",
+      "meetGreet": "Meet & Greet",
+      "waitingTime": "Free Waiting Time",
+      "luggage": "Luggage Assistance"
+    },
+    "pricing": "Pricing based on distance and vehicle class"
+  },
+  "hourly": {
+    "title": "Hourly Rental",
+    "subtitle": "Flexible transportation for your needs",
+    "minimum": "Minimum rental",
+    "price": "Starting from",
+    "perHour": "per hour",
+    "features": {
+      "flexible": "Flexible Duration",
+      "professional": "Professional Driver",
+      "premium": "Premium Vehicles",
+      "anyPurpose": "For Any Purpose"
+    }
+  },
+  "account": {
+    "title": "My Account",
+    "bookings": "My Bookings",
+    "profile": "Profile",
+    "settings": "Settings",
+    "logout": "Logout"
+  },
+  "footer": {
+    "about": "About Us",
+    "contact": "Contact",
+    "terms": "Terms of Service",
+    "privacy": "Privacy Policy",
+    "rights": "All rights reserved"
+  }
+}

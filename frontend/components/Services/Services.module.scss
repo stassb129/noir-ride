@@ -1,0 +1,55 @@
+@use '../../styles/scss/variables' as *;
+@use '../../styles/scss/mixins' as *;
+
+.services {
+  padding: $section-padding 0;
+  background: $bg-primary;
+}
+
+.container {
+  max-width: $container-max;
+  margin: 0 auto;
+  padding: 0 $spacing-lg;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: $spacing-2xl;
+
+  @include tablet {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 60px;
+  }
+}
+
+.service {
+  border-top: 1px solid $border-subtle;
+  padding-top: $spacing-lg;
+  transition: $transition;
+  cursor: pointer;
+
+  &:hover {
+    border-top-color: $accent-gold;
+
+    .title {
+      color: $accent-gold;
+    }
+  }
+}
+
+.title {
+  font-family: $font-display;
+  font-size: clamp(24px, 3vw, 32px);
+  font-weight: 700;
+  margin-bottom: $spacing-sm;
+  transition: $transition;
+  color: $text-primary;
+  letter-spacing: -0.02em;
+}
+
+.description {
+  color: $text-secondary;
+  font-size: 16px;
+  line-height: 1.6;
+}

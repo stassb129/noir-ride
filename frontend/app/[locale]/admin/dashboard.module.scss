@@ -1,0 +1,138 @@
+@use '../../../styles/scss/variables' as *;
+@use '../../../styles/scss/mixins' as *;
+
+.dashboard {
+  max-width: 1400px;
+}
+
+.title {
+  font-family: $font-display;
+  font-size: clamp(36px, 5vw, 48px);
+  font-weight: 800;
+  color: $text-primary;
+  margin-bottom: $spacing-2xl;
+  letter-spacing: -0.03em;
+}
+
+.loading {
+  text-align: center;
+  padding: $spacing-2xl;
+  color: $text-secondary;
+  font-size: 18px;
+}
+
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: $spacing-lg;
+  margin-bottom: $spacing-2xl;
+
+  @include mobile {
+    grid-template-columns: 1fr;
+  }
+}
+
+.statCard {
+  background: $bg-secondary;
+  border: 1px solid $border-subtle;
+  border-radius: $radius-lg;
+  padding: $spacing-xl;
+  display: flex;
+  align-items: center;
+  gap: $spacing-lg;
+  transition: $transition;
+
+  &:hover {
+    border-color: $accent-gold;
+    box-shadow: 0 0 20px rgba($accent-gold, 0.1);
+    transform: translateY(-2px);
+  }
+
+  &.statCardPending {
+    border-left: 4px solid #ffd93d;
+  }
+
+  &.statCardConfirmed {
+    border-left: 4px solid #6bcf7f;
+  }
+
+  &.statCardCompleted {
+    border-left: 4px solid #4d9fff;
+  }
+
+  &.statCardRevenue {
+    border-left: 4px solid $accent-gold;
+  }
+}
+
+.statIcon {
+  font-size: 32px;
+}
+
+.statContent {
+  flex: 1;
+}
+
+.statLabel {
+  font-size: 14px;
+  color: $text-secondary;
+  margin-bottom: $spacing-xs;
+  font-weight: 500;
+}
+
+.statValue {
+  font-size: 32px;
+  font-weight: 800;
+  color: $text-primary;
+  letter-spacing: -0.02em;
+}
+
+.quickLinks {
+  margin-top: $spacing-2xl;
+}
+
+.sectionTitle {
+  font-size: 24px;
+  font-weight: 700;
+  color: $text-primary;
+  margin-bottom: $spacing-lg;
+  letter-spacing: -0.02em;
+}
+
+.linksGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: $spacing-lg;
+
+  @include mobile {
+    grid-template-columns: 1fr;
+  }
+}
+
+.quickLink {
+  background: $bg-secondary;
+  border: 1px solid $border-subtle;
+  border-radius: $radius-lg;
+  padding: $spacing-xl;
+  display: flex;
+  align-items: center;
+  gap: $spacing-lg;
+  transition: $transition;
+
+  &:hover {
+    border-color: $accent-gold;
+    background: rgba($accent-gold, 0.05);
+    transform: translateY(-2px);
+    box-shadow: 0 0 20px rgba($accent-gold, 0.15);
+  }
+}
+
+.quickLinkIcon {
+  font-size: 32px;
+}
+
+.quickLinkTitle {
+  font-size: 16px;
+  font-weight: 600;
+  color: $text-primary;
+}

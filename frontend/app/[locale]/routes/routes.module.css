@@ -1,0 +1,198 @@
+.routesPage {
+  min-height: 100vh;
+  padding: 140px 0 var(--spacing-2xl);
+  background: var(--bg-primary);
+}
+
+.container {
+  max-width: var(--container-max);
+  margin: 0 auto;
+  padding: 0 var(--spacing-lg);
+}
+
+.heading {
+  font-family: var(--font-display);
+  font-size: clamp(48px, 6vw, 64px);
+  font-weight: 700;
+  margin-bottom: var(--spacing-2xl);
+  color: var(--text-primary);
+}
+
+.dateSelector {
+  margin-bottom: var(--spacing-2xl);
+}
+
+.dateLabel {
+  display: block;
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin-bottom: var(--spacing-xs);
+  font-weight: 500;
+}
+
+.dateInput {
+  height: 56px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-main);
+  padding: 0 var(--spacing-sm);
+  color: var(--text-primary);
+  font-size: 15px;
+  transition: var(--transition);
+  outline: none;
+  max-width: 240px;
+}
+
+.dateInput:focus {
+  border-color: var(--accent-gold);
+}
+
+.routesList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2xl);
+}
+
+.route {
+  border-top: 1px solid var(--border-subtle);
+  padding-top: var(--spacing-2xl);
+}
+
+.routeHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--spacing-xl);
+  flex-wrap: wrap;
+  gap: var(--spacing-md);
+}
+
+.routeDirection {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+}
+
+.routeCity {
+  font-family: var(--font-display);
+  font-size: clamp(28px, 4vw, 36px);
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.routeArrow {
+  color: var(--text-muted);
+  font-size: 24px;
+}
+
+.routePrice {
+  font-size: 20px;
+  color: var(--accent-gold);
+  font-weight: 600;
+}
+
+.departuresList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.departure {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--spacing-md);
+  border: 1px solid var(--border-subtle);
+  transition: var(--transition);
+  flex-wrap: wrap;
+  gap: var(--spacing-md);
+}
+
+.departure:not(.departureSoldOut):hover {
+  border-color: var(--accent-gold);
+  box-shadow: 0 0 20px rgba(201, 161, 93, 0.15);
+}
+
+.departureSoldOut {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.departureInfo {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-lg);
+  flex-wrap: wrap;
+}
+
+.departureTime {
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--text-primary);
+  min-width: 80px;
+}
+
+.seatIndicators {
+  display: flex;
+  gap: var(--spacing-xs);
+}
+
+.seatDot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  transition: var(--transition);
+}
+
+.seatAvailable {
+  background: var(--accent-gold);
+}
+
+.seatTaken {
+  background: var(--border-subtle);
+}
+
+.seatStatus {
+  color: var(--text-secondary);
+  font-size: 15px;
+}
+
+.selectButton {
+  padding: 12px 32px;
+  background: var(--accent-gold);
+  color: var(--bg-primary);
+  font-weight: 600;
+  border-radius: var(--radius-main);
+  transition: var(--transition);
+}
+
+.selectButton:hover {
+  background: var(--accent-gold-hover);
+  box-shadow: 0 0 20px rgba(201, 161, 93, 0.3);
+}
+
+.selectButton:disabled {
+  background: var(--border-subtle);
+  color: var(--text-muted);
+  cursor: not-allowed;
+}
+
+.selectButton:disabled:hover {
+  box-shadow: none;
+}
+
+@media (max-width: 768px) {
+  .routeHeader {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .departure {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .selectButton {
+    width: 100%;
+  }
+}
