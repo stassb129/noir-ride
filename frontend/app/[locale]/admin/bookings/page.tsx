@@ -53,6 +53,7 @@ interface HourlyBooking extends BaseBooking {
 }
 
 type AnyBooking = Contact | RouteBooking | AirportBooking | HourlyBooking;
+const FIXED_ROUTE_TIME = '09:00';
 
 export default function AllBookingsPage() {
   const [bookingType, setBookingType] = useState<BookingType>('contacts');
@@ -161,7 +162,7 @@ export default function AllBookingsPage() {
           from: 'Москва',
           to: 'Санкт-Петербург',
           date: '',
-          time: '',
+          time: FIXED_ROUTE_TIME,
           vehicleClass: 'business',
           passengers: 1,
           notes: '',
@@ -368,11 +369,10 @@ export default function AllBookingsPage() {
               </div>
 
               {bookingType === 'routes' && (
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, minmax(0, 1fr))', gap: '8px', marginBottom: '8px' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, minmax(0, 1fr))', gap: '8px', marginBottom: '8px' }}>
                   <input placeholder="Откуда" value={createData.from || ''} onChange={(e) => setCreateData({ ...createData, from: e.target.value })} className={styles.statusSelect} />
                   <input placeholder="Куда" value={createData.to || ''} onChange={(e) => setCreateData({ ...createData, to: e.target.value })} className={styles.statusSelect} />
                   <input type="date" value={createData.date || ''} onChange={(e) => setCreateData({ ...createData, date: e.target.value })} className={styles.statusSelect} />
-                  <input type="time" value={createData.time || ''} onChange={(e) => setCreateData({ ...createData, time: e.target.value })} className={styles.statusSelect} />
                   <input type="number" min={1} placeholder="Пассажиры" value={createData.passengers || 1} onChange={(e) => setCreateData({ ...createData, passengers: Number(e.target.value) })} className={styles.statusSelect} />
                 </div>
               )}

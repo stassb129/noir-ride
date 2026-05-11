@@ -14,6 +14,9 @@ interface RouteBookingFormProps {
   };
 }
 
+const FIXED_ROUTE_TIME = '09:00';
+const CITIES = ['Москва', 'Санкт-Петербург'];
+
 export default function RouteBookingForm({ prefilledData }: RouteBookingFormProps) {
   const locale = useLocale();
   
@@ -33,7 +36,6 @@ export default function RouteBookingForm({ prefilledData }: RouteBookingFormProp
     from: 'Москва',
     to: 'Санкт-Петербург',
     date: '',
-    time: '',
     passengers: 1,
     vehicleClass: 'business',
     notes: ''
@@ -46,10 +48,25 @@ export default function RouteBookingForm({ prefilledData }: RouteBookingFormProp
     if (prefilledData) {
       setFormData(prev => ({
         ...prev,
-        ...prefilledData
+        ...prefilledData,
+        to: prefilledData.from && prefilledData.from === prefilledData.to
+          ? CITIES.find((city) => city !== prefilledData.from) || prev.to
+          : (prefilledData.to ?? prev.to),
       }));
     }
   }, [prefilledData]);
+
+  const handleFromChange = (value: string) => {
+    setFormData((prev) =>
+      value === prev.to ? { ...prev, from: value, to: prev.from } : { ...prev, from: value }
+    );
+  };
+
+  const handleToChange = (value: string) => {
+    setFormData((prev) =>
+      value === prev.from ? { ...prev, to: value, from: prev.to } : { ...prev, to: value }
+    );
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -62,6 +79,7 @@ export default function RouteBookingForm({ prefilledData }: RouteBookingFormProp
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           ...formData,
+          time: FIXED_ROUTE_TIME,
           serviceType: 'route'
         }),
       });
@@ -76,7 +94,6 @@ export default function RouteBookingForm({ prefilledData }: RouteBookingFormProp
         from: 'Москва',
         to: 'Санкт-Петербург',
         date: '',
-        time: '',
         passengers: 1,
         vehicleClass: 'business',
         notes: ''
@@ -171,7 +188,7 @@ export default function RouteBookingForm({ prefilledData }: RouteBookingFormProp
             <CustomSelect
               name="from"
               value={formData.from}
-              onChange={(value) => setFormData((prev) => ({ ...prev, from: value }))}
+              onChange={handleFromChange}
               options={[
                 { value: 'Москва', label: 'Москва' },
                 { value: 'Санкт-Петербург', label: 'Санкт-Петербург' },
@@ -187,7 +204,7 @@ export default function RouteBookingForm({ prefilledData }: RouteBookingFormProp
             <CustomSelect
               name="to"
               value={formData.to}
-              onChange={(value) => setFormData((prev) => ({ ...prev, to: value }))}
+              onChange={handleToChange}
               options={[
                 { value: 'Санкт-Петербург', label: 'Санкт-Петербург' },
                 { value: 'Москва', label: 'Москва' },
@@ -197,36 +214,25 @@ export default function RouteBookingForm({ prefilledData }: RouteBookingFormProp
           </div>
         </div>
 
-        <div className={styles.row}>
-          <div className={styles.formGroup}>
-            <label className={styles.label}>
-              {locale === 'ru' ? 'Дата' : 'Date'}
-            </label>
-            <input
-              type="date"
-              name="date"
-              value={formData.date}
-              onChange={handleChange}
-              onBlur={validateDate}
-              min={minDate}
-              className={styles.input}
-              required
-            />
-          </div>
-
-          <div className={styles.formGroup}>
-            <label className={styles.label}>
-              {locale === 'ru' ? 'Время' : 'Time'}
-            </label>
-            <input
-              type="time"
-              name="time"
-              value={formData.time}
-              onChange={handleChange}
-              className={styles.input}
-              required
-            />
-          </div>
+        <div className={styles.formGroup}>
+          <label className={styles.label}>
+            {locale === 'ru' ? 'Дата' : 'Date'}
+          </label>
+          <input
+            type="date"
+            name="date"
+            value={formData.date}
+            onChange={handleChange}
+            onBlur={validateDate}
+            min={minDate}
+            className={styles.input}
+            required
+          />
+          <p className={styles.fixedTimeNote}>
+            {locale === 'ru'
+              ? `Фиксированное время выезда: ${FIXED_ROUTE_TIME}`
+              : `Fixed departure time: ${FIXED_ROUTE_TIME}`}
+          </p>
         </div>
 
         <div className={styles.row}>

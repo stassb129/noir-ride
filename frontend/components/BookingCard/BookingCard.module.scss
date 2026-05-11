@@ -62,8 +62,8 @@
   background: transparent;
   border: none;
   border-bottom: 1px solid $border-subtle;
-  border-radius: 0;
-  padding: 0 $spacing-xs 8px 0;
+  border-radius: 6px 6px 0 0;
+  padding: 0 $spacing-xs 8px 10px;
   color: $text-primary;
   font-size: 15px;
   transition: $transition;
@@ -81,6 +81,18 @@
   &:focus {
     border-bottom-color: $accent-gold;
     box-shadow: 0 1px 0 0 $accent-gold, 0 3px 12px rgba($accent-gold, 0.3);
+  }
+
+  &[type='date'],
+  &[type='time'] {
+    color-scheme: dark;
+  }
+
+  &[type='date']::-webkit-calendar-picker-indicator,
+  &[type='time']::-webkit-calendar-picker-indicator {
+    filter: invert(74%) sepia(18%) saturate(915%) hue-rotate(8deg) brightness(89%) contrast(88%);
+    opacity: 0.95;
+    cursor: pointer;
   }
 }
 

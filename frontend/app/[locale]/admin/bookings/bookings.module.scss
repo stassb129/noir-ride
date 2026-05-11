@@ -195,6 +195,18 @@
     outline: none;
     border-color: $accent-gold;
   }
+
+  &[type='date'],
+  &[type='time'] {
+    color-scheme: dark;
+  }
+
+  &[type='date']::-webkit-calendar-picker-indicator,
+  &[type='time']::-webkit-calendar-picker-indicator {
+    filter: invert(74%) sepia(18%) saturate(915%) hue-rotate(8deg) brightness(89%) contrast(88%);
+    opacity: 0.95;
+    cursor: pointer;
+  }
 }
 
 .actions {
