@@ -2,20 +2,21 @@
 
 import { useLocale } from 'next-intl';
 import Link from 'next/link';
-import { motion } from 'framer-motion';
+import { motion, type Variants } from 'framer-motion';
 import { MapPin, Clock, Car } from 'lucide-react';
+import { EASE_OUT_EXPO } from '@/lib/motion-easing';
 import styles from './Services.module.scss';
 
-const cardVariants = {
+const cardVariants: Variants = {
   initial: { opacity: 0, y: 40 },
   animate: { opacity: 1, y: 0 },
-  hover: { 
+  hover: {
     y: -8,
-    transition: { duration: 0.3, ease: [0.22, 1, 0.36, 1] }
-  }
+    transition: { duration: 0.3, ease: EASE_OUT_EXPO },
+  },
 };
 
-const staggerContainer = {
+const staggerContainer: Variants = {
   animate: {
     transition: {
       staggerChildren: 0.1,

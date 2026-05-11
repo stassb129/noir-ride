@@ -3,17 +3,15 @@
 import { motion, type Variants } from 'framer-motion';
 import { Shield, Award, Headphones, CreditCard, MapPin, Clock } from 'lucide-react';
 import { useLocale } from 'next-intl';
+import { EASE_OUT_EXPO } from '@/lib/motion-easing';
 import styles from './Benefits.module.scss';
-
-/** Cubic-bezier tuple — `as const` so TS matches Framer Motion `Easing`, not `number[]`. */
-const easeOutExpo = [0.22, 1, 0.36, 1] as const;
 
 const cardVariants: Variants = {
   initial: { opacity: 0, y: 40 },
   animate: { opacity: 1, y: 0 },
   hover: {
     y: -6,
-    transition: { duration: 0.3, ease: easeOutExpo },
+    transition: { duration: 0.3, ease: EASE_OUT_EXPO },
   },
 };
 
@@ -82,7 +80,7 @@ export default function Benefits() {
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.6, ease: easeOutExpo }}
+          transition={{ duration: 0.6, ease: EASE_OUT_EXPO }}
         >
           <h2 className={styles.title}>
             {locale === 'ru' ? 'Почему выбирают нас' : 'Why choose us'}

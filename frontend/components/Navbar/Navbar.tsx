@@ -4,19 +4,20 @@ import { useLocale } from 'next-intl';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, type Variants } from 'framer-motion';
+import { EASE_OUT_EXPO } from '@/lib/motion-easing';
 import styles from './Navbar.module.scss';
 
-const navbarVariants = {
+const navbarVariants: Variants = {
   hidden: { y: -100, opacity: 0 },
-  visible: { 
-    y: 0, 
+  visible: {
+    y: 0,
     opacity: 1,
-    transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] }
-  }
+    transition: { duration: 0.6, ease: EASE_OUT_EXPO },
+  },
 };
 
-const mobileMenuVariants = {
+const mobileMenuVariants: Variants = {
   hidden: { 
     height: 0, 
     opacity: 0,
@@ -29,7 +30,7 @@ const mobileMenuVariants = {
   }
 };
 
-const linkVariants = {
+const linkVariants: Variants = {
   hidden: { opacity: 0, x: -20 },
   visible: (i: number) => ({
     opacity: 1,

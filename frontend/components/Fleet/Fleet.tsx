@@ -3,6 +3,7 @@
 import { useLocale } from 'next-intl';
 import { motion } from 'framer-motion';
 import { Users, Luggage, Zap } from 'lucide-react';
+import { EASE_OUT_EXPO } from '@/lib/motion-easing';
 import styles from './Fleet.module.scss';
 
 const vehicleVariants = {
@@ -69,7 +70,7 @@ export default function Fleet() {
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+          transition={{ duration: 0.6, ease: EASE_OUT_EXPO }}
         >
           {locale === 'ru' ? 'Автопарк' : 'Our fleet'}
         </motion.h2>
@@ -96,7 +97,7 @@ export default function Fleet() {
                   backgroundPosition: 'center'
                 }}
                 whileHover={{ scale: 1.05 }}
-                transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+                transition={{ duration: 0.6, ease: EASE_OUT_EXPO }}
               />
               <div className={styles.vehicleOverlay} />
               

@@ -1,28 +1,29 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import { motion, type Variants } from 'framer-motion';
 import { CheckCircle } from 'lucide-react';
 import { useLocale } from 'next-intl';
+import { EASE_OUT_EXPO } from '@/lib/motion-easing';
 import styles from './Guarantees.module.scss';
 
-const listVariants = {
+const listVariants: Variants = {
   initial: { opacity: 0 },
   animate: {
     opacity: 1,
     transition: {
       staggerChildren: 0.08,
-      delayChildren: 0.2
-    }
-  }
+      delayChildren: 0.2,
+    },
+  },
 };
 
-const itemVariants = {
+const itemVariants: Variants = {
   initial: { opacity: 0, x: -20 },
-  animate: { 
-    opacity: 1, 
+  animate: {
+    opacity: 1,
     x: 0,
-    transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] }
-  }
+    transition: { duration: 0.5, ease: EASE_OUT_EXPO },
+  },
 };
 
 export default function Guarantees() {
@@ -57,7 +58,7 @@ export default function Guarantees() {
             initial={{ opacity: 0, x: -40 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+            transition={{ duration: 0.8, ease: EASE_OUT_EXPO }}
           >
             <h2 className={styles.title}>
               {locale === 'ru' ? 'Наши гарантии' : 'Our guarantees'}
@@ -93,7 +94,7 @@ export default function Guarantees() {
             initial={{ opacity: 0, x: 40 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+            transition={{ duration: 0.8, ease: EASE_OUT_EXPO }}
           >
             <div className={styles.statsGrid}>
               <div className={styles.statCard}>

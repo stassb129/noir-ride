@@ -4,6 +4,7 @@ import { useLocale } from 'next-intl';
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { apiClient, Booking } from '@/lib/api/client';
+import { EASE_OUT_EXPO } from '@/lib/motion-easing';
 import CustomSelect from '@/components/ui/CustomSelect/CustomSelect';
 import styles from './BookingCard.module.scss';
 
@@ -55,7 +56,7 @@ export default function BookingCard() {
       className={styles.card}
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+      transition={{ duration: 0.6, ease: EASE_OUT_EXPO }}
     >
       <h3 className={styles.title}>
         {locale === 'ru' ? 'Забронировать' : 'Book a ride'}

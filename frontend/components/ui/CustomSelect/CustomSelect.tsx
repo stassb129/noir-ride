@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { ChevronDown } from 'lucide-react';
+import { EASE_OUT_EXPO } from '@/lib/motion-easing';
 import styles from './CustomSelect.module.scss';
 
 export interface CustomSelectOption {
@@ -94,7 +95,7 @@ export default function CustomSelect({
             initial={{ opacity: 0, y: -6, scale: 0.98 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -4, scale: 0.98 }}
-            transition={{ duration: 0.16, ease: [0.22, 1, 0.36, 1] }}
+            transition={{ duration: 0.16, ease: EASE_OUT_EXPO }}
           >
             {options.map((option) => (
               <button

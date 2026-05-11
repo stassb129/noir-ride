@@ -1,8 +1,9 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import { motion, type Variants } from 'framer-motion';
 import { MapPin, CreditCard, Car } from 'lucide-react';
 import { useLocale } from 'next-intl';
+import { EASE_OUT_EXPO } from '@/lib/motion-easing';
 import styles from './Steps.module.scss';
 
 const Steps = () => {
@@ -29,7 +30,7 @@ const Steps = () => {
     },
   ];
 
-  const container = {
+  const container: Variants = {
     hidden: { opacity: 0 },
     show: {
       opacity: 1,
@@ -39,15 +40,15 @@ const Steps = () => {
     },
   };
 
-  const item = {
+  const item: Variants = {
     hidden: { opacity: 0, y: 60 },
-    show: { 
-      opacity: 1, 
+    show: {
+      opacity: 1,
       y: 0,
       transition: {
         duration: 0.8,
-        ease: [0.22, 1, 0.36, 1],
-      }
+        ease: EASE_OUT_EXPO,
+      },
     },
   };
 

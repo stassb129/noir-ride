@@ -3,13 +3,14 @@
 import { useLocale } from 'next-intl';
 import { useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
+import { EASE_OUT_EXPO } from '@/lib/motion-easing';
 import ContactForm from '../ContactForm/ContactForm';
 import styles from './Hero.module.scss';
 
 const fadeInUp = {
   initial: { opacity: 0, y: 40 },
   animate: { opacity: 1, y: 0 },
-  transition: { duration: 0.8, ease: [0.22, 1, 0.36, 1] }
+  transition: { duration: 0.8, ease: EASE_OUT_EXPO },
 };
 
 const staggerContainer = {

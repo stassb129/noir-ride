@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useLocale } from 'next-intl';
 import { motion } from 'framer-motion';
+import { EASE_OUT_EXPO } from '@/lib/motion-easing';
 import styles from './ContactForm.module.scss';
 
 export default function ContactForm() {
@@ -43,7 +44,7 @@ export default function ContactForm() {
       className={styles.form}
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+      transition={{ duration: 0.6, ease: EASE_OUT_EXPO }}
     >
       <h3 className={styles.title}>
         {locale === 'ru' ? 'Укажите ваши контактные данные' : 'Provide your contact details'}
