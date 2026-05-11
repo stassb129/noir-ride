@@ -49,7 +49,10 @@ import { ContactsModule } from './contacts/contacts.module';
         AirportBooking,
         HourlyBooking,
       ],
-      synchronize: process.env.NODE_ENV === 'development',
+      // Dev: auto-create/update tables. Prod (e.g. Render): off unless DB_SYNC=true for first-time schema.
+      synchronize:
+        process.env.NODE_ENV === 'development' ||
+        process.env.DB_SYNC === 'true',
       logging: process.env.NODE_ENV === 'development',
       autoLoadEntities: true,
     }),
