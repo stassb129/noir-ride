@@ -26,8 +26,14 @@ export class RouteBooking {
   @Column()
   time: string;
 
-  @Column()
+  @Column({ nullable: true })
   vehicleClass: string;
+
+  @Column({ nullable: true })
+  vehicleName: string;
+
+  @Column({ nullable: true, type: 'int' })
+  vehicleId: number;
 
   @Column()
   passengers: number;
@@ -37,6 +43,9 @@ export class RouteBooking {
 
   @Column({ default: 'pending' })
   status: string; // 'pending', 'confirmed', 'completed', 'cancelled'
+
+  @Column({ type: 'int', nullable: true })
+  distanceKm: number;
 
   @Column({ type: 'decimal', precision: 10, scale: 2, nullable: true })
   price: number;
@@ -77,14 +86,26 @@ export class AirportBooking {
   @Column({ nullable: true })
   flightNumber: string;
 
-  @Column()
+  @Column({ nullable: true })
   vehicleClass: string;
+
+  @Column({ nullable: true })
+  vehicleName: string;
+
+  @Column({ nullable: true, type: 'int' })
+  vehicleId: number;
 
   @Column()
   passengers: number;
 
   @Column()
   luggage: number;
+
+  @Column({ default: false })
+  meetSign: boolean;
+
+  @Column({ type: 'varchar', nullable: true })
+  meetSignText: string | null;
 
   @Column({ type: 'text', nullable: true })
   notes: string;
@@ -125,8 +146,14 @@ export class HourlyBooking {
   @Column()
   hours: number;
 
-  @Column()
+  @Column({ nullable: true })
   vehicleClass: string;
+
+  @Column({ nullable: true })
+  vehicleName: string;
+
+  @Column({ nullable: true, type: 'int' })
+  vehicleId: number;
 
   @Column()
   passengers: number;

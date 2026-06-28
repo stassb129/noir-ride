@@ -1,23 +1,20 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useLocale } from 'next-intl';
 import { motion } from 'framer-motion';
 import CustomSelect from '@/components/ui/CustomSelect/CustomSelect';
+import VehicleSelector from '@/components/VehicleSelector/VehicleSelector';
+import { getMinBookingDate, getBookingDateError, isBookingDateValid } from '@/lib/booking-date';
+import { clampPassengers, parsePassengersInput } from '@/lib/booking-passengers';
+import { fetchVehicles, type Vehicle } from '@/lib/api/vehicles';
+import { getPrefilledPassengers, useVehiclePrefill } from '@/lib/use-vehicle-prefill';
 import styles from '../RouteBookingForm/RouteBookingForm.module.scss';
 
-export default function HourlyBookingForm() {
+export default function HourlyBookingForm({ initialVehicleId }: { initialVehicleId?: number | null }) {
   const locale = useLocale();
-  
-  // Функция для получения завтрашней даты
-  const getTomorrowDate = () => {
-    const tomorrow = new Date();
-    tomorrow.setDate(tomorrow.getDate() + 1);
-    return tomorrow.toISOString().split('T')[0];
-  };
+  const minDate = getMinBookingDate();
 
-  const minDate = getTomorrowDate();
-  
   const [formData, setFormData] = useState({
     name: '',
     phone: '',
@@ -26,17 +23,66 @@ export default function HourlyBookingForm() {
     date: '',
     time: '',
     hours: 3,
-    vehicleClass: 'business',
+    vehicleId: null as number | null,
+    vehicleName: '',
     passengers: 1,
-    notes: ''
+    notes: '',
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [status, setStatus] = useState<'idle' | 'success' | 'error'>('idle');
+  const [dateError, setDateError] = useState<string | null>(null);
+  const [vehicleError, setVehicleError] = useState<string | null>(null);
+  const [vehicleMaxPassengers, setVehicleMaxPassengers] = useState<number | null>(null);
+  const [vehicles, setVehicles] = useState<Vehicle[]>([]);
+
+  useEffect(() => {
+    fetchVehicles().then(setVehicles);
+  }, []);
+
+  const applyVehiclePrefill = useCallback((vehicle: Vehicle) => {
+    setVehicleMaxPassengers(vehicle.passengers);
+    setFormData((prev) => ({
+      ...prev,
+      vehicleId: vehicle.id,
+      vehicleName: `${vehicle.brand} ${vehicle.model}`,
+      passengers: getPrefilledPassengers(prev.passengers, vehicle),
+    }));
+    setVehicleError(null);
+  }, []);
+
+  useVehiclePrefill(vehicles, initialVehicleId, applyVehiclePrefill);
+
+  const selectedVehicle = formData.vehicleId
+    ? vehicles.find((v) => v.id === formData.vehicleId)
+    : null;
+  const maxPassengers = vehicleMaxPassengers
+    ?? (selectedVehicle ? (selectedVehicle.passengers ?? 3) : null);
+
+  const ru = locale === 'ru';
+  const hourOptions = [3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((h) => ({
+    value: String(h),
+    label: ru
+      ? (h >= 5 ? `${h} часов` : `${h} часа`)
+      : `${h} hours`,
+  }));
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    const dateValidationError = getBookingDateError(formData.date, locale, minDate);
+    if (!isBookingDateValid(formData.date, minDate)) {
+      setDateError(dateValidationError);
+      return;
+    }
+
+    if (!formData.vehicleId) {
+      setVehicleError(locale === 'ru' ? 'Выберите автомобиль' : 'Please choose a vehicle');
+      return;
+    }
+
     setIsSubmitting(true);
     setStatus('idle');
+    setVehicleError(null);
 
     try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/bookings/hourly`, {
@@ -48,6 +94,9 @@ export default function HourlyBookingForm() {
       if (!response.ok) throw new Error('Failed to submit');
 
       setStatus('success');
+      setDateError(null);
+      setVehicleError(null);
+      setVehicleMaxPassengers(null);
       setFormData({
         name: '',
         phone: '',
@@ -56,13 +105,14 @@ export default function HourlyBookingForm() {
         date: '',
         time: '',
         hours: 3,
-        vehicleClass: 'business',
+        vehicleId: null,
+        vehicleName: '',
         passengers: 1,
-        notes: ''
+        notes: '',
       });
-      
+
       setTimeout(() => setStatus('idle'), 5000);
-    } catch (error) {
+    } catch {
       setStatus('error');
     } finally {
       setIsSubmitting(false);
@@ -70,207 +120,185 @@ export default function HourlyBookingForm() {
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
+    const { name, value, type } = e.target;
+    if (name === 'passengers') {
+      if (!maxPassengers) return;
+      setFormData((prev) => ({
+        ...prev,
+        passengers: parsePassengersInput(value, maxPassengers),
+      }));
+      return;
+    }
+    const nextValue = type === 'number' ? (value === '' ? '' : Number(value)) : value;
+    setFormData((prev) => ({ ...prev, [name]: nextValue }));
+    if (name === 'date') setDateError(getBookingDateError(value, locale, minDate));
   };
 
   const validateDate = (e: React.FocusEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    // Проверяем только при потере фокуса и если дата полностью введена
-    if (value && value.length === 10 && value < minDate) {
-      setFormData(prev => ({ ...prev, date: minDate }));
-    }
-  };
-
-  const calculatePrice = () => {
-    const prices: Record<string, number> = {
-      business: 1500,
-      comfort: 2000,
-      minivan: 2500,
-      luxury: 3000
-    };
-    return (prices[formData.vehicleClass] || 0) * formData.hours;
+    setDateError(getBookingDateError(e.target.value, locale, minDate));
   };
 
   return (
-    <motion.div 
-      className={styles.form}
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6 }}
-    >
-      <h3 className={styles.title}>
-        {locale === 'ru' ? 'Почасовая аренда' : 'Hourly rental'}
-      </h3>
+    <div className={styles.bookingWrapper}>
+      <section className={styles.vehicleSection}>
+        <VehicleSelector
+          serviceType="hourly"
+          variant="wide"
+          value={formData.vehicleId}
+          onChange={(id, name, _price, maxPassengers) => {
+            setVehicleError(null);
+            setVehicleMaxPassengers(maxPassengers);
+            setFormData((prev) => ({
+              ...prev,
+              vehicleId: id,
+              vehicleName: name,
+              passengers: clampPassengers(prev.passengers, maxPassengers),
+            }));
+          }}
+        />
+        {vehicleError && <p className={styles.fieldError}>{vehicleError}</p>}
+      </section>
 
-      <form onSubmit={handleSubmit} className={styles.formContent}>
-        <div className={styles.row}>
-          <div className={styles.formGroup}>
-            <label className={styles.label}>
-              {locale === 'ru' ? 'Ваше имя' : 'Your name'}
-            </label>
-            <input
-              type="text"
-              name="name"
-              value={formData.name}
-              onChange={handleChange}
-              placeholder={locale === 'ru' ? 'Иван Иванов' : 'John Doe'}
-              className={styles.input}
-              required
-            />
+      <motion.div
+        className={styles.form}
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+      >
+        <h3 className={styles.title}>
+          {ru ? 'Почасовая аренда' : 'Hourly rental'}
+        </h3>
+
+        <form onSubmit={handleSubmit} className={styles.formContent}>
+          <div className={styles.row}>
+            <div className={styles.formGroup}>
+              <label className={styles.label}>
+                {ru ? 'Ваше имя' : 'Your name'}
+              </label>
+              <input
+                type="text"
+                name="name"
+                value={formData.name}
+                onChange={handleChange}
+                placeholder={ru ? 'Иван Иванов' : 'John Doe'}
+                className={styles.input}
+                required
+              />
+            </div>
+
+            <div className={styles.formGroup}>
+              <label className={styles.label}>
+                {ru ? 'Телефон' : 'Phone'}
+              </label>
+              <input
+                type="tel"
+                name="phone"
+                value={formData.phone}
+                onChange={handleChange}
+                placeholder="+7 999 123 45 67"
+                className={styles.input}
+                required
+              />
+            </div>
           </div>
 
-          <div className={styles.formGroup}>
-            <label className={styles.label}>
-              {locale === 'ru' ? 'Телефон' : 'Phone'}
-            </label>
-            <input
-              type="tel"
-              name="phone"
-              value={formData.phone}
-              onChange={handleChange}
-              placeholder="+7 999 123 45 67"
-              className={styles.input}
-              required
-            />
-          </div>
-        </div>
+          <div className={styles.row}>
+            <div className={styles.formGroup}>
+              <label className={styles.label}>Email</label>
+              <input
+                type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                placeholder="example@email.com"
+                className={styles.input}
+                required
+              />
+            </div>
 
-        <div className={styles.formGroup}>
-          <label className={styles.label}>Email</label>
-          <input
-            type="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            placeholder="example@email.com"
-            className={styles.input}
-            required
-          />
-        </div>
-
-        <div className={styles.formGroup}>
-          <label className={styles.label}>
-            {locale === 'ru' ? 'Адрес подачи' : 'Pickup address'}
-          </label>
-          <input
-            type="text"
-            name="pickupAddress"
-            value={formData.pickupAddress}
-            onChange={handleChange}
-            placeholder={locale === 'ru' ? 'Откуда подать автомобиль' : 'Where to pick you up'}
-            className={styles.input}
-            required
-          />
-        </div>
-
-        <div className={styles.row}>
-          <div className={styles.formGroup}>
-            <label className={styles.label}>
-              {locale === 'ru' ? 'Дата' : 'Date'}
-            </label>
-            <input
-              type="date"
-              name="date"
-              value={formData.date}
-              onChange={handleChange}
-              onBlur={validateDate}
-              min={minDate}
-              className={styles.input}
-              required
-            />
+            <div className={styles.formGroup}>
+              <label className={styles.label}>
+                {ru ? 'Адрес подачи' : 'Pickup address'}
+              </label>
+              <input
+                type="text"
+                name="pickupAddress"
+                value={formData.pickupAddress}
+                onChange={handleChange}
+                placeholder={ru ? 'Откуда подать автомобиль' : 'Where to pick you up'}
+                className={styles.input}
+                required
+              />
+            </div>
           </div>
 
-          <div className={styles.formGroup}>
-            <label className={styles.label}>
-              {locale === 'ru' ? 'Время' : 'Time'}
-            </label>
-            <input
-              type="time"
-              name="time"
-              value={formData.time}
-              onChange={handleChange}
-              className={styles.input}
-              required
-            />
-          </div>
-        </div>
+          <div className={styles.row}>
+            <div className={styles.formGroup}>
+              <label className={styles.label}>
+                {ru ? 'Дата' : 'Date'}
+              </label>
+              <input
+                type="date"
+                name="date"
+                value={formData.date}
+                onChange={handleChange}
+                onBlur={validateDate}
+                min={minDate}
+                className={styles.input}
+                required
+              />
+              {dateError && <p className={styles.fieldError}>{dateError}</p>}
+            </div>
 
-        <div className={styles.row}>
-          <div className={styles.formGroup}>
-            <label className={styles.label}>
-              {locale === 'ru' ? 'Количество часов' : 'Hours'}
-            </label>
-            <CustomSelect
-              name="hours"
-              value={String(formData.hours)}
-              onChange={(value) => setFormData((prev) => ({ ...prev, hours: Number(value) }))}
-              options={[
-                { value: '3', label: locale === 'ru' ? '3 часа' : '3 hours' },
-                { value: '4', label: locale === 'ru' ? '4 часа' : '4 hours' },
-                { value: '5', label: locale === 'ru' ? '5 часов' : '5 hours' },
-                { value: '6', label: locale === 'ru' ? '6 часов' : '6 hours' },
-                { value: '8', label: locale === 'ru' ? '8 часов' : '8 hours' },
-                { value: '10', label: locale === 'ru' ? '10 часов' : '10 hours' },
-                { value: '12', label: locale === 'ru' ? '12 часов' : '12 hours' },
-              ]}
-              required
-            />
+            <div className={styles.formGroup}>
+              <label className={styles.label}>
+                {ru ? 'Время' : 'Time'}
+              </label>
+              <input
+                type="time"
+                name="time"
+                value={formData.time}
+                onChange={handleChange}
+                className={styles.input}
+                required
+              />
+            </div>
           </div>
 
-          <div className={styles.formGroup}>
-            <label className={styles.label}>
-              {locale === 'ru' ? 'Пассажиров' : 'Passengers'}
-            </label>
-            <input
-              type="number"
-              name="passengers"
-              value={formData.passengers}
-              onChange={handleChange}
-              min="1"
-              max="8"
-              className={styles.input}
-              required
-            />
-          </div>
-        </div>
+          <div className={styles.row}>
+            <div className={styles.formGroup}>
+              <label className={styles.label}>
+                {ru ? 'Количество часов' : 'Hours'}
+              </label>
+              <CustomSelect
+                variant="boxed"
+                name="hours"
+                value={String(formData.hours)}
+                onChange={(value) => setFormData((prev) => ({ ...prev, hours: Number(value) }))}
+                options={hourOptions}
+                required
+              />
+            </div>
 
-        <div className={styles.formGroup}>
-          <label className={styles.label}>
-            {locale === 'ru' ? 'Класс автомобиля' : 'Vehicle class'}
-          </label>
-          <CustomSelect
-            name="vehicleClass"
-            value={formData.vehicleClass}
-            onChange={(value) => setFormData((prev) => ({ ...prev, vehicleClass: value }))}
-            options={[
-              { value: 'business', label: locale === 'ru' ? 'Бизнес - 1500₽/ч' : 'Business - 1500₽/h' },
-              { value: 'comfort', label: locale === 'ru' ? 'Комфорт - 2000₽/ч' : 'Comfort - 2000₽/h' },
-              { value: 'minivan', label: locale === 'ru' ? 'Минивэн - 2500₽/ч' : 'Minivan - 2500₽/h' },
-              { value: 'luxury', label: locale === 'ru' ? 'Люкс - 3000₽/ч' : 'Luxury - 3000₽/h' },
-            ]}
-            required
-          />
-        </div>
-
-        <div className={styles.formGroup}>
-          <div style={{ 
-            padding: '16px', 
-            background: 'rgba(198, 168, 91, 0.1)', 
-            border: '1px solid rgba(198, 168, 91, 0.3)',
-            borderRadius: '8px',
-            textAlign: 'center',
-            marginBottom: '8px'
-          }}>
-            <span style={{ color: '#C6A85B', fontSize: '20px', fontWeight: '700' }}>
-              {locale === 'ru' ? 'Примерная стоимость: ' : 'Estimated cost: '}
-              {calculatePrice()}₽
-            </span>
+            <div className={styles.formGroup}>
+              <label className={styles.label}>
+                {maxPassengers
+                  ? (ru ? `Пассажиров (макс. ${maxPassengers})` : `Passengers (max ${maxPassengers})`)
+                  : (ru ? 'Пассажиров (выберите авто)' : 'Passengers (select vehicle)')}
+              </label>
+              <input
+                type="number"
+                name="passengers"
+                value={formData.passengers}
+                onChange={handleChange}
+                min="1"
+                max={maxPassengers ?? 1}
+                disabled={!maxPassengers}
+                className={styles.input}
+                required
+              />
+            </div>
           </div>
-        </div>
 
         <div className={styles.formGroup}>
           <label className={styles.label}>
@@ -280,29 +308,31 @@ export default function HourlyBookingForm() {
             name="notes"
             value={formData.notes}
             onChange={handleChange}
-            placeholder={locale === 'ru' ? 'Дополнительные пожелания...' : 'Additional requests...'}
+            placeholder={ru ? 'Дополнительные пожелания...' : 'Additional requests...'}
             className={styles.textarea}
             rows={3}
           />
         </div>
 
         {status === 'success' && (
-          <motion.p 
+          <motion.p
             className={styles.success}
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
           >
-            {locale === 'ru' ? 'Заявка отправлена! Мы свяжемся с вами для подтверждения.' : 'Request sent! We will contact you for confirmation.'}
+            {ru
+              ? 'Заявка отправлена! Мы свяжемся с вами для подтверждения.'
+              : 'Request sent! We will contact you for confirmation.'}
           </motion.p>
         )}
 
         {status === 'error' && (
-          <motion.p 
+          <motion.p
             className={styles.error}
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
           >
-            {locale === 'ru' ? 'Ошибка отправки. Попробуйте позже.' : 'Submission error. Try later.'}
+            {ru ? 'Ошибка отправки. Попробуйте позже.' : 'Submission error. Try later.'}
           </motion.p>
         )}
 
@@ -313,17 +343,18 @@ export default function HourlyBookingForm() {
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
         >
-          {isSubmitting 
-            ? (locale === 'ru' ? 'Отправка...' : 'Sending...') 
-            : (locale === 'ru' ? 'Забронировать' : 'Book now')}
+          {isSubmitting
+            ? (ru ? 'Отправка...' : 'Sending...')
+            : (ru ? 'Забронировать' : 'Book now')}
         </motion.button>
 
         <p className={styles.notice}>
-          {locale === 'ru' 
-            ? 'Минимальная аренда - 3 часа. Мы свяжемся с вами для уточнения маршрута.'
-            : 'Minimum rental - 3 hours. We will contact you to clarify the route.'}
+          {ru
+            ? 'Минимальная аренда — 3 часа. Мы свяжемся с вами для уточнения маршрута.'
+            : 'Minimum rental — 3 hours. We will contact you to clarify the route.'}
         </p>
       </form>
-    </motion.div>
+      </motion.div>
+    </div>
   );
 }

@@ -1,0 +1,125 @@
+@use '../../styles/scss/variables' as *;
+@use '../../styles/scss/mixins' as *;
+
+.root {
+  position: relative;
+  margin-bottom: $spacing-3xl;
+
+  &.section {
+    margin-bottom: $spacing-xl;
+  }
+
+  &.left {
+    text-align: left;
+  }
+
+  &.center {
+    text-align: center;
+
+    .eyebrow {
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .accentLine {
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .description {
+      margin-left: auto;
+      margin-right: auto;
+    }
+  }
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 16px;
+  border-radius: 999px;
+  background: rgba($accent-gold, 0.12);
+  border: 1px solid rgba($accent-gold, 0.32);
+  color: $accent-gold;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: $spacing-md;
+}
+
+.accentLine {
+  width: 52px;
+  height: 2px;
+  margin-bottom: $spacing-lg;
+  border-radius: 2px;
+  background: linear-gradient(
+    90deg,
+    rgba($accent-gold, 0.15) 0%,
+    $accent-gold 50%,
+    rgba($accent-gold, 0.15) 100%
+  );
+}
+
+.title {
+  font-family: $font-family-display;
+  font-weight: 800;
+  color: $text-primary;
+  letter-spacing: -0.03em;
+  line-height: 1.08;
+  margin: 0;
+
+  &.page {
+    font-size: clamp(30px, 4.2vw, 48px);
+  }
+
+  &.section {
+    font-size: clamp(22px, 2.8vw, 32px);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+}
+
+.description {
+  margin: $spacing-md 0 0;
+  font-size: clamp(15px, 1.8vw, 17px);
+  color: $text-secondary;
+  line-height: 1.65;
+  max-width: 640px;
+}
+
+.root.section .description {
+  font-size: 15px;
+  margin-top: $spacing-sm;
+}
+
+.decor {
+  position: absolute;
+  top: -8px;
+  right: 0;
+  width: 140px;
+  height: 140px;
+  pointer-events: none;
+  opacity: 0.35;
+  background:
+    radial-gradient(circle at 30% 30%, rgba($accent-gold, 0.18) 0%, transparent 55%),
+    repeating-linear-gradient(
+      -45deg,
+      transparent,
+      transparent 8px,
+      rgba($accent-gold, 0.04) 8px,
+      rgba($accent-gold, 0.04) 9px
+    );
+  mask-image: radial-gradient(circle at center, black 20%, transparent 72%);
+
+  .center & {
+    left: 50%;
+    right: auto;
+    transform: translateX(-50%);
+  }
+
+  @include mobile {
+    display: none;
+  }
+}

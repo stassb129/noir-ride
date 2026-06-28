@@ -71,8 +71,11 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           <a href="/admin/bookings" className={styles.navLink}>
             📋 Все заявки
           </a>
-          <a href="/admin/routes" className={styles.navLink}>
-            🚗 Настройка маршрутов
+          <a href="/admin/intercity" className={styles.navLink}>
+            🗺️ Межгород
+          </a>
+          <a href="/admin/fleet" className={styles.navLink}>
+            🚗 Автопарк
           </a>
           <a href="/admin/pricing" className={styles.navLink}>
             💰 Цены

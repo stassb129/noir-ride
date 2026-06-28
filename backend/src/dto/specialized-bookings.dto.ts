@@ -1,4 +1,4 @@
-import { IsString, IsNotEmpty, IsNumber, IsOptional, IsEmail } from 'class-validator';
+import { IsString, IsNotEmpty, IsNumber, IsOptional, IsEmail, IsBoolean, ValidateIf } from 'class-validator';
 
 export class CreateRouteBookingDto {
   @IsString()
@@ -29,9 +29,13 @@ export class CreateRouteBookingDto {
   @IsNotEmpty()
   time: string;
 
+  @IsNumber()
+  @IsOptional()
+  vehicleId?: number;
+
   @IsString()
-  @IsNotEmpty()
-  vehicleClass: string;
+  @IsOptional()
+  vehicleName?: string;
 
   @IsNumber()
   passengers: number;
@@ -75,18 +79,31 @@ export class CreateAirportBookingDto {
   time: string;
 
   @IsString()
+  @IsNotEmpty()
+  flightNumber: string;
+
+  @IsNumber()
   @IsOptional()
-  flightNumber?: string;
+  vehicleId?: number;
 
   @IsString()
-  @IsNotEmpty()
-  vehicleClass: string;
+  @IsOptional()
+  vehicleName?: string;
 
   @IsNumber()
   passengers: number;
 
   @IsNumber()
   luggage: number;
+
+  @IsBoolean()
+  @IsOptional()
+  meetSign?: boolean;
+
+  @ValidateIf((o) => o.meetSign === true)
+  @IsString()
+  @IsNotEmpty()
+  meetSignText?: string;
 
   @IsString()
   @IsOptional()
@@ -121,9 +138,13 @@ export class CreateHourlyBookingDto {
   @IsNumber()
   hours: number;
 
+  @IsNumber()
+  @IsOptional()
+  vehicleId?: number;
+
   @IsString()
-  @IsNotEmpty()
-  vehicleClass: string;
+  @IsOptional()
+  vehicleName?: string;
 
   @IsNumber()
   passengers: number;

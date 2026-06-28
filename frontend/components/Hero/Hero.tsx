@@ -70,15 +70,15 @@ export default function Hero() {
         >
           <motion.div className={styles.content} variants={fadeInUp}>
             <h1 className={styles.headline}>
-              {locale === 'ru' 
-                ? 'Премиум-поездки без компромиссов'
-                : 'Premium rides without compromise'}
+              {locale === 'ru'
+                ? 'Премиальный трансфер без компромиссов'
+                : 'Premium transfer, uncompromised'}
             </h1>
-            
+
             <p className={styles.subtext}>
-              {locale === 'ru' 
-                ? 'Москва — Санкт-Петербург от 10,000₽'
-                : 'Moscow — Saint Petersburg from 10,000₽'}
+              {locale === 'ru'
+                ? 'Межгород · аэропорты · почасовая — выберите автомобиль из парка'
+                : 'Intercity · airports · hourly — choose your car from the fleet'}
             </p>
           </motion.div>
 

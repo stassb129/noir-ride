@@ -1,0 +1,103 @@
+@use '../../styles/scss/variables' as *;
+@use '../../styles/scss/mixins' as *;
+
+.carousel {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+}
+
+.frame {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  border-radius: $radius-lg;
+  background: $bg-primary;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center;
+  display: block;
+}
+
+.placeholder {
+  font-size: 64px;
+  opacity: 0.25;
+}
+
+.navBtn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: none;
+  background: rgba($accent-gold, 0.9);
+  color: $bg-primary;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: $transition;
+  z-index: 2;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+
+  &:hover {
+    background: $accent-gold;
+    transform: translateY(-50%) scale(1.06);
+  }
+}
+
+.navPrev {
+  left: $spacing-md;
+}
+
+.navNext {
+  right: $spacing-md;
+}
+
+.thumbs {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+  padding: 0 $spacing-xs;
+}
+
+.thumb {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  padding: 0;
+  overflow: hidden;
+  cursor: pointer;
+  background: $bg-primary;
+  transition: $transition;
+  flex-shrink: 0;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  &:hover {
+    border-color: rgba($accent-gold, 0.5);
+  }
+}
+
+.thumbActive {
+  border-color: $accent-gold;
+  box-shadow: 0 0 0 2px rgba($accent-gold, 0.25);
+}

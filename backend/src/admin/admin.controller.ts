@@ -109,4 +109,46 @@ export class AdminController {
   async deleteIntercityPrice(@Param('id') id: string) {
     return this.adminService.deleteIntercityPrice(id);
   }
+
+  // Fleet Management
+  @Get('vehicles')
+  async getAllVehicles() {
+    return this.adminService.getAllVehicles();
+  }
+
+  @Post('vehicles')
+  async createVehicle(@Body() data: any) {
+    return this.adminService.createVehicle(data);
+  }
+
+  @Patch('vehicles/:id')
+  async updateVehicle(@Param('id') id: string, @Body() data: any) {
+    return this.adminService.updateVehicle(Number(id), data);
+  }
+
+  @Delete('vehicles/:id')
+  async deleteVehicle(@Param('id') id: string) {
+    return this.adminService.deleteVehicle(Number(id));
+  }
+
+  // InterCity Destinations Management
+  @Get('intercity')
+  async getAllDestinations() {
+    return this.adminService.getAllDestinations();
+  }
+
+  @Post('intercity')
+  async createDestination(@Body() data: any) {
+    return this.adminService.createDestination(data);
+  }
+
+  @Patch('intercity/:id')
+  async updateDestination(@Param('id') id: string, @Body() data: any) {
+    return this.adminService.updateDestination(Number(id), data);
+  }
+
+  @Delete('intercity/:id')
+  async deleteDestination(@Param('id') id: string) {
+    return this.adminService.deleteDestination(Number(id));
+  }
 }

@@ -1,0 +1,304 @@
+@use '../../styles/scss/variables' as *;
+@use '../../styles/scss/mixins' as *;
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  padding: $spacing-lg;
+  backdrop-filter: blur(6px);
+}
+
+/* ─── Modal shell ──────────────────────────────── */
+.modal {
+  background: $bg-secondary;
+  border: 1px solid $border-subtle;
+  border-radius: $radius-xl;
+  width: 80vw;
+  max-width: 1280px;
+  max-height: 90vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+
+  @include mobile {
+    width: 100%;
+    max-height: 95vh;
+  }
+}
+
+.closeBtn {
+  position: absolute;
+  top: $spacing-md;
+  right: $spacing-md;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba($bg-primary, 0.8);
+  border: 1px solid $border-subtle;
+  color: $text-primary;
+  font-size: 18px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: $transition;
+  z-index: 10;
+  backdrop-filter: blur(4px);
+
+  &:hover {
+    background: rgba($accent-gold, 0.15);
+    border-color: rgba($accent-gold, 0.4);
+  }
+}
+
+/* ─── Two-column layout ────────────────────────── */
+.layout {
+  display: grid;
+  grid-template-columns: minmax(300px, 42%) 1fr;
+  min-height: 0;
+  flex: 1;
+  overflow: hidden;
+  align-items: stretch;
+
+  @media (max-width: 720px) {
+    grid-template-columns: 1fr;
+    overflow-y: auto;
+  }
+}
+
+/* ─── Left: carousel column ────────────────────── */
+.photoCol {
+  background: $bg-primary;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: $spacing-2xl $spacing-xl;
+  border-right: 1px solid $border-subtle;
+
+  @media (max-width: 720px) {
+    padding: $spacing-lg;
+    border-right: none;
+    border-bottom: 1px solid $border-subtle;
+  }
+}
+
+/* ─── Right column wrapper ─────────────────────── */
+.infoCol {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* ─── Scrollable content ───────────────────────── */
+.contentCol {
+  flex: 1;
+  overflow-y: auto;
+  padding: $spacing-2xl $spacing-2xl $spacing-lg;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-lg;
+
+  scrollbar-width: thin;
+  scrollbar-color: rgba($accent-gold, 0.3) transparent;
+
+  &::-webkit-scrollbar {
+    width: 4px;
+  }
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: rgba($accent-gold, 0.3);
+    border-radius: 2px;
+  }
+
+  @media (max-width: 720px) {
+    padding: $spacing-lg;
+    overflow: visible;
+  }
+}
+
+/* ─── Footer with CTA ──────────────────────────── */
+.footer {
+  flex-shrink: 0;
+  padding: $spacing-lg $spacing-2xl $spacing-2xl;
+  border-top: 1px solid $border-subtle;
+  background: $bg-secondary;
+
+  @media (max-width: 720px) {
+    padding: $spacing-md $spacing-lg $spacing-lg;
+  }
+}
+
+/* ─── Header ───────────────────────────────────── */
+.category {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: $accent-gold;
+}
+
+.title {
+  font-family: $font-family-display;
+  font-size: clamp(20px, 2.5vw, 28px);
+  font-weight: 800;
+  color: $text-primary;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+}
+
+/* ─── Prices block ─────────────────────────────── */
+.priceBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.mainPrice {
+  font-size: 22px;
+  font-weight: 700;
+  color: $accent-gold;
+}
+
+.priceSuffix {
+  font-size: 14px;
+  font-weight: 400;
+  color: $text-muted;
+  margin-left: 2px;
+}
+
+/* ─── Description ──────────────────────────────── */
+.descriptionBlock {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-sm;
+}
+
+.descriptionTitle {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: $accent-gold;
+}
+
+.descriptionText {
+  font-size: 14px;
+  line-height: 1.75;
+  color: $text-secondary;
+}
+
+/* ─── Specs list ───────────────────────────────── */
+.specsBlock {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-sm;
+}
+
+.specsTitle {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: $accent-gold;
+}
+
+.specsList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  li {
+    font-size: 14px;
+    color: $text-secondary;
+    padding-left: 16px;
+    position: relative;
+    line-height: 1.4;
+
+    &::before {
+      content: '•';
+      position: absolute;
+      left: 0;
+      color: $accent-gold;
+    }
+  }
+}
+
+/* ─── All prices grid ──────────────────────────── */
+.pricesGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: $spacing-sm;
+
+  @include mobile {
+    grid-template-columns: 1fr;
+  }
+}
+
+.priceGridItem {
+  text-align: center;
+  padding: $spacing-md $spacing-sm;
+  border: 1px solid rgba($accent-gold, 0.18);
+  border-radius: $radius-main;
+  background: rgba($accent-gold, 0.04);
+}
+
+.priceGridLabel {
+  display: block;
+  font-size: 10px;
+  font-weight: 600;
+  color: $text-muted;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  margin-bottom: 6px;
+}
+
+.priceGridValue {
+  display: block;
+  font-size: 20px;
+  font-weight: 700;
+  color: $accent-gold;
+}
+
+.priceGridSuffix {
+  font-size: 12px;
+  font-weight: 400;
+  color: $text-muted;
+}
+
+/* ─── CTA button ───────────────────────────────── */
+.selectBtn {
+  width: 100%;
+  min-height: 56px;
+  padding: $spacing-md $spacing-xl;
+  background: $accent-gold;
+  color: $bg-primary;
+  font-size: 16px;
+  font-weight: 700;
+  border: none;
+  border-radius: $radius-main;
+  cursor: pointer;
+  transition: $transition;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  box-sizing: border-box;
+
+  &:hover {
+    filter: brightness(1.08);
+    box-shadow: 0 8px 24px rgba($accent-gold, 0.35);
+  }
+}

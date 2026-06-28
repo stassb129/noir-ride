@@ -3,8 +3,9 @@
 import { useLocale } from 'next-intl';
 import Link from 'next/link';
 import { motion, type Variants } from 'framer-motion';
-import { MapPin, Clock, Car } from 'lucide-react';
+import { MapPin, Clock, Car, LayoutGrid } from 'lucide-react';
 import { EASE_OUT_EXPO } from '@/lib/motion-easing';
+import SectionHeading from '@/components/SectionHeading/SectionHeading';
 import styles from './Services.module.scss';
 
 const cardVariants: Variants = {
@@ -32,7 +33,7 @@ export default function Services() {
     {
       id: 'intercity',
       icon: MapPin,
-      title: locale === 'ru' ? 'Междугород' : 'Intercity rides',
+      title: locale === 'ru' ? 'Межгород' : 'Intercity rides',
       description: locale === 'ru' 
         ? 'Комфортные поездки между городами. Москва — Санкт-Петербург и другие направления.'
         : 'Comfortable intercity trips. Moscow — Saint Petersburg and other destinations.',
@@ -61,7 +62,24 @@ export default function Services() {
   return (
     <section className={styles.services}>
       <div className={styles.container}>
-        <motion.div 
+        <SectionHeading
+          eyebrow={locale === 'ru' ? 'Услуги' : 'Services'}
+          title={
+            locale === 'ru'
+              ? 'Аренда авто с водителем в Москве и области'
+              : 'Chauffeured car rental in Moscow & region'
+          }
+          description={
+            locale === 'ru'
+              ? 'Межгород, аэропорты и почасовая — выберите формат поездки'
+              : 'Intercity, airport & hourly — choose the format that fits'
+          }
+          icon={LayoutGrid}
+          align="center"
+          animate
+        />
+
+        <motion.div
           className={styles.grid}
           variants={staggerContainer}
           initial="initial"

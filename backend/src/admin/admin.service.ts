@@ -6,6 +6,8 @@ import { HourlyPricing } from '../entities/hourly-pricing.entity';
 import { AirportPricing } from '../entities/airport-pricing.entity';
 import { IntercityPricing } from '../entities/intercity-pricing.entity';
 import { Route } from '../entities/route.entity';
+import { Vehicle } from '../entities/vehicle.entity';
+import { InterCityDestination } from '../entities/intercity-destination.entity';
 
 @Injectable()
 export class AdminService {
@@ -24,6 +26,12 @@ export class AdminService {
     
     @InjectRepository(IntercityPricing)
     private intercityRepo: Repository<IntercityPricing>,
+
+    @InjectRepository(Vehicle)
+    private vehicleRepo: Repository<Vehicle>,
+
+    @InjectRepository(InterCityDestination)
+    private destinationRepo: Repository<InterCityDestination>,
   ) {}
 
   // Bookings Management
@@ -119,6 +127,44 @@ export class AdminService {
   async deleteIntercityPrice(id: string) {
     await this.intercityRepo.delete(id);
     return { message: 'Intercity pricing deleted successfully' };
+  }
+
+  // Fleet Management
+  async getAllVehicles() {
+    return this.vehicleRepo.find({ order: { sortOrder: 'ASC', id: 'ASC' } });
+  }
+
+  async createVehicle(data: Partial<Vehicle>) {
+    return this.vehicleRepo.save(this.vehicleRepo.create(data));
+  }
+
+  async updateVehicle(id: number, data: Partial<Vehicle>) {
+    await this.vehicleRepo.update(id, data);
+    return this.vehicleRepo.findOne({ where: { id } });
+  }
+
+  async deleteVehicle(id: number) {
+    await this.vehicleRepo.delete(id);
+    return { message: 'Vehicle deleted' };
+  }
+
+  // InterCity Destinations Management
+  async getAllDestinations() {
+    return this.destinationRepo.find({ order: { sortOrder: 'ASC', id: 'ASC' } });
+  }
+
+  async createDestination(data: Partial<InterCityDestination>) {
+    return this.destinationRepo.save(this.destinationRepo.create(data));
+  }
+
+  async updateDestination(id: number, data: Partial<InterCityDestination>) {
+    await this.destinationRepo.update(id, data);
+    return this.destinationRepo.findOne({ where: { id } });
+  }
+
+  async deleteDestination(id: number) {
+    await this.destinationRepo.delete(id);
+    return { message: 'Destination deleted' };
   }
 
   // Statistics

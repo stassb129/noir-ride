@@ -8,6 +8,8 @@ import { HourlyPricing } from '../entities/hourly-pricing.entity';
 import { AirportPricing } from '../entities/airport-pricing.entity';
 import { IntercityPricing } from '../entities/intercity-pricing.entity';
 import { AdminUser } from '../entities/admin-user.entity';
+import { Vehicle } from '../entities/vehicle.entity';
+import { InterCityDestination } from '../entities/intercity-destination.entity';
 import { AuthModule } from '../auth/auth.module';
 
 @Module({
@@ -18,7 +20,9 @@ import { AuthModule } from '../auth/auth.module';
       HourlyPricing,
       AirportPricing,
       IntercityPricing,
-      AdminUser, // ДОБАВЛЕНО - для JWT Strategy
+      AdminUser,
+      Vehicle,
+      InterCityDestination,
     ]),
     AuthModule,
   ],

@@ -14,6 +14,8 @@ import { IntercityPricing } from './entities/intercity-pricing.entity';
 import { AdminUser } from './entities/admin-user.entity';
 import { Contact } from './entities/contact.entity';
 import { RouteBooking, AirportBooking, HourlyBooking } from './entities/specialized-bookings.entity';
+import { Vehicle } from './entities/vehicle.entity';
+import { InterCityDestination } from './entities/intercity-destination.entity';
 
 // Modules
 import { PricingModule } from './pricing/pricing.module';
@@ -21,6 +23,8 @@ import { BookingModule } from './booking/booking.module';
 import { AuthModule } from './auth/auth.module';
 import { AdminModule } from './admin/admin.module';
 import { ContactsModule } from './contacts/contacts.module';
+import { VehiclesModule } from './vehicles/vehicles.module';
+import { InterCityModule } from './intercity/intercity.module';
 
 @Module({
   imports: [
@@ -45,6 +49,8 @@ import { ContactsModule } from './contacts/contacts.module';
         RouteBooking,
         AirportBooking,
         HourlyBooking,
+        Vehicle,
+        InterCityDestination,
       ],
       // Dev: auto-create/update tables. Prod (e.g. Render): off unless DB_SYNC=true for first-time schema.
       synchronize:
@@ -58,6 +64,8 @@ import { ContactsModule } from './contacts/contacts.module';
     AuthModule,
     AdminModule,
     ContactsModule,
+    VehiclesModule,
+    InterCityModule,
   ],
   controllers: [AppController],
   providers: [AppService],

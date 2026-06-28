@@ -1,9 +1,10 @@
 'use client';
 
 import { motion, type Variants } from 'framer-motion';
-import { Shield, Award, Headphones, CreditCard, MapPin, Clock } from 'lucide-react';
+import { Shield, Award, Headphones, CreditCard, MapPin, Clock, Sparkles } from 'lucide-react';
 import { useLocale } from 'next-intl';
 import { EASE_OUT_EXPO } from '@/lib/motion-easing';
+import SectionHeading from '@/components/SectionHeading/SectionHeading';
 import styles from './Benefits.module.scss';
 
 const cardVariants: Variants = {
@@ -75,22 +76,18 @@ export default function Benefits() {
   return (
     <section className={styles.benefits}>
       <div className={styles.container}>
-        <motion.div
-          className={styles.header}
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, ease: EASE_OUT_EXPO }}
-        >
-          <h2 className={styles.title}>
-            {locale === 'ru' ? 'Почему выбирают нас' : 'Why choose us'}
-          </h2>
-          <p className={styles.subtitle}>
-            {locale === 'ru' 
+        <SectionHeading
+          eyebrow={locale === 'ru' ? 'Преимущества' : 'Benefits'}
+          title={locale === 'ru' ? 'Почему выбирают нас' : 'Why choose us'}
+          description={
+            locale === 'ru'
               ? 'Премиальный сервис с вниманием к каждой детали'
-              : 'Premium service with attention to every detail'}
-          </p>
-        </motion.div>
+              : 'Premium service with attention to every detail'
+          }
+          icon={Sparkles}
+          align="center"
+          animate
+        />
 
         <motion.div 
           className={styles.grid}

@@ -41,11 +41,13 @@
 
 .boxed {
   .trigger {
-    min-height: 38px;
+    height: 48px;
+    min-height: 48px;
     border: 1px solid $border-subtle;
-    border-radius: $radius-sm;
-    padding: 8px 10px;
+    border-radius: $radius-main;
+    padding: 0 $spacing-md;
     background: $bg-primary;
+    font-size: 15px;
 
     &:focus-visible {
       outline: none;

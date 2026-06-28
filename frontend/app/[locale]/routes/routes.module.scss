@@ -3,433 +3,248 @@
 
 .routesPage {
   min-height: 100vh;
-  padding: 140px 0 $spacing-2xl;
-  background: $bg-primary;
+  padding: 120px 0 $spacing-3xl;
+
+  @include mobile {
+    padding: 80px 0 $spacing-2xl;
+  }
 }
 
 .container {
-  max-width: $container-max;
+  max-width: 1100px;
   margin: 0 auto;
-  padding: 0 $spacing-lg;
+  padding: 0 $spacing-xl;
+
+  @include mobile {
+    padding: 0 $spacing-md;
+  }
 }
 
 .heading {
   font-family: $font-family-display;
-  font-size: clamp(48px, 6vw, 64px);
+  font-size: clamp(36px, 5vw, 64px);
   font-weight: 800;
-  margin-bottom: $spacing-lg;
   color: $text-primary;
   letter-spacing: -0.03em;
-  text-align: center;
+  line-height: 1.05;
+  margin-bottom: $spacing-lg;
 }
 
 .description {
-  font-size: 18px;
+  font-size: clamp(15px, 2vw, 18px);
   color: $text-secondary;
-  text-align: center;
-  max-width: 700px;
-  margin: 0 auto $spacing-2xl;
-  line-height: 1.6;
-}
-
-.availabilitySection {
-  margin-top: $spacing-3xl;
-  padding-top: $spacing-3xl;
-  border-top: 1px solid $border-subtle;
-}
-
-.sectionTitle {
-  font-family: $font-family-display;
-  font-size: 32px;
-  font-weight: 700;
-  color: $text-primary;
-  margin-bottom: $spacing-xl;
-}
-
-.dateSelector {
-  margin-bottom: $spacing-2xl;
-}
-
-.dateLabel {
-  display: block;
-  font-size: 13px;
-  color: $text-secondary;
-  margin-bottom: $spacing-xs;
-  font-weight: 500;
-}
-
-.dateInput {
-  height: 56px;
-  background: $bg-secondary;
-  border: 1px solid $border-subtle;
-  border-radius: $radius-main;
-  padding: 0 $spacing-sm;
-  color: $text-primary;
-  font-size: 15px;
-  transition: $transition;
-  outline: none;
-  max-width: 240px;
-
-  &:focus {
-    border-color: $accent-gold;
-  }
-
-  &[type='date'] {
-    color-scheme: dark;
-  }
-
-  &[type='date']::-webkit-calendar-picker-indicator {
-    filter: invert(74%) sepia(18%) saturate(915%) hue-rotate(8deg) brightness(89%) contrast(88%);
-    opacity: 0.95;
-    cursor: pointer;
-  }
-}
-
-.routesList {
-  display: flex;
-  flex-direction: column;
-  gap: $spacing-2xl;
+  line-height: 1.65;
+  max-width: 640px;
   margin-bottom: $spacing-3xl;
 }
 
-.route {
-  border-top: 1px solid $border-subtle;
-  padding-top: $spacing-2xl;
-}
-
-.routeHeader {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: $spacing-xl;
-  flex-wrap: wrap;
-  gap: $spacing-md;
-
-  @include mobile {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-}
-
-.routeDirection {
-  display: flex;
-  align-items: center;
-  gap: $spacing-md;
-}
-
-.routeCity {
+/* ─── Section titles ───────────────────────────── */
+.sectionTitle {
   font-family: $font-family-display;
-  font-size: clamp(28px, 4vw, 36px);
+  font-size: clamp(22px, 3vw, 32px);
   font-weight: 700;
   color: $text-primary;
   letter-spacing: -0.02em;
+  margin-bottom: $spacing-xl;
 }
 
-.routeArrow {
-  color: $text-muted;
-  font-size: 24px;
+/* ─── Destinations section ─────────────────────── */
+.destinationsSection {
+  margin-bottom: $spacing-3xl;
 }
 
-.routePrice {
-  font-size: 20px;
-  color: $accent-gold;
-  font-weight: 600;
-}
-
-.seatsInfo {
+.fromSelector {
   display: flex;
   align-items: center;
-  gap: $spacing-lg;
-  margin-bottom: $spacing-lg;
+  gap: $spacing-md;
+  margin-bottom: $spacing-xl;
   flex-wrap: wrap;
-  transition: opacity 0.3s ease;
+}
 
-  &.loading {
-    opacity: 0.5;
-    pointer-events: none;
+.fromLabel {
+  font-size: 14px;
+  color: $text-muted;
+  flex-shrink: 0;
+}
+
+.fromTabs {
+  display: flex;
+  gap: $spacing-sm;
+  flex-wrap: wrap;
+}
+
+.fromTab {
+  padding: 8px 18px;
+  border: 1px solid $border-subtle;
+  border-radius: 999px;
+  background: transparent;
+  color: $text-secondary;
+  font-size: 14px;
+  cursor: pointer;
+  transition: $transition;
+
+  &:hover {
+    border-color: rgba($accent-gold, 0.5);
+    color: $text-primary;
   }
 }
 
-.seatIndicators {
-  display: flex;
-  gap: $spacing-xs;
-}
-
-.seatDot {
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  transition: $transition;
-}
-
-.seatAvailable {
-  background: transparent;
-  border: 2px solid $accent-gold;
-}
-
-.seatTaken {
+.fromTabActive {
   background: $accent-gold;
-  border: 2px solid $accent-gold;
+  border-color: $accent-gold;
+  color: $bg-primary;
+  font-weight: 600;
 }
 
-.seatStatus {
-  color: $text-secondary;
-  font-size: 15px;
-}
-
-.loading,
-.loadingSeats,
-.noRoutes {
-  text-align: center;
-  font-size: 18px;
-  color: $text-secondary;
-  padding: $spacing-xl 0;
-}
-
-.features {
+/* ─── Destination cards grid ───────────────────── */
+.destinationGrid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: $spacing-xl;
-  margin-top: $spacing-2xl;
-  margin-bottom: $spacing-3xl;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: $spacing-lg;
+  align-items: stretch;
 
   @include mobile {
     grid-template-columns: 1fr;
-    gap: $spacing-lg;
-  }
-
-  .feature {
-    @include glass-effect(0.15, 16px);
-    padding: $spacing-xl;
-    border-radius: $radius-lg;
-    text-align: center;
-
-    h3 {
-      font-family: $font-family-display;
-      font-size: 20px;
-      font-weight: 700;
-      color: $text-primary;
-      margin-bottom: $spacing-xs;
-    }
-
-    p {
-      font-size: 15px;
-      color: $text-secondary;
-      line-height: 1.5;
-    }
-  }
-
-  .featureIcon {
-    width: 40px;
-    height: 40px;
-    color: $accent-gold;
-    margin: 0 auto $spacing-md;
-    stroke-width: 1.5;
   }
 }
 
-.selectButton {
-  padding: 12px 32px;
-  background: $accent-gold;
-  color: $bg-primary;
-  font-weight: 600;
-  border-radius: $radius-main;
-  transition: $transition;
-  border: none;
-  cursor: pointer;
-  margin-top: $spacing-md;
-
-  @include mobile {
-    width: 100%;
-  }
-
-  &:hover:not(:disabled) {
-    background: $accent-gold-hover;
-    box-shadow: 0 0 20px rgba($accent-gold, 0.3);
-  }
-
-  &:disabled {
-    background: $border-subtle;
-    color: $text-muted;
-    cursor: not-allowed;
-
-    &:hover {
-      box-shadow: none;
-    }
-  }
-}
-
-.bookingSection {
-  margin-top: $spacing-3xl;
-  padding-top: $spacing-3xl;
-  border-top: 1px solid $border-subtle;
-  scroll-margin-top: 100px;
-}
-
-.loading,
-.loadingSeats,
-.noRoutes {
-  text-align: center;
-  font-size: 18px;
-  color: $text-secondary;
-  padding: $spacing-xl 0;
-}
-
-.dateSelector {
-  margin-bottom: $spacing-2xl;
-}
-
-.dateLabel {
-  display: block;
-  font-size: 13px;
-  color: $text-secondary;
-  margin-bottom: $spacing-xs;
-  font-weight: 500;
-}
-
-.dateInput {
-  height: 56px;
+.destinationCard {
   background: $bg-secondary;
   border: 1px solid $border-subtle;
-  border-radius: $radius-main;
-  padding: 0 $spacing-sm;
-  color: $text-primary;
-  font-size: 15px;
-  transition: $transition;
-  outline: none;
-  max-width: 240px;
-
-  &:focus {
-    border-color: $accent-gold;
-  }
-
-  &[type='date'] {
-    color-scheme: dark;
-  }
-
-  &[type='date']::-webkit-calendar-picker-indicator {
-    filter: invert(74%) sepia(18%) saturate(915%) hue-rotate(8deg) brightness(89%) contrast(88%);
-    opacity: 0.95;
-    cursor: pointer;
-  }
-}
-
-.routesList {
+  border-radius: $radius-xl;
+  padding: $spacing-xl;
   display: flex;
   flex-direction: column;
-  gap: $spacing-2xl;
+  gap: $spacing-sm;
+  height: 100%;
+  min-height: 220px;
+  transition: $transition;
+  cursor: default;
+
+  &:hover {
+    border-color: rgba($accent-gold, 0.35);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+  }
 }
 
-.route {
-  border-top: 1px solid $border-subtle;
-  padding-top: $spacing-2xl;
+.destRoute {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+  flex-wrap: wrap;
 }
 
-.routeHeader {
+.destCity {
+  font-family: $font-family-display;
+  font-size: 20px;
+  font-weight: 700;
+  color: $text-primary;
+  line-height: 1.2;
+}
+
+.destArrow {
+  color: $accent-gold;
+  font-size: 20px;
+}
+
+.destMeta {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: $spacing-xl;
-  flex-wrap: wrap;
-  gap: $spacing-md;
-
-  @include mobile {
-    flex-direction: column;
-    align-items: flex-start;
-  }
+  gap: $spacing-sm;
+  margin-top: $spacing-xs;
 }
 
-.routeDirection {
-  display: flex;
-  align-items: center;
-  gap: $spacing-md;
-}
-
-.routeCity {
-  font-family: $font-family-display;
-  font-size: clamp(28px, 4vw, 36px);
-  font-weight: 700;
-  color: $text-primary;
-  letter-spacing: -0.02em;
-}
-
-.routeArrow {
+.destDistance {
+  font-size: 13px;
   color: $text-muted;
-  font-size: 24px;
 }
 
-.routePrice {
+.destPrice {
   font-size: 20px;
+  font-weight: 700;
   color: $accent-gold;
-  font-weight: 600;
 }
 
-.seatsInfo {
-  display: flex;
-  align-items: center;
-  gap: $spacing-lg;
-  margin-bottom: $spacing-lg;
-  flex-wrap: wrap;
-  transition: opacity 0.3s ease;
-
-  &.loading {
-    opacity: 0.5;
-    pointer-events: none;
-  }
+.destNote {
+  font-size: 12px;
+  color: $text-muted;
+  line-height: 1.4;
+  flex: 1;
 }
 
-
-.seatIndicators {
-  display: flex;
-  gap: $spacing-xs;
-}
-
-.seatDot {
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  transition: $transition;
-}
-
-.seatAvailable {
+.destBookBtn {
+  margin-top: auto;
+  width: 100%;
+  height: 44px;
   background: transparent;
-  border: 2px solid $accent-gold;
-}
-
-.seatTaken {
-  background: $accent-gold;
-  border: 2px solid $accent-gold;
-}
-
-.seatStatus {
-  color: $text-secondary;
-  font-size: 15px;
-}
-
-.selectButton {
-  padding: 12px 32px;
-  background: $accent-gold;
-  color: $bg-primary;
-  font-weight: 600;
+  border: 1px solid rgba($accent-gold, 0.5);
   border-radius: $radius-main;
+  color: $accent-gold;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
   transition: $transition;
-
-  @include mobile {
-    width: 100%;
-  }
 
   &:hover {
-    background: $accent-gold-hover;
-    box-shadow: 0 0 20px rgba($accent-gold, 0.3);
+    background: $accent-gold;
+    color: $bg-primary;
   }
+}
 
-  &:disabled {
-    background: $border-subtle;
-    color: $text-muted;
-    cursor: not-allowed;
+.destBookBtnCustom {
+  border-style: dashed;
+  opacity: 0.85;
+}
 
-    &:hover {
-      box-shadow: none;
-    }
+/* ─── Custom city card ─────────────────────────── */
+.destinationCardCustom {
+  border-style: dashed;
+  border-color: rgba($accent-gold, 0.25);
+  background: rgba($accent-gold, 0.02);
+  position: relative;
+  overflow: hidden;
+
+  &:hover {
+    border-color: rgba($accent-gold, 0.5);
+    border-style: solid;
   }
+}
+
+.customCardIcon {
+  position: absolute;
+  top: $spacing-md;
+  right: $spacing-md;
+  font-size: 18px;
+  color: rgba($accent-gold, 0.4);
+  line-height: 1;
+}
+
+.destCityCustom {
+  color: $text-muted;
+  font-style: italic;
+}
+
+/* ─── Booking section ──────────────────────────── */
+.bookingSection {
+  scroll-margin-top: 100px;
+  padding-top: $spacing-xl;
+  border-top: 1px solid $border-subtle;
+}
+
+.bookingNote {
+  font-size: 15px;
+  color: $text-secondary;
+  line-height: 1.6;
+  max-width: 680px;
+  margin-bottom: $spacing-2xl;
+}
+
+/* ─── Utils ────────────────────────────────────── */
+.loadingText,
+.emptyText {
+  text-align: center;
+  padding: $spacing-3xl;
+  color: $text-secondary;
+  font-size: 16px;
 }

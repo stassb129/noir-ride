@@ -1,62 +1,62 @@
 'use client';
 
+import { Suspense, useState, useEffect, useRef } from 'react';
 import { useLocale } from 'next-intl';
-import { useState, useEffect } from 'react';
-import { apiClient, AirportPricing } from '@/lib/api/client';
+import { useSearchParams } from 'next/navigation';
 import AirportBookingForm from '@/components/AirportBookingForm/AirportBookingForm';
-import { Plane, UserCheck, Tag } from 'lucide-react';
+import SectionHeading from '@/components/SectionHeading/SectionHeading';
+import { getVehicleIdFromSearch } from '@/lib/booking-vehicle-prefill';
+import { Plane, UserCheck, Tag, Building2, CalendarCheck } from 'lucide-react';
 import styles from './airport.module.scss';
 
 export default function AirportPage() {
+  return (
+    <Suspense fallback={null}>
+      <AirportPageContent />
+    </Suspense>
+  );
+}
+
+const AIRPORTS = [
+  { code: 'SVO', name: 'Sheremetyevo', nameRu: 'Шереметьево' },
+  { code: 'DME', name: 'Domodedovo', nameRu: 'Домодедово' },
+  { code: 'VKO', name: 'Vnukovo', nameRu: 'Внуково' },
+] as const;
+
+function AirportPageContent() {
   const locale = useLocale();
-  const [pricing, setPricing] = useState<AirportPricing[]>([]);
-  const [loading, setLoading] = useState(true);
+  const searchParams = useSearchParams();
+  const initialVehicleId = getVehicleIdFromSearch(searchParams);
+  const bookingRef = useRef<HTMLDivElement>(null);
   const [selectedAirport, setSelectedAirport] = useState('SVO');
 
   useEffect(() => {
-    const fetchPricing = async () => {
-      try {
-        const data = await apiClient.getAirportPricing(selectedAirport);
-        setPricing(data);
-      } catch (error) {
-        console.error('Error fetching airport pricing:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
+    if (!initialVehicleId) return;
+    const timer = setTimeout(() => {
+      bookingRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [initialVehicleId]);
 
-    fetchPricing();
-  }, [selectedAirport]);
-
-  const airports = [
-    { code: 'SVO', name: 'Sheremetyevo', nameRu: 'Шереметьево' },
-    { code: 'DME', name: 'Domodedovo', nameRu: 'Домодедово' },
-    { code: 'VKO', name: 'Vnukovo', nameRu: 'Внуково' },
-  ];
-
-  // Group pricing by direction
-  const toAirport = pricing.filter(p => p.direction === 'to_airport');
-  const fromAirport = pricing.filter(p => p.direction === 'from_airport');
-
-  const scrollToBooking = () => {
-    const bookingSection = document.getElementById('booking-form');
-    if (bookingSection) {
-      bookingSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
-  };
+  const selectedAirportInfo = AIRPORTS.find((a) => a.code === selectedAirport);
+  const ru = locale === 'ru';
 
   return (
     <div className={styles.airportPage}>
       <div className={styles.container}>
-        <h1 className={styles.heading}>
-          {locale === 'ru' ? 'Трансферы в аэропорт' : 'Airport transfers'}
-        </h1>
-
-        <p className={styles.description}>
-          {locale === 'ru' 
-            ? 'Комфортные трансферы в аэропорты Москвы. Отслеживание рейса, встреча с табличкой, помощь с багажом.'
-            : 'Comfortable transfers to Moscow airports. Flight tracking, meet & greet service, luggage assistance.'}
-        </p>
+        <SectionHeading
+          as="h1"
+          align="center"
+          eyebrow={ru ? 'Аэропорт' : 'Airport'}
+          title={ru ? 'Трансферы в аэропорт' : 'Airport transfers'}
+          description={
+            ru
+              ? 'Комфортные трансферы в аэропорты Москвы. Отслеживание рейса, встреча с табличкой, помощь с багажом.'
+              : 'Comfortable transfers to Moscow airports. Flight tracking, meet & greet service, luggage assistance.'
+          }
+          icon={Plane}
+          animate
+        />
 
         <div className={styles.features}>
           <div className={styles.feature}>
@@ -77,13 +77,25 @@ export default function AirportPage() {
         </div>
 
         <div className={styles.pricingSection}>
-          <h2 className={styles.sectionTitle}>
-            {locale === 'ru' ? 'Выберите аэропорт для просмотра цен' : 'Select airport to view pricing'}
-          </h2>
+          <SectionHeading
+            as="h2"
+            size="section"
+            align="center"
+            eyebrow={ru ? 'Выбор' : 'Select'}
+            title={ru ? 'Выберите аэропорт' : 'Select airport'}
+            description={
+              ru
+                ? 'Автомобиль и оформление заказа — в форме бронирования ниже'
+                : 'Choose your vehicle and complete the booking form below'
+            }
+            icon={Building2}
+            showDecor={false}
+          />
           <div className={styles.airportGrid}>
-            {airports.map((airport) => (
+            {AIRPORTS.map((airport) => (
               <button
                 key={airport.code}
+                type="button"
                 className={`${styles.airportCard} ${selectedAirport === airport.code ? styles.active : ''}`}
                 onClick={() => setSelectedAirport(airport.code)}
               >
@@ -94,77 +106,31 @@ export default function AirportPage() {
               </button>
             ))}
           </div>
-
-          {loading ? (
-            <p className={styles.loading}>
-              {locale === 'ru' ? 'Загрузка...' : 'Loading...'}
-            </p>
-          ) : (
-            <>
-              {toAirport.length > 0 && (
-                <div className={styles.priceSection}>
-                  <h3 className={styles.priceSectionTitle}>
-                    {locale === 'ru' ? 'Москва → Аэропорт' : 'Moscow → Airport'}
-                  </h3>
-                  <div className={styles.pricingList}>
-                    {toAirport.map((item) => (
-                      <div key={item.id} className={styles.pricingItem}>
-                        <div className={styles.pricingInfo}>
-                          <div className={styles.pricingType}>{item.vehicleName}</div>
-                        </div>
-                        <div className={styles.pricingActions}>
-                          <div className={styles.pricingPrice}>
-                            {item.price.toLocaleString()}₽
-                          </div>
-                          <button 
-                            className={styles.bookButton}
-                            onClick={scrollToBooking}
-                          >
-                            {locale === 'ru' ? 'Забронировать' : 'Book'}
-                          </button>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {fromAirport.length > 0 && (
-                <div className={styles.priceSection}>
-                  <h3 className={styles.priceSectionTitle}>
-                    {locale === 'ru' ? 'Аэропорт → Москва' : 'Airport → Moscow'}
-                  </h3>
-                  <div className={styles.pricingList}>
-                    {fromAirport.map((item) => (
-                      <div key={item.id} className={styles.pricingItem}>
-                        <div className={styles.pricingInfo}>
-                          <div className={styles.pricingType}>{item.vehicleName}</div>
-                        </div>
-                        <div className={styles.pricingActions}>
-                          <div className={styles.pricingPrice}>
-                            {item.price.toLocaleString()}₽
-                          </div>
-                          <button 
-                            className={styles.bookButton}
-                            onClick={scrollToBooking}
-                          >
-                            {locale === 'ru' ? 'Забронировать' : 'Book'}
-                          </button>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </>
-          )}
         </div>
 
-        <div id="booking-form" className={styles.bookingSection}>
-          <h2 className={styles.sectionTitle}>
-            {locale === 'ru' ? 'Забронировать трансфер' : 'Book transfer'}
-          </h2>
-          <AirportBookingForm />
+        <div id="booking-form" ref={bookingRef} className={styles.bookingSection}>
+          <SectionHeading
+            as="h2"
+            size="section"
+            align="center"
+            eyebrow={ru ? 'Бронирование' : 'Booking'}
+            title={ru ? 'Забронировать трансфер' : 'Book transfer'}
+            icon={CalendarCheck}
+            showDecor={false}
+          />
+          {selectedAirportInfo && (
+            <p className={styles.selectedAirportHint}>
+              {locale === 'ru' ? 'Аэропорт: ' : 'Airport: '}
+              <strong>
+                {locale === 'ru' ? selectedAirportInfo.nameRu : selectedAirportInfo.name}
+                {' '}({selectedAirportInfo.code})
+              </strong>
+            </p>
+          )}
+          <AirportBookingForm
+            initialVehicleId={initialVehicleId}
+            selectedAirport={selectedAirport}
+          />
         </div>
       </div>
     </div>

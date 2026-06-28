@@ -98,6 +98,24 @@
   color: $text-secondary;
 }
 
+.sectionHint {
+  font-size: 15px;
+  color: $text-secondary;
+  margin: -$spacing-sm 0 $spacing-xl;
+  text-align: center;
+}
+
+.selectedAirportHint {
+  text-align: center;
+  font-size: 15px;
+  color: $text-secondary;
+  margin-bottom: $spacing-lg;
+
+  strong {
+    color: $text-primary;
+  }
+}
+
 .priceSection {
   margin-bottom: $spacing-3xl;
 }

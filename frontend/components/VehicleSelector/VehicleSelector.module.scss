@@ -1,0 +1,248 @@
+@use '../../styles/scss/variables' as *;
+@use '../../styles/scss/mixins' as *;
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xs;
+}
+
+.label {
+  font-size: 14px;
+  color: $text-secondary;
+  font-weight: 500;
+
+  @include mobile {
+    font-size: 13px;
+  }
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: $spacing-sm;
+
+  @include mobile {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ─── Wide variant ─────────────────────────────── */
+.wide {
+  .label {
+    font-family: $font-family-display;
+    font-size: clamp(22px, 3vw, 28px);
+    font-weight: 700;
+    color: $text-primary;
+    margin-bottom: $spacing-md;
+    text-align: center;
+    letter-spacing: -0.02em;
+  }
+
+  .grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: $spacing-lg;
+    align-items: stretch;
+
+    @media (max-width: 900px) {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    @include mobile {
+      grid-template-columns: 1fr;
+      gap: $spacing-md;
+    }
+  }
+
+  .card {
+    padding: $spacing-lg;
+    border-radius: $radius-lg;
+  }
+
+  .photo,
+  .photoPlaceholder {
+    aspect-ratio: 16 / 10;
+    height: auto;
+    margin-bottom: $spacing-md;
+  }
+
+  .photoPlaceholder {
+    font-size: 48px;
+  }
+
+  .cardTitle {
+    font-size: 17px;
+  }
+
+  .cardPrice {
+    font-size: 16px;
+  }
+}
+
+/* ─── Card ─────────────────────────────────────── */
+.card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  height: 100%;
+  padding: $spacing-md;
+  background: transparent;
+  border: 1px solid $border-subtle;
+  border-radius: $radius-main;
+  cursor: pointer;
+  transition: $transition;
+  text-align: left;
+
+  &:hover {
+    border-color: rgba($accent-gold, 0.5);
+    background: rgba($accent-gold, 0.03);
+  }
+
+  &.selected {
+    border-color: $accent-gold;
+    background: rgba($accent-gold, 0.06);
+  }
+}
+
+.photo {
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  object-fit: contain;
+  object-position: center;
+  border-radius: $radius-sm;
+  margin-bottom: $spacing-md;
+  background: rgba($bg-primary, 0.5);
+}
+
+.photoPlaceholder {
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  background: rgba($accent-gold, 0.06);
+  border-radius: $radius-sm;
+  margin-bottom: $spacing-md;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 40px;
+  opacity: 0.5;
+}
+
+/* ─── Card content ──────────────────────────────── */
+.cardContent {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: $spacing-md;
+}
+
+.cardTitle {
+  font-size: 15px;
+  font-weight: 700;
+  color: $text-primary;
+  line-height: 1.25;
+}
+
+.cardPrice {
+  font-size: 15px;
+  color: $accent-gold;
+  font-weight: 600;
+}
+
+/* ─── Specs list ────────────────────────────────── */
+.specsList {
+  list-style: none;
+  padding: 0;
+  margin: 4px 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+
+  li {
+    font-size: 12px;
+    color: $text-secondary;
+    padding-left: 12px;
+    position: relative;
+    line-height: 1.4;
+
+    &::before {
+      content: '•';
+      position: absolute;
+      left: 0;
+      color: $accent-gold;
+      font-size: 10px;
+      top: 1px;
+    }
+  }
+}
+
+/* ─── Card actions ──────────────────────────────── */
+.cardActions {
+  display: flex;
+  gap: 8px;
+  margin-top: auto;
+}
+
+.aboutBtn {
+  flex: 1;
+  height: 40px;
+  border: 1px solid $border-subtle;
+  border-radius: $radius-main;
+  background: transparent;
+  color: $text-secondary;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: $transition;
+
+  &:hover {
+    border-color: $text-secondary;
+    color: $text-primary;
+  }
+}
+
+.selectBtn {
+  flex: 1;
+  height: 40px;
+  border: 1px solid rgba($accent-gold, 0.5);
+  border-radius: $radius-main;
+  background: transparent;
+  color: $accent-gold;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: $transition;
+
+  &:hover {
+    background: rgba($accent-gold, 0.1);
+    border-color: $accent-gold;
+  }
+
+  &.selectBtnActive {
+    background: $accent-gold;
+    color: $bg-primary;
+    border-color: $accent-gold;
+  }
+}
+
+.selectedDot {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: $accent-gold;
+}
+
+.loading {
+  color: $text-muted;
+  font-size: 14px;
+  padding: $spacing-md 0;
+}
+
+.error {
+  color: #f87171;
+  font-size: 13px;
+}

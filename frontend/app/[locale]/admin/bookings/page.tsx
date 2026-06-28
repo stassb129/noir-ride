@@ -27,7 +27,8 @@ interface RouteBooking extends BaseBooking {
   to: string;
   date: string;
   time: string;
-  vehicleClass: string;
+  vehicleClass?: string;
+  vehicleName?: string;
   passengers: number;
 }
 
@@ -38,9 +39,12 @@ interface AirportBooking extends BaseBooking {
   date: string;
   time: string;
   flightNumber?: string;
-  vehicleClass: string;
+  vehicleClass?: string;
+  vehicleName?: string;
   passengers: number;
   luggage: number;
+  meetSign?: boolean;
+  meetSignText?: string | null;
 }
 
 interface HourlyBooking extends BaseBooking {
@@ -48,7 +52,8 @@ interface HourlyBooking extends BaseBooking {
   date: string;
   time: string;
   hours: number;
-  vehicleClass: string;
+  vehicleClass?: string;
+  vehicleName?: string;
   passengers: number;
 }
 
@@ -180,6 +185,8 @@ export default function AllBookingsPage() {
           vehicleClass: 'business',
           passengers: 1,
           luggage: 1,
+          meetSign: false,
+          meetSignText: '',
           notes: '',
         },
         hourly: {
@@ -401,7 +408,7 @@ export default function AllBookingsPage() {
                   <input placeholder="Адрес" value={createData.address || ''} onChange={(e) => setCreateData({ ...createData, address: e.target.value })} className={styles.statusSelect} />
                   <input type="date" value={createData.date || ''} onChange={(e) => setCreateData({ ...createData, date: e.target.value })} className={styles.statusSelect} />
                   <input type="time" value={createData.time || ''} onChange={(e) => setCreateData({ ...createData, time: e.target.value })} className={styles.statusSelect} />
-                  <input placeholder="Рейс" value={createData.flightNumber || ''} onChange={(e) => setCreateData({ ...createData, flightNumber: e.target.value })} className={styles.statusSelect} />
+                  <input placeholder="Рейс *" value={createData.flightNumber || ''} onChange={(e) => setCreateData({ ...createData, flightNumber: e.target.value })} className={styles.statusSelect} required />
                 </div>
               )}
 
@@ -417,17 +424,7 @@ export default function AllBookingsPage() {
 
               {bookingType !== 'contacts' && (
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, minmax(0, 1fr))', gap: '8px' }}>
-                  <CustomSelect
-                    value={createData.vehicleClass || 'business'}
-                    onChange={(value) => setCreateData({ ...createData, vehicleClass: value })}
-                    options={[
-                      { value: 'business', label: 'Business' },
-                      { value: 'premium', label: 'Premium' },
-                      { value: 'minivan', label: 'Minivan' },
-                      { value: 'luxury', label: 'Luxury' },
-                    ]}
-                    variant="boxed"
-                  />
+                  <input placeholder="Автомобиль (напр. MB E-Class 213)" value={createData.vehicleName || ''} onChange={(e) => setCreateData({ ...createData, vehicleName: e.target.value })} className={styles.statusSelect} />
                   {bookingType === 'airport' && (
                     <input type="number" min={0} placeholder="Багаж" value={createData.luggage || 1} onChange={(e) => setCreateData({ ...createData, luggage: Number(e.target.value) })} className={styles.statusSelect} />
                   )}
@@ -449,12 +446,13 @@ export default function AllBookingsPage() {
                 {bookingType === 'contacts' && <th>Источник</th>}
                 {bookingType === 'routes' && <th>Маршрут</th>}
                 {bookingType === 'routes' && <th>Дата/Время</th>}
-                {bookingType === 'routes' && <th>Класс</th>}
+                {bookingType === 'routes' && <th>Автомобиль</th>}
                 {bookingType === 'routes' && <th>Пасс.</th>}
                 {bookingType === 'airport' && <th>Тип/Аэропорт</th>}
                 {bookingType === 'airport' && <th>Адрес</th>}
                 {bookingType === 'airport' && <th>Дата/Время</th>}
                 {bookingType === 'airport' && <th>Рейс</th>}
+                {bookingType === 'airport' && <th>Табличка</th>}
                 {bookingType === 'hourly' && <th>Адрес подачи</th>}
                 {bookingType === 'hourly' && <th>Дата/Время</th>}
                 {bookingType === 'hourly' && <th>Часов</th>}
@@ -487,7 +485,7 @@ export default function AllBookingsPage() {
                       <td>
                         {(booking as RouteBooking).date}<br />{(booking as RouteBooking).time}
                       </td>
-                      <td>{(booking as RouteBooking).vehicleClass}</td>
+                      <td>{(booking as RouteBooking).vehicleName || (booking as RouteBooking).vehicleClass || '—'}</td>
                       <td>{(booking as RouteBooking).passengers}</td>
                     </>
                   )}
@@ -503,6 +501,11 @@ export default function AllBookingsPage() {
                         {(booking as AirportBooking).date}<br />{(booking as AirportBooking).time}
                       </td>
                       <td>{(booking as AirportBooking).flightNumber || '—'}</td>
+                      <td>
+                        {(booking as AirportBooking).meetSign
+                          ? ((booking as AirportBooking).meetSignText || '—')
+                          : '—'}
+                      </td>
                     </>
                   )}
                   
