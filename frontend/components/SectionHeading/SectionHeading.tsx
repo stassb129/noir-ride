@@ -5,6 +5,8 @@ import type { LucideIcon } from 'lucide-react';
 import { EASE_OUT_EXPO } from '@/lib/motion-easing';
 import styles from './SectionHeading.module.scss';
 
+export type SectionEyebrowStyle = 'rail' | 'ghost';
+
 export interface SectionHeadingProps {
   eyebrow: string;
   title: string;
@@ -13,6 +15,7 @@ export interface SectionHeadingProps {
   as?: 'h1' | 'h2' | 'h3';
   align?: 'left' | 'center';
   size?: 'page' | 'section';
+  eyebrowStyle?: SectionEyebrowStyle;
   className?: string;
   animate?: boolean;
   showDecor?: boolean;
@@ -26,14 +29,18 @@ export default function SectionHeading({
   as: Tag = 'h2',
   align = 'left',
   size = 'page',
+  eyebrowStyle,
   className,
   animate = false,
   showDecor = true,
 }: SectionHeadingProps) {
+  const style = eyebrowStyle ?? (size === 'page' ? 'rail' : 'ghost');
+
   const rootClass = [
     styles.root,
     styles[size],
     styles[align],
+    styles[style],
     className,
   ]
     .filter(Boolean)
@@ -43,12 +50,20 @@ export default function SectionHeading({
 
   const inner = (
     <div className={rootClass}>
-      {showDecor && size === 'page' && <div className={styles.decor} aria-hidden />}
+      {showDecor && size === 'page' && style === 'rail' && (
+        <div className={styles.decor} aria-hidden />
+      )}
       <div className={styles.eyebrow}>
-        {Icon && <Icon size={14} strokeWidth={2.25} aria-hidden />}
-        <span>{eyebrow}</span>
+        {Icon && style === 'rail' && (
+          <span className={styles.iconMark} aria-hidden>
+            <Icon size={15} strokeWidth={1.75} />
+          </span>
+        )}
+        {Icon && style === 'ghost' && (
+          <Icon className={styles.ghostIcon} size={14} strokeWidth={1.75} aria-hidden />
+        )}
+        <span className={styles.eyebrowLabel}>{eyebrow}</span>
       </div>
-      <div className={styles.accentLine} aria-hidden />
       <Tag className={titleClass}>{title}</Tag>
       {description && <p className={styles.description}>{description}</p>}
     </div>

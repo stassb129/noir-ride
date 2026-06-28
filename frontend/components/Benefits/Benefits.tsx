@@ -85,7 +85,6 @@ export default function Benefits() {
               : 'Premium service with attention to every detail'
           }
           icon={Sparkles}
-          align="center"
           animate
         />
 

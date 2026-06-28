@@ -75,7 +75,6 @@ export default function Services() {
               : 'Intercity, airport & hourly — choose the format that fits'
           }
           icon={LayoutGrid}
-          align="center"
           animate
         />
 

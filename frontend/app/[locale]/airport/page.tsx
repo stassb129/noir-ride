@@ -46,7 +46,6 @@ function AirportPageContent() {
       <div className={styles.container}>
         <SectionHeading
           as="h1"
-          align="center"
           eyebrow={ru ? 'Аэропорт' : 'Airport'}
           title={ru ? 'Трансферы в аэропорт' : 'Airport transfers'}
           description={
@@ -80,7 +79,6 @@ function AirportPageContent() {
           <SectionHeading
             as="h2"
             size="section"
-            align="center"
             eyebrow={ru ? 'Выбор' : 'Select'}
             title={ru ? 'Выберите аэропорт' : 'Select airport'}
             description={
@@ -112,7 +110,6 @@ function AirportPageContent() {
           <SectionHeading
             as="h2"
             size="section"
-            align="center"
             eyebrow={ru ? 'Бронирование' : 'Booking'}
             title={ru ? 'Забронировать трансфер' : 'Book transfer'}
             icon={CalendarCheck}

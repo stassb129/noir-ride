@@ -38,7 +38,6 @@ function HourlyPageContent() {
       <div className={styles.container}>
         <SectionHeading
           as="h1"
-          align="center"
           eyebrow={ru ? 'Почасовая' : 'Hourly'}
           title={ru ? 'Аренда автомобиля с водителем' : 'Chauffeured car rental'}
           description={
@@ -72,7 +71,6 @@ function HourlyPageContent() {
           <SectionHeading
             as="h2"
             size="section"
-            align="center"
             eyebrow={ru ? 'Бронирование' : 'Booking'}
             title={ru ? 'Забронировать аренду' : 'Book rental'}
             icon={CalendarCheck}
