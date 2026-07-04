@@ -40,6 +40,8 @@ services:
       JWT_SECRET: ${JWT_SECRET:-change-me-use-32-plus-chars-in-production}
       FRONTEND_URL: ${FRONTEND_URL:-https://noir-ride.ru}
       DB_SYNC: ${DB_SYNC:-true}
+      TELEGRAM_BOT_TOKEN: ${TELEGRAM_BOT_TOKEN:-}
+      TELEGRAM_CHAT_ID: ${TELEGRAM_CHAT_ID:-}
     depends_on:
       db:
         condition: service_healthy

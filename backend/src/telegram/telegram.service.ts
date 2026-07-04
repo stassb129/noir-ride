@@ -13,6 +13,14 @@ export class TelegramService {
     this.botToken = this.configService.get<string>('TELEGRAM_BOT_TOKEN') ?? null;
     this.chatId = this.configService.get<string>('TELEGRAM_CHAT_ID') ?? null;
     this.adminUrl = this.configService.get<string>('FRONTEND_URL') ?? 'https://noir-ride.ru';
+
+    if (this.enabled) {
+      this.logger.log('Telegram notifications enabled');
+    } else {
+      this.logger.warn(
+        'Telegram notifications disabled — set TELEGRAM_BOT_TOKEN and TELEGRAM_CHAT_ID',
+      );
+    }
   }
 
   private get enabled(): boolean {
