@@ -21,7 +21,7 @@ export class InterCityService {
   constructor(
     @InjectRepository(InterCityDestination)
     private destinationRepo: Repository<InterCityDestination>,
-  ) {}
+  ) { }
 
   async findAll() {
     const count = await this.destinationRepo.count();

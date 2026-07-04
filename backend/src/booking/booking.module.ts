@@ -5,11 +5,15 @@ import { BookingService } from './booking.service';
 import { Booking } from '../entities/booking.entity';
 import { Route } from '../entities/route.entity';
 import { RouteBooking, AirportBooking, HourlyBooking } from '../entities/specialized-bookings.entity';
+import { TelegramModule } from '../telegram/telegram.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Booking, Route, RouteBooking, AirportBooking, HourlyBooking])],
+  imports: [
+    TypeOrmModule.forFeature([Booking, Route, RouteBooking, AirportBooking, HourlyBooking]),
+    TelegramModule,
+  ],
   controllers: [BookingController],
   providers: [BookingService],
   exports: [BookingService],
 })
-export class BookingModule {}
+export class BookingModule { }

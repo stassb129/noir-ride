@@ -12,7 +12,7 @@ export class AuthService {
     @InjectRepository(AdminUser)
     private adminRepo: Repository<AdminUser>,
     private jwtService: JwtService,
-  ) {}
+  ) { }
 
   async validateAdmin(email: string, password: string): Promise<AdminUser> {
     const admin = await this.adminRepo.findOne({
@@ -40,7 +40,7 @@ export class AuthService {
     await this.adminRepo.save(admin);
 
     const payload = { email: admin.email, sub: admin.id, name: admin.name };
-    
+
     return {
       access_token: this.jwtService.sign(payload),
       admin: {
@@ -53,7 +53,7 @@ export class AuthService {
 
   async createAdmin(email: string, password: string, name: string) {
     const hashedPassword = await bcrypt.hash(password, 10);
-    
+
     const admin = this.adminRepo.create({
       email,
       password: hashedPassword,

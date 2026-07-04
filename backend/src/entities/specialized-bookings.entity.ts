@@ -47,6 +47,9 @@ export class RouteBooking {
   @Column({ type: 'int', nullable: true })
   distanceKm: number;
 
+  @Column({ type: 'varchar', length: 16, default: 'any' })
+  driverPreference: string; // 'male' | 'female' | 'any'
+
   @Column({ type: 'decimal', precision: 10, scale: 2, nullable: true })
   price: number;
 
@@ -110,6 +113,9 @@ export class AirportBooking {
   @Column({ type: 'text', nullable: true })
   notes: string;
 
+  @Column({ type: 'varchar', length: 16, default: 'any' })
+  driverPreference: string; // 'male' | 'female' | 'any'
+
   @Column({ default: 'pending' })
   status: string;
 
@@ -160,6 +166,9 @@ export class HourlyBooking {
 
   @Column({ type: 'text', nullable: true })
   notes: string;
+
+  @Column({ type: 'varchar', length: 16, default: 'any' })
+  driverPreference: string; // 'male' | 'female' | 'any'
 
   @Column({ default: 'pending' })
   status: string;

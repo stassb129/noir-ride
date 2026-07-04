@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { fetchWithAuth } from '@/lib/utils/fetchWithAuth';
 import CustomSelect from '@/components/ui/CustomSelect/CustomSelect';
+import { getDriverPreferenceLabel, getDriverPreferenceOptions } from '@/lib/driver-preference';
 import styles from './bookings.module.scss';
 
 type BookingType = 'contacts' | 'routes' | 'airport' | 'hourly';
@@ -16,6 +17,7 @@ interface BaseBooking {
   status: string;
   createdAt: string;
   notes?: string;
+  driverPreference?: string;
 }
 
 interface Contact extends BaseBooking {
@@ -171,6 +173,7 @@ export default function AllBookingsPage() {
           vehicleClass: 'business',
           passengers: 1,
           notes: '',
+          driverPreference: 'any',
         },
         airport: {
           name: '',
@@ -188,6 +191,7 @@ export default function AllBookingsPage() {
           meetSign: false,
           meetSignText: '',
           notes: '',
+          driverPreference: 'any',
         },
         hourly: {
           name: '',
@@ -200,6 +204,7 @@ export default function AllBookingsPage() {
           vehicleClass: 'business',
           passengers: 1,
           notes: '',
+          driverPreference: 'any',
         },
       };
 
@@ -423,8 +428,14 @@ export default function AllBookingsPage() {
               )}
 
               {bookingType !== 'contacts' && (
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, minmax(0, 1fr))', gap: '8px' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, minmax(0, 1fr))', gap: '8px' }}>
                   <input placeholder="Автомобиль (напр. MB E-Class 213)" value={createData.vehicleName || ''} onChange={(e) => setCreateData({ ...createData, vehicleName: e.target.value })} className={styles.statusSelect} />
+                  <CustomSelect
+                    value={createData.driverPreference || 'any'}
+                    onChange={(value) => setCreateData({ ...createData, driverPreference: value })}
+                    options={getDriverPreferenceOptions(true)}
+                    variant="boxed"
+                  />
                   {bookingType === 'airport' && (
                     <input type="number" min={0} placeholder="Багаж" value={createData.luggage || 1} onChange={(e) => setCreateData({ ...createData, luggage: Number(e.target.value) })} className={styles.statusSelect} />
                   )}
@@ -456,6 +467,7 @@ export default function AllBookingsPage() {
                 {bookingType === 'hourly' && <th>Адрес подачи</th>}
                 {bookingType === 'hourly' && <th>Дата/Время</th>}
                 {bookingType === 'hourly' && <th>Часов</th>}
+                {bookingType !== 'contacts' && <th>Водитель</th>}
                 <th>Статус</th>
                 <th>Создано</th>
                 <th>Действия</th>
@@ -517,6 +529,10 @@ export default function AllBookingsPage() {
                       </td>
                       <td><strong>{(booking as HourlyBooking).hours}ч</strong></td>
                     </>
+                  )}
+
+                  {bookingType !== 'contacts' && (
+                    <td>{getDriverPreferenceLabel(booking.driverPreference)}</td>
                   )}
                   
                   <td>

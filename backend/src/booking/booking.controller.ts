@@ -1,11 +1,11 @@
-import { 
-  Controller, 
-  Get, 
-  Post, 
-  Patch, 
-  Delete, 
-  Body, 
-  Param, 
+import {
+  Controller,
+  Get,
+  Post,
+  Patch,
+  Delete,
+  Body,
+  Param,
   Query,
   ValidationPipe,
 } from '@nestjs/common';
@@ -16,7 +16,7 @@ import { CreateRouteBookingDto, CreateAirportBookingDto, CreateHourlyBookingDto 
 
 @Controller('bookings')
 export class BookingController {
-  constructor(private readonly bookingService: BookingService) {}
+  constructor(private readonly bookingService: BookingService) { }
 
   @Post()
   async createBooking(@Body(ValidationPipe) dto: CreateBookingDto) {

@@ -18,4 +18,4 @@ import { IntercityPricing } from '../entities/intercity-pricing.entity';
   providers: [PricingService],
   exports: [PricingService],
 })
-export class PricingModule {}
+export class PricingModule { }

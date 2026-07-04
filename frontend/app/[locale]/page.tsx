@@ -4,6 +4,7 @@ import Benefits from '@/components/Benefits/Benefits';
 import Stats from '@/components/Stats/Stats';
 import Fleet from '@/components/Fleet/Fleet';
 import Guarantees from '@/components/Guarantees/Guarantees';
+import ContactSection from '@/components/ContactSection/ContactSection';
 import Steps from '@/components/Steps/Steps';
 
 export default async function HomePage({
@@ -21,6 +22,7 @@ export default async function HomePage({
       <Stats />
       <Fleet />
       <Guarantees />
+      <ContactSection />
       <Steps />
     </>
   );

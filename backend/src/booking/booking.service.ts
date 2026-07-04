@@ -6,13 +6,14 @@ import { Route } from '../entities/route.entity';
 import { CreateBookingDto } from './dto/create-booking.dto';
 import { RouteBooking, AirportBooking, HourlyBooking } from '../entities/specialized-bookings.entity';
 import { CreateRouteBookingDto, CreateAirportBookingDto, CreateHourlyBookingDto } from '../dto/specialized-bookings.dto';
+import { TelegramService } from '../telegram/telegram.service';
 
 @Injectable()
 export class BookingService {
   constructor(
     @InjectRepository(Booking)
     private bookingRepo: Repository<Booking>,
-    
+
     @InjectRepository(Route)
     private routeRepo: Repository<Route>,
 
@@ -24,7 +25,9 @@ export class BookingService {
 
     @InjectRepository(HourlyBooking)
     private hourlyBookingRepo: Repository<HourlyBooking>,
-  ) {}
+
+    private telegramService: TelegramService,
+  ) { }
 
   async createBooking(dto: CreateBookingDto) {
     // If intercity with route, check seat availability
@@ -174,18 +177,21 @@ export class BookingService {
 
   // Specialized booking methods
   async createRouteBooking(dto: CreateRouteBookingDto) {
-    const booking = this.routeBookingRepo.create(dto);
-    return await this.routeBookingRepo.save(booking);
+    const booking = await this.routeBookingRepo.save(this.routeBookingRepo.create(dto));
+    this.telegramService.notifyRouteBooking(booking).catch(() => null);
+    return booking;
   }
 
   async createAirportBooking(dto: CreateAirportBookingDto) {
-    const booking = this.airportBookingRepo.create(dto);
-    return await this.airportBookingRepo.save(booking);
+    const booking = await this.airportBookingRepo.save(this.airportBookingRepo.create(dto));
+    this.telegramService.notifyAirportBooking(booking).catch(() => null);
+    return booking;
   }
 
   async createHourlyBooking(dto: CreateHourlyBookingDto) {
-    const booking = this.hourlyBookingRepo.create(dto);
-    return await this.hourlyBookingRepo.save(booking);
+    const booking = await this.hourlyBookingRepo.save(this.hourlyBookingRepo.create(dto));
+    this.telegramService.notifyHourlyBooking(booking).catch(() => null);
+    return booking;
   }
 
   async getAllRouteBookings() {

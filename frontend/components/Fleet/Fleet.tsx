@@ -78,11 +78,9 @@ export default function Fleet() {
   const visibleVehicles = vehicles.slice(0, visibleCount);
   const hasMore = visibleCount < vehicles.length;
 
-  const fleetTitle = !loading && vehicles.length > 0
-    ? (ru
-      ? `${vehicles.length} ${vehicles.length === 1 ? 'автомобиль' : vehicles.length < 5 ? 'автомобиля' : 'автомобилей'} в парке`
-      : `${vehicles.length} ${vehicles.length === 1 ? 'vehicle' : 'vehicles'} in our fleet`)
-    : (ru ? 'Премиальные автомобили с водителем' : 'Premium chauffeured vehicles');
+  const fleetTitle = ru
+    ? 'Премиальные автомобили для вашей поездки'
+    : 'Premium vehicles for your journey';
 
   return (
     <section className={styles.fleet}>

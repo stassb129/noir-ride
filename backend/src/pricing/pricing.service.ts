@@ -10,13 +10,13 @@ export class PricingService {
   constructor(
     @InjectRepository(HourlyPricing)
     private hourlyRepo: Repository<HourlyPricing>,
-    
+
     @InjectRepository(AirportPricing)
     private airportRepo: Repository<AirportPricing>,
-    
+
     @InjectRepository(IntercityPricing)
     private intercityRepo: Repository<IntercityPricing>,
-  ) {}
+  ) { }
 
   // Hourly Pricing
   async getAllHourlyPricing() {

@@ -25,6 +25,8 @@ import { AdminModule } from './admin/admin.module';
 import { ContactsModule } from './contacts/contacts.module';
 import { VehiclesModule } from './vehicles/vehicles.module';
 import { InterCityModule } from './intercity/intercity.module';
+import { TelegramModule } from './telegram/telegram.module';
+import { TelegramService } from './telegram/telegram.service';
 
 @Module({
   imports: [
@@ -33,7 +35,7 @@ import { InterCityModule } from './intercity/intercity.module';
       isGlobal: true,
       envFilePath: '.env',
     }),
-    
+
     // TypeORM configuration
     TypeOrmModule.forRoot({
       type: 'postgres',
@@ -66,8 +68,9 @@ import { InterCityModule } from './intercity/intercity.module';
     ContactsModule,
     VehiclesModule,
     InterCityModule,
+    TelegramModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, TelegramService],
 })
-export class AppModule {}
+export class AppModule { }

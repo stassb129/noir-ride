@@ -2,10 +2,13 @@
 
 import { useLocale } from 'next-intl';
 import Link from 'next/link';
+import HashLink from '@/components/HashLink/HashLink';
+import { SITE_CONTACTS, emailHref, phoneHref } from '@/lib/site-contacts';
 import styles from './Footer.module.scss';
 
 export default function Footer() {
   const locale = useLocale();
+  const ru = locale === 'ru';
 
   return (
     <footer className={styles.footer}>
@@ -17,37 +20,44 @@ export default function Footer() {
               <span className={styles.logoRide}>RIDE</span>
             </div>
             <p className={styles.tagline}>
-              {locale === 'ru' ? 'Премиум трансфер' : 'Premium transfer service'}
+              {ru ? 'Премиум трансфер' : 'Premium transfer service'}
             </p>
           </div>
 
           <div className={styles.column}>
-            <h4>{locale === 'ru' ? 'Услуги' : 'Services'}</h4>
+            <h4>{ru ? 'Услуги' : 'Services'}</h4>
             <div className={styles.links}>
               <Link href={`/${locale}/routes`} className={styles.link}>
-                {locale === 'ru' ? 'Маршруты' : 'Routes'}
+                {ru ? 'Маршруты' : 'Routes'}
               </Link>
               <Link href={`/${locale}/airport`} className={styles.link}>
-                {locale === 'ru' ? 'Аэропорт' : 'Airport'}
+                {ru ? 'Аэропорт' : 'Airport'}
               </Link>
               <Link href={`/${locale}/hourly`} className={styles.link}>
-                {locale === 'ru' ? 'Почасовая' : 'Hourly'}
+                {ru ? 'Почасовая' : 'Hourly'}
               </Link>
             </div>
           </div>
 
           <div className={styles.column}>
-            <h4>{locale === 'ru' ? 'Контакты' : 'Contact'}</h4>
+            <h4>{ru ? 'Контакты' : 'Contact'}</h4>
             <div className={styles.links}>
-              <span className={styles.link}>+7 (495) 123-45-67</span>
-              <span className={styles.link}>info@noirride.ru</span>
+              <a href={phoneHref()} className={styles.link}>
+                {SITE_CONTACTS.phoneDisplay}
+              </a>
+              <a href={emailHref()} className={styles.link}>
+                {SITE_CONTACTS.email}
+              </a>
+              <HashLink href={`/${locale}#contacts`} className={styles.link}>
+                {ru ? 'Все способы связи' : 'All contact options'}
+              </HashLink>
             </div>
           </div>
         </div>
 
         <div className={styles.bottom}>
           <p className={styles.copyright}>
-            © 2026 NOIR RIDE. {locale === 'ru' ? 'Все права защищены' : 'All rights reserved'}.
+            © 2026 NOIR RIDE. {ru ? 'Все права защищены' : 'All rights reserved'}.
           </p>
         </div>
       </div>

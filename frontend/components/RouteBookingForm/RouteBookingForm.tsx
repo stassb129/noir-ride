@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { useLocale } from 'next-intl';
 import { motion } from 'framer-motion';
+import CustomSelect from '@/components/ui/CustomSelect/CustomSelect';
 import VehicleSelector from '@/components/VehicleSelector/VehicleSelector';
 import { fetchVehicles, type Vehicle } from '@/lib/api/vehicles';
 import {
@@ -25,6 +26,11 @@ import {
   isExistingCityInput,
   citiesMatch,
 } from '@/lib/city-names';
+import {
+  DEFAULT_DRIVER_PREFERENCE,
+  getDriverPreferenceOptions,
+  type DriverPreference,
+} from '@/lib/driver-preference';
 import styles from './RouteBookingForm.module.scss';
 
 interface Props {
@@ -85,6 +91,7 @@ export default function RouteBookingForm({ prefilledData, initialVehicleId }: Pr
     date: '', time: '10:00',
     passengers: 1,
     notes: '',
+    driverPreference: DEFAULT_DRIVER_PREFERENCE as DriverPreference,
     vehicleId: null as number | null,
     vehicleName: '',
   });
@@ -104,6 +111,7 @@ export default function RouteBookingForm({ prefilledData, initialVehicleId }: Pr
 
   const calcRequestRef = useRef(0);
   const lastCalcKeyRef = useRef('');
+  const [mapOpen, setMapOpen] = useState(false);
 
   /* ── load ───────────────────────────────────── */
   useEffect(() => {
@@ -143,6 +151,7 @@ export default function RouteBookingForm({ prefilledData, initialVehicleId }: Pr
   useEffect(() => {
     lastCalcKeyRef.current = '';
     setTypoSuggestions({ from: null, to: null });
+    setMapOpen(false);
   }, [form.from, form.to]);
 
   /* ── distance calculation ───────────────────── */
@@ -285,6 +294,7 @@ export default function RouteBookingForm({ prefilledData, initialVehicleId }: Pr
         from: 'Москва', to: '',
         date: '', time: '10:00',
         passengers: 1, notes: '',
+        driverPreference: DEFAULT_DRIVER_PREFERENCE,
         vehicleId: null, vehicleName: '',
       });
       setDistanceKm(null);
@@ -312,7 +322,7 @@ export default function RouteBookingForm({ prefilledData, initialVehicleId }: Pr
         <span>
           {ru ? 'Возможно, вы имели в виду: ' : 'Did you mean: '}
           <strong>{suggestion}</strong>
-          {ru ? ' (в радиусе 300 км)' : ' (within 300 km)'}
+          {ru ? ` (до ${MAX_CUSTOM_DISTANCE_KM} км)` : ` (within ${MAX_CUSTOM_DISTANCE_KM} km)`}
           ?
         </span>
         <button
@@ -432,6 +442,35 @@ export default function RouteBookingForm({ prefilledData, initialVehicleId }: Pr
                       {ru ? '↑ Выберите автомобиль для расчёта итоговой стоимости' : '↑ Select a vehicle to see total price'}
                     </p>
                   )}
+                  <div className={styles.tollNotice}>
+                    <span className={styles.tollNoticeIcon} aria-hidden>⚠</span>
+                    <span>
+                      {ru
+                        ? 'По маршруту возможны платные участки (М-11, М-4, ЦКАД и др.). Стоимость проезда по ним не включена в расчёт и оплачивается отдельно.'
+                        : 'The route may include toll roads (M-11, M-4, CKAD, etc.). Toll fees are not included in the price and are paid separately.'}
+                    </span>
+                  </div>
+                  <button
+                    type="button"
+                    className={styles.mapToggleBtn}
+                    onClick={() => setMapOpen((o) => !o)}
+                  >
+                    {mapOpen
+                      ? (ru ? '✕ Скрыть карту' : '✕ Hide map')
+                      : (ru ? '🗺 Показать маршрут на карте' : '🗺 Show route on map')}
+                  </button>
+                  {mapOpen && (
+                    <div className={styles.mapWrap}>
+                      <iframe
+                        title={ru ? 'Маршрут' : 'Route'}
+                        src={`https://yandex.ru/map-widget/v1/?rtext=${encodeURIComponent(calcFrom)}~${encodeURIComponent(calcTo)}&rtt=auto&lang=${ru ? 'ru_RU' : 'en_RU'}`}
+                        className={styles.mapFrame}
+                        allowFullScreen
+                        loading="lazy"
+                        referrerPolicy="no-referrer-when-downgrade"
+                      />
+                    </div>
+                  )}
                 </div>
               )}
             </div>
@@ -500,6 +539,17 @@ export default function RouteBookingForm({ prefilledData, initialVehicleId }: Pr
                 onChange={(e) => set('passengers', parsePassengersInput(e.target.value, maxPassengers))}
               />
             </div>
+          </div>
+
+          <div className={styles.formGroup}>
+            <label className={styles.label}>{ru ? 'Водитель' : 'Driver'}</label>
+            <CustomSelect
+              variant="boxed"
+              name="driverPreference"
+              value={form.driverPreference}
+              onChange={(value) => set('driverPreference', value as DriverPreference)}
+              options={getDriverPreferenceOptions(ru)}
+            />
           </div>
 
           <div className={styles.formGroup}>

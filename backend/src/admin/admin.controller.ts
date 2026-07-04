@@ -16,7 +16,7 @@ import { BookingStatus } from '../entities/booking.entity';
 @Controller('admin')
 @UseGuards(JwtAuthGuard)
 export class AdminController {
-  constructor(private readonly adminService: AdminService) {}
+  constructor(private readonly adminService: AdminService) { }
 
   // Statistics
   @Get('statistics')

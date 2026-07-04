@@ -11,6 +11,7 @@ import {
   getDestinationsFrom,
   calcPrice,
   formatPrice,
+  MAX_CUSTOM_DISTANCE_KM,
   type InterCityDestination,
 } from '@/lib/api/intercity';
 import { fetchVehicles, getMinPricePerKm } from '@/lib/api/vehicles';
@@ -176,8 +177,8 @@ function RoutesPageContent() {
                 </div>
                 <p className={styles.destNote} style={{ marginTop: 8 }}>
                   {ru
-                    ? 'Введите любой город — рассчитаем стоимость автоматически. Маршруты до 300 км.'
-                    : 'Enter any city — we\'ll calculate the price automatically. Routes up to 300 km.'}
+                    ? `Введите любой город — рассчитаем стоимость автоматически. Маршруты до ${MAX_CUSTOM_DISTANCE_KM} км.`
+                    : `Enter any city — we'll calculate the price automatically. Routes up to ${MAX_CUSTOM_DISTANCE_KM} km.`}
                 </p>
                 <button
                   className={`${styles.destBookBtn} ${styles.destBookBtnCustom}`}
@@ -207,8 +208,8 @@ function RoutesPageContent() {
           />
           <p className={styles.bookingNote}>
             {ru
-              ? 'Выберите один из популярных маршрутов выше или введите любой город назначения — рассчитаем стоимость автоматически (маршруты до 300 км).'
-              : 'Choose a popular route above or type any destination city — we\'ll calculate the price automatically (routes up to 300 km).'}
+              ? `Выберите один из популярных маршрутов выше или введите любой город назначения — рассчитаем стоимость автоматически (маршруты до ${MAX_CUSTOM_DISTANCE_KM} км).`
+              : `Choose a popular route above or type any destination city — we'll calculate the price automatically (routes up to ${MAX_CUSTOM_DISTANCE_KM} km).`}
           </p>
           <RouteBookingForm prefilledData={prefilledData} initialVehicleId={initialVehicleId} />
         </div>

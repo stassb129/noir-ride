@@ -1,0 +1,146 @@
+'use client';
+
+import { useLocale } from 'next-intl';
+import { Mail, Phone } from 'lucide-react';
+import SectionHeading from '@/components/SectionHeading/SectionHeading';
+import { SITE_CONTACTS, emailHref, phoneHref } from '@/lib/site-contacts';
+import styles from './ContactSection.module.scss';
+
+function TelegramIcon() {
+  return (
+    <svg className={styles.socialIcon} viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+      <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z" />
+    </svg>
+  );
+}
+
+function InstagramIcon() {
+  return (
+    <svg className={styles.socialIcon} viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+      <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z" />
+    </svg>
+  );
+}
+
+function VkIcon() {
+  return (
+    <svg className={styles.socialIcon} viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+      <path d="M15.684 0H8.316C1.592 0 0 1.592 0 8.316v7.368C0 22.408 1.592 24 8.316 24h7.368C22.408 24 24 22.408 24 15.684V8.316C24 1.592 22.391 0 15.684 0zm3.692 17.123h-1.744c-.66 0-.862-.523-2.049-1.714-1.033-1.01-1.49-1.135-1.744-1.135-.356 0-.458.102-.458.593v1.575c0 .424-.135.678-1.253.678-1.846 0-3.896-1.118-5.335-3.202C4.624 10.857 4.03 8.57 4.03 8.096c0-.254.102-.491.593-.491h1.744c.44 0 .61.203.78.677.863 2.49 2.303 4.675 2.896 4.675.22 0 .322-.102.322-.66V9.721c-.068-1.186-.695-1.287-.695-1.71 0-.203.17-.407.44-.407h2.744c.373 0 .508.203.508.643v3.473c0 .372.17.508.271.508.22 0 .407-.136.813-.542 1.254-1.406 2.151-3.574 2.151-3.574.119-.254.322-.491.763-.491h1.744c.525 0 .644.271.525.643-.22 1.017-2.354 4.031-2.354 4.031-.186.305-.254.44 0 .78.186.254.796.779 1.203 1.253.745.847 1.32 1.558 1.473 2.049.17.49-.085.744-.576.744z" />
+    </svg>
+  );
+}
+
+export default function ContactSection() {
+  const locale = useLocale();
+  const ru = locale === 'ru';
+
+  const channels = [
+    {
+      key: 'phone',
+      label: ru ? 'Телефон' : 'Phone',
+      value: SITE_CONTACTS.phoneDisplay,
+      hint: ru ? 'Ежедневно, 9:00–21:00' : 'Daily, 9:00 AM–9:00 PM',
+      href: phoneHref(),
+      icon: Phone,
+      external: false,
+    },
+    {
+      key: 'email',
+      label: 'Email',
+      value: SITE_CONTACTS.email,
+      hint: ru ? 'Ответим в рабочее время' : 'We reply during business hours',
+      href: emailHref(),
+      icon: Mail,
+      external: false,
+    },
+    {
+      key: 'telegram',
+      label: 'Telegram',
+      value: SITE_CONTACTS.telegramLabel,
+      hint: ru ? 'Быстрые ответы в мессенджере' : 'Quick replies in messenger',
+      href: SITE_CONTACTS.telegram,
+      icon: TelegramIcon,
+      external: true,
+    },
+    {
+      key: 'instagram',
+      label: 'Instagram',
+      value: SITE_CONTACTS.instagramLabel,
+      hint: ru ? 'Новости и фото автопарка' : 'News and fleet photos',
+      href: SITE_CONTACTS.instagram,
+      icon: InstagramIcon,
+      external: true,
+    },
+  ];
+
+  const socials = [
+    { key: 'vk', label: 'VK', href: SITE_CONTACTS.vk, icon: VkIcon },
+    { key: 'telegram', label: 'Telegram', href: SITE_CONTACTS.telegram, icon: TelegramIcon },
+  ];
+
+  return (
+    <section id="contacts" className={styles.contacts}>
+      <div className={styles.container}>
+        <SectionHeading
+          eyebrow={ru ? 'Контакты' : 'Contact'}
+          title={ru ? 'Свяжитесь с нами удобным способом' : 'Reach us your way'}
+          description={
+            ru
+              ? 'Звоните, пишите в мессенджеры или на почту — менеджер ответит и поможет с бронированием'
+              : 'Call, message or email — our team will help you book your ride'
+          }
+          icon={Phone}
+          animate
+        />
+
+        <div className={styles.grid}>
+          {channels.map((channel) => {
+            const Icon = channel.icon;
+            const isLucide = channel.key === 'phone' || channel.key === 'email';
+            return (
+              <a
+                key={channel.key}
+                href={channel.href}
+                className={styles.card}
+                target={channel.external ? '_blank' : undefined}
+                rel={channel.external ? 'noopener noreferrer' : undefined}
+              >
+                <span className={styles.iconWrap}>
+                  {isLucide ? (
+                    <Icon size={20} strokeWidth={1.75} />
+                  ) : (
+                    <Icon />
+                  )}
+                </span>
+                <span className={styles.label}>{channel.label}</span>
+                <span className={styles.value}>{channel.value}</span>
+                <span className={styles.hint}>{channel.hint}</span>
+              </a>
+            );
+          })}
+        </div>
+
+        <div className={styles.socialBlock}>
+          <p className={styles.socialLabel}>{ru ? 'Мы в соцсетях' : 'Follow us'}</p>
+          <div className={styles.socialRow}>
+            {socials.map((social) => {
+              const Icon = social.icon;
+              return (
+                <a
+                  key={social.key}
+                  href={social.href}
+                  className={styles.socialLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <Icon />
+                  {social.label}
+                </a>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}

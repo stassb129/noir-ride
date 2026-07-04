@@ -156,6 +156,25 @@ const SEED_VEHICLES: Partial<Vehicle>[] = [
     pricePerKm: 200,
     sortOrder: 8,
   },
+  {
+    brand: 'Mercedes-Benz',
+    model: 'V-Class',
+    category: 'Минивэн',
+    description:
+      'MERCEDES-BENZ V-CLASS — премиальный минивэн для поездок компанией до шести человек. ' +
+      'Просторный салон с отдельными креслами второго ряда, боковые шторки и тихая ' +
+      'подвеска создают комфорт уровня бизнес-класса на длинных маршрутах. ' +
+      'Идеален для семейных поездок, делегаций, трансферов в аэропорт с большим багажом ' +
+      'и корпоративных мероприятий, когда важны пространство, приватность и статус.',
+    passengers: 6,
+    luggage: '4 больших или 6 маленьких',
+    childSeat: true,
+    priceAirport: 9500,
+    priceIntercity: 18000,
+    priceHourly: 5000,
+    pricePerKm: 140,
+    sortOrder: 9,
+  },
 ];
 
 @Injectable()
@@ -163,7 +182,7 @@ export class VehiclesService {
   constructor(
     @InjectRepository(Vehicle)
     private repo: Repository<Vehicle>,
-  ) {}
+  ) { }
 
   async findAll(activeOnly = true) {
     const count = await this.repo.count();

@@ -15,10 +15,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   useEffect(() => {
     setMounted(true);
-    
+
     const storedToken = localStorage.getItem('admin_token');
     const storedAdmin = localStorage.getItem('admin_user');
-    
+
     if (storedToken && storedAdmin) {
       setToken(storedToken);
       setAdmin(JSON.parse(storedAdmin));
@@ -63,7 +63,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     <div className={styles.adminLayout}>
       <aside className={styles.sidebar}>
         <div className={styles.logo}>NOIR RIDE</div>
-        
+
         <nav className={styles.nav}>
           <a href="/admin" className={styles.navLink}>
             📊 Дашборд

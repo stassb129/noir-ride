@@ -4,7 +4,7 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
 @Controller('intercity')
 export class InterCityController {
-  constructor(private readonly intercityService: InterCityService) {}
+  constructor(private readonly intercityService: InterCityService) { }
 
   /** Публичный: список предустановленных направлений */
   @Get('destinations')

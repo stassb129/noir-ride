@@ -11,4 +11,4 @@ import { AuthModule } from '../auth/auth.module';
   providers: [InterCityService],
   exports: [InterCityService],
 })
-export class InterCityModule {}
+export class InterCityModule { }

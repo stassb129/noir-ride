@@ -202,10 +202,10 @@
 
 .features {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: $spacing-xl;
   margin-top: $spacing-2xl;
-  margin-bottom: $spacing-3xl;
+  margin-bottom: $spacing-xl;
 
   @include mobile {
     grid-template-columns: 1fr;
@@ -239,6 +239,23 @@
     color: $accent-gold;
     margin: 0 auto $spacing-md;
     stroke-width: 1.5;
+  }
+}
+
+.seoNote {
+  font-size: 16px;
+  line-height: 1.7;
+  color: $text-secondary;
+  max-width: 820px;
+  margin: 0 0 $spacing-3xl;
+  padding: $spacing-lg $spacing-xl;
+  border-left: 3px solid $accent-gold;
+  background: rgba($accent-gold, 0.04);
+  border-radius: 0 $radius-main $radius-main 0;
+
+  @include mobile {
+    padding: $spacing-md;
+    font-size: 15px;
   }
 }
 

@@ -1,4 +1,6 @@
-import { IsString, IsNotEmpty, IsNumber, IsOptional, IsEmail, IsBoolean, ValidateIf } from 'class-validator';
+import { IsString, IsNotEmpty, IsNumber, IsOptional, IsEmail, IsBoolean, ValidateIf, IsIn } from 'class-validator';
+
+const DRIVER_PREFERENCES = ['male', 'female', 'any'] as const;
 
 export class CreateRouteBookingDto {
   @IsString()
@@ -43,6 +45,11 @@ export class CreateRouteBookingDto {
   @IsString()
   @IsOptional()
   notes?: string;
+
+  @IsString()
+  @IsOptional()
+  @IsIn(DRIVER_PREFERENCES)
+  driverPreference?: string;
 }
 
 export class CreateAirportBookingDto {
@@ -108,6 +115,11 @@ export class CreateAirportBookingDto {
   @IsString()
   @IsOptional()
   notes?: string;
+
+  @IsString()
+  @IsOptional()
+  @IsIn(DRIVER_PREFERENCES)
+  driverPreference?: string;
 }
 
 export class CreateHourlyBookingDto {
@@ -152,4 +164,9 @@ export class CreateHourlyBookingDto {
   @IsString()
   @IsOptional()
   notes?: string;
+
+  @IsString()
+  @IsOptional()
+  @IsIn(DRIVER_PREFERENCES)
+  driverPreference?: string;
 }

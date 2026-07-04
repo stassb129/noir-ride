@@ -3,7 +3,7 @@ import { PricingService } from './pricing.service';
 
 @Controller('pricing')
 export class PricingController {
-  constructor(private readonly pricingService: PricingService) {}
+  constructor(private readonly pricingService: PricingService) { }
 
   @Get('hourly')
   async getHourlyPricing() {

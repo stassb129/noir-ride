@@ -9,6 +9,11 @@ import { getMinBookingDate, getBookingDateError, isBookingDateValid } from '@/li
 import { clampPassengers, parsePassengersInput } from '@/lib/booking-passengers';
 import { fetchVehicles, type Vehicle } from '@/lib/api/vehicles';
 import { getPrefilledPassengers, useVehiclePrefill } from '@/lib/use-vehicle-prefill';
+import {
+  DEFAULT_DRIVER_PREFERENCE,
+  getDriverPreferenceOptions,
+  type DriverPreference,
+} from '@/lib/driver-preference';
 import styles from '../RouteBookingForm/RouteBookingForm.module.scss';
 
 interface Props {
@@ -38,6 +43,7 @@ export default function AirportBookingForm({ initialVehicleId, selectedAirport }
     meetSign: false,
     meetSignText: '',
     notes: '',
+    driverPreference: DEFAULT_DRIVER_PREFERENCE as DriverPreference,
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [status, setStatus] = useState<'idle' | 'success' | 'error'>('idle');
@@ -91,6 +97,7 @@ export default function AirportBookingForm({ initialVehicleId, selectedAirport }
     meetSign: false,
     meetSignText: '',
     notes: '',
+    driverPreference: DEFAULT_DRIVER_PREFERENCE as DriverPreference,
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -426,6 +433,24 @@ export default function AirportBookingForm({ initialVehicleId, selectedAirport }
                 required
               />
             </div>
+          </div>
+
+          <div className={styles.formGroup}>
+            <label className={styles.label}>
+              {ru ? 'Водитель' : 'Driver'}
+            </label>
+            <CustomSelect
+              variant="boxed"
+              name="driverPreference"
+              value={formData.driverPreference}
+              onChange={(value) =>
+                setFormData((prev) => ({
+                  ...prev,
+                  driverPreference: value as DriverPreference,
+                }))
+              }
+              options={getDriverPreferenceOptions(ru)}
+            />
           </div>
 
           <div className={styles.formGroup}>

@@ -1,6 +1,6 @@
 export const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
 
-export const MAX_CUSTOM_DISTANCE_KM = 300;
+export const MAX_CUSTOM_DISTANCE_KM = 2000;
 
 export interface InterCityDestination {
   id: number;
