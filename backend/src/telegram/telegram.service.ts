@@ -1,5 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { ProxyAgent, type Dispatcher } from 'undici';
 import { RouteBooking, AirportBooking, HourlyBooking } from '../entities/specialized-bookings.entity';
 
 @Injectable()
@@ -8,14 +9,22 @@ export class TelegramService {
   private readonly botToken: string | null;
   private readonly chatId: string | null;
   private readonly adminUrl: string;
+  private readonly dispatcher: Dispatcher | undefined;
 
   constructor(private configService: ConfigService) {
     this.botToken = this.configService.get<string>('TELEGRAM_BOT_TOKEN') ?? null;
     this.chatId = this.configService.get<string>('TELEGRAM_CHAT_ID') ?? null;
     this.adminUrl = this.configService.get<string>('FRONTEND_URL') ?? 'https://noir-ride.ru';
 
+    const proxy = this.configService.get<string>('TELEGRAM_PROXY');
+    this.dispatcher = proxy ? new ProxyAgent(proxy) : undefined;
+
     if (this.enabled) {
-      this.logger.log('Telegram notifications enabled');
+      this.logger.log(
+        proxy
+          ? 'Telegram notifications enabled (via proxy)'
+          : 'Telegram notifications enabled',
+      );
     } else {
       this.logger.warn(
         'Telegram notifications disabled — set TELEGRAM_BOT_TOKEN and TELEGRAM_CHAT_ID',
@@ -27,11 +36,23 @@ export class TelegramService {
     return Boolean(this.botToken && this.chatId);
   }
 
+  private formatFetchError(err: unknown): string {
+    if (!(err instanceof Error)) return String(err);
+
+    const cause = err.cause;
+    if (cause instanceof Error) {
+      const code = 'code' in cause ? String(cause.code) : '';
+      return code ? `${err.message} (${code}: ${cause.message})` : `${err.message} (${cause.message})`;
+    }
+
+    return err.message;
+  }
+
   private async send(text: string): Promise<void> {
     if (!this.enabled) return;
     try {
       const url = `https://api.telegram.org/bot${this.botToken}/sendMessage`;
-      await fetch(url, {
+      const response = await fetch(url, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -40,10 +61,17 @@ export class TelegramService {
           parse_mode: 'HTML',
           disable_web_page_preview: true,
         }),
-        signal: AbortSignal.timeout(5000),
+        signal: AbortSignal.timeout(10000),
+        // @ts-expect-error undici dispatcher is supported by Node fetch
+        dispatcher: this.dispatcher,
       });
+
+      if (!response.ok) {
+        const body = await response.text();
+        this.logger.warn(`Telegram API error ${response.status}: ${body.slice(0, 200)}`);
+      }
     } catch (err) {
-      this.logger.warn(`Telegram notification failed: ${String(err)}`);
+      this.logger.warn(`Telegram notification failed: ${this.formatFetchError(err)}`);
     }
   }
 
