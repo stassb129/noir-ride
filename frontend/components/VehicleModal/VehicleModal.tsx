@@ -3,23 +3,27 @@
 import { useEffect } from 'react';
 import { useLocale } from 'next-intl';
 import { getVehiclePhotos, type Vehicle, type ServiceType } from '@/lib/api/vehicles';
+import { getAirportPrice } from '@/lib/airport-pricing';
 import VehicleCarousel from '@/components/VehicleCarousel/VehicleCarousel';
 import styles from './VehicleModal.module.scss';
 
 interface VehicleModalProps {
   vehicle: Vehicle;
   serviceType?: ServiceType;
+  airportCode?: string;
   onClose: () => void;
   onSelect?: (id: number, name: string, price: number) => void;
   onOrder?: () => void;
 }
 
-function getPrice(v: Vehicle, type: ServiceType): number | null {
+function getPrice(v: Vehicle, type: ServiceType, airportCode?: string): number | null {
   if (type === 'intercity') {
     return v.pricePerKm != null ? Number(v.pricePerKm) : null;
   }
-  const raw = type === 'airport' ? v.priceAirport : v.priceHourly;
-  return raw != null ? Number(raw) : null;
+  if (type === 'airport') {
+    return getAirportPrice(v.priceAirport, airportCode);
+  }
+  return v.priceHourly != null ? Number(v.priceHourly) : null;
 }
 
 function fmt(n: number | null): string {
@@ -27,7 +31,14 @@ function fmt(n: number | null): string {
   return n.toLocaleString('ru-RU');
 }
 
-export default function VehicleModal({ vehicle, serviceType, onClose, onSelect, onOrder }: VehicleModalProps) {
+export default function VehicleModal({
+  vehicle,
+  serviceType,
+  airportCode,
+  onClose,
+  onSelect,
+  onOrder,
+}: VehicleModalProps) {
   const locale = useLocale();
   const ru = locale === 'ru';
 
@@ -61,10 +72,10 @@ export default function VehicleModal({ vehicle, serviceType, onClose, onSelect, 
     };
   }, []);
 
-  const priceAirport = vehicle.priceAirport ? Number(vehicle.priceAirport) : null;
+  const priceAirport = getAirportPrice(vehicle.priceAirport, airportCode);
   const pricePerKm = vehicle.pricePerKm ? Number(vehicle.pricePerKm) : null;
   const priceHourly = vehicle.priceHourly ? Number(vehicle.priceHourly) : null;
-  const currentPrice = serviceType ? getPrice(vehicle, serviceType) : null;
+  const currentPrice = serviceType ? getPrice(vehicle, serviceType, airportCode) : null;
 
   const handleSelect = () => {
     if (!onSelect) return;

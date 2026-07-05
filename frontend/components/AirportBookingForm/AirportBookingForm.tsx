@@ -222,6 +222,7 @@ export default function AirportBookingForm({ initialVehicleId, selectedAirport }
         <VehicleSelector
           serviceType="airport"
           variant="wide"
+          airportCode={selectedAirport}
           value={formData.vehicleId}
           onChange={(id, name, _price, maxPassengers) => {
             setVehicleError(null);

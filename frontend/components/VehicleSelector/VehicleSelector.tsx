@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useLocale } from 'next-intl';
 import { fetchVehicles, getVehiclePhotos, type Vehicle, type ServiceType } from '@/lib/api/vehicles';
+import { getAirportPrice } from '@/lib/airport-pricing';
 import VehicleModal from '@/components/VehicleModal/VehicleModal';
 import styles from './VehicleSelector.module.scss';
 
@@ -13,14 +14,17 @@ interface VehicleSelectorProps {
   value: number | null;
   onChange: (vehicleId: number, vehicleName: string, price: number, maxPassengers: number) => void;
   variant?: 'compact' | 'wide';
+  airportCode?: string;
 }
 
-function getPrice(v: Vehicle, type: ServiceType): number | null {
+function getPrice(v: Vehicle, type: ServiceType, airportCode?: string): number | null {
   if (type === 'intercity') {
     return v.pricePerKm != null ? Number(v.pricePerKm) : null;
   }
-  const raw = type === 'airport' ? v.priceAirport : v.priceHourly;
-  return raw != null ? Number(raw) : null;
+  if (type === 'airport') {
+    return getAirportPrice(v.priceAirport, airportCode);
+  }
+  return v.priceHourly != null ? Number(v.priceHourly) : null;
 }
 
 function priceLabel(price: number | null, type: ServiceType, locale: string): string {
@@ -35,6 +39,7 @@ export default function VehicleSelector({
   value,
   onChange,
   variant = 'compact',
+  airportCode,
 }: VehicleSelectorProps) {
   const locale = useLocale();
   const ru = locale === 'ru';
@@ -87,7 +92,7 @@ export default function VehicleSelector({
         </p>
         <div className={styles.grid}>
           {vehicles.map((v) => {
-            const price = getPrice(v, serviceType);
+            const price = getPrice(v, serviceType, airportCode);
             const isSelected = value === v.id;
             const coverPhoto = getVehiclePhotos(v)[0];
             return (
@@ -142,6 +147,7 @@ export default function VehicleSelector({
         <VehicleModal
           vehicle={modalVehicle}
           serviceType={serviceType}
+          airportCode={airportCode}
           onClose={() => setModalVehicle(null)}
           onSelect={(id, name, price) => {
             onChange(id, name, price, modalVehicle.passengers);
