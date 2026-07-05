@@ -67,6 +67,8 @@ export default function Navbar() {
     { href: `/${locale}#contacts`, label: locale === 'ru' ? 'Контакты' : 'Contact' },
   ];
 
+  const bookingHref = `/${locale}#booking-form`;
+
   return (
     <motion.nav
       className={`${styles.navbar} ${scrolled || isMenuOpen ? styles.scrolled : ''}`}
@@ -91,7 +93,7 @@ export default function Navbar() {
           })}
 
           <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-            <HashLink href={`/${locale}#booking`} className={styles.ctaButton}>
+            <HashLink href={bookingHref} className={styles.ctaButton}>
               {locale === 'ru' ? 'Забронировать' : 'Book'}
             </HashLink>
           </motion.div>
@@ -153,7 +155,7 @@ export default function Navbar() {
                 animate="visible"
               >
                 <HashLink
-                  href={`/${locale}#booking`}
+                  href={bookingHref}
                   className={styles.ctaButton}
                   onClick={() => setIsMenuOpen(false)}
                 >

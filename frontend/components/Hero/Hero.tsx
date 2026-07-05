@@ -82,7 +82,7 @@ export default function Hero() {
             </p>
           </motion.div>
 
-          <motion.div className={styles.bookingCardWrapper} variants={fadeInUp}>
+          <motion.div id="booking-form" className={styles.bookingCardWrapper} variants={fadeInUp}>
             <ContactForm />
           </motion.div>
         </motion.div>

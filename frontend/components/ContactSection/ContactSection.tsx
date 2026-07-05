@@ -45,6 +45,15 @@ export default function ContactSection() {
       external: false,
     },
     {
+      key: 'phone2',
+      label: ru ? 'Телефон' : 'Phone',
+      value: '+7 985 868 2304',
+      hint: ru ? 'Ежедневно: 9:00–21:00' : 'Daily: 9:00 AM–9:00 PM',
+      href: 'tel:+79858682304',
+      icon: Phone,
+      external: false,
+    },
+    {
       key: 'email',
       label: 'Email',
       value: SITE_CONTACTS.email,
@@ -60,15 +69,6 @@ export default function ContactSection() {
       hint: ru ? 'Быстрые ответы в мессенджере' : 'Quick replies in messenger',
       href: SITE_CONTACTS.telegram,
       icon: TelegramIcon,
-      external: true,
-    },
-    {
-      key: 'instagram',
-      label: 'Instagram',
-      value: SITE_CONTACTS.instagramLabel,
-      hint: ru ? 'Новости и фото автопарка' : 'News and fleet photos',
-      href: SITE_CONTACTS.instagram,
-      icon: InstagramIcon,
       external: true,
     },
   ];
@@ -96,7 +96,7 @@ export default function ContactSection() {
         <div className={styles.grid}>
           {channels.map((channel) => {
             const Icon = channel.icon;
-            const isLucide = channel.key === 'phone' || channel.key === 'email';
+            const isLucide = channel.key === 'phone' || channel.key === 'phone2' || channel.key === 'email';
             return (
               <a
                 key={channel.key}
@@ -118,27 +118,6 @@ export default function ContactSection() {
               </a>
             );
           })}
-        </div>
-
-        <div className={styles.socialBlock}>
-          <p className={styles.socialLabel}>{ru ? 'Мы в соцсетях' : 'Follow us'}</p>
-          <div className={styles.socialRow}>
-            {socials.map((social) => {
-              const Icon = social.icon;
-              return (
-                <a
-                  key={social.key}
-                  href={social.href}
-                  className={styles.socialLink}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <Icon />
-                  {social.label}
-                </a>
-              );
-            })}
-          </div>
         </div>
       </div>
     </section>

@@ -392,7 +392,7 @@ export default function RouteBookingForm({ prefilledData, initialVehicleId }: Pr
                 required
               />
               <datalist id="from-list">
-                {fromCities.map((c) => <option key={c} value={c} />)}
+                {[...new Set(fromCities)].map((c) => <option key={c} value={c} />)}
               </datalist>
               {renderCitySuggestion('from', typoSuggestions.from)}
             </div>
@@ -410,7 +410,7 @@ export default function RouteBookingForm({ prefilledData, initialVehicleId }: Pr
                 required
               />
               <datalist id="to-list">
-                {toCities.map((c) => <option key={c} value={c} />)}
+                {[...new Set(toCities)].map((c) => <option key={c} value={c} />)}
               </datalist>
               {renderCitySuggestion('to', typoSuggestions.to)}
             </div>
