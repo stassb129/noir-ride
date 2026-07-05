@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { useLocale } from 'next-intl';
 import { motion } from 'framer-motion';
 import CustomSelect from '@/components/ui/CustomSelect/CustomSelect';
+import PhoneInput from '@/components/ui/PhoneInput/PhoneInput';
 import VehicleSelector from '@/components/VehicleSelector/VehicleSelector';
 import { getMinBookingDate, getBookingDateError, isBookingDateValid } from '@/lib/booking-date';
 import { clampPassengers, parsePassengersInput } from '@/lib/booking-passengers';
@@ -14,6 +15,7 @@ import {
   getDriverPreferenceOptions,
   type DriverPreference,
 } from '@/lib/driver-preference';
+import { getPhoneValidationError } from '@/lib/phone';
 import styles from '../RouteBookingForm/RouteBookingForm.module.scss';
 
 export default function HourlyBookingForm({ initialVehicleId }: { initialVehicleId?: number | null }) {
@@ -38,6 +40,7 @@ export default function HourlyBookingForm({ initialVehicleId }: { initialVehicle
   const [status, setStatus] = useState<'idle' | 'success' | 'error'>('idle');
   const [dateError, setDateError] = useState<string | null>(null);
   const [vehicleError, setVehicleError] = useState<string | null>(null);
+  const [phoneError, setPhoneError] = useState<string | null>(null);
   const [vehicleMaxPassengers, setVehicleMaxPassengers] = useState<number | null>(null);
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
 
@@ -86,9 +89,16 @@ export default function HourlyBookingForm({ initialVehicleId }: { initialVehicle
       return;
     }
 
+    const phoneValidationError = getPhoneValidationError(formData.phone, locale);
+    if (phoneValidationError) {
+      setPhoneError(phoneValidationError);
+      return;
+    }
+
     setIsSubmitting(true);
     setStatus('idle');
     setVehicleError(null);
+    setPhoneError(null);
 
     try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/bookings/hourly`, {
@@ -197,13 +207,14 @@ export default function HourlyBookingForm({ initialVehicleId }: { initialVehicle
               <label className={styles.label}>
                 {ru ? 'Телефон' : 'Phone'}
               </label>
-              <input
-                type="tel"
-                name="phone"
+              <PhoneInput
                 value={formData.phone}
-                onChange={handleChange}
-                placeholder="+7 999 123 45 67"
-                className={styles.input}
+                onChange={(value) => {
+                  setFormData((prev) => ({ ...prev, phone: value }));
+                  setPhoneError(null);
+                }}
+                onBlur={(phone) => setPhoneError(getPhoneValidationError(phone, locale))}
+                error={phoneError}
                 required
               />
             </div>

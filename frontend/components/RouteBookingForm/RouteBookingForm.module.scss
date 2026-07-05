@@ -207,6 +207,13 @@
   margin-top: $spacing-xs;
 }
 
+.routeExtras {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  margin-bottom: $spacing-md;
+}
+
 .tollNotice {
   display: flex;
   align-items: flex-start;

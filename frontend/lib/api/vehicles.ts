@@ -21,13 +21,29 @@ export interface Vehicle {
   sortOrder?: number;
 }
 
+export function resolveVehiclePhotoUrl(url: string): string {
+  const trimmed = url.trim();
+  if (!trimmed) return trimmed;
+  if (/^https?:\/\//i.test(trimmed)) return trimmed;
+
+  const path = trimmed.startsWith('/') ? trimmed : `/${trimmed}`;
+  const lastSlash = path.lastIndexOf('/');
+  const dir = path.slice(0, lastSlash + 1);
+  const file = path.slice(lastSlash + 1);
+  return dir + encodeURIComponent(file);
+}
+
 export function getVehiclePhotos(vehicle: Pick<Vehicle, 'photoUrl' | 'photos'>): string[] {
   const fromArray = Array.isArray(vehicle.photos)
     ? vehicle.photos.map((url) => url?.trim()).filter(Boolean)
     : [];
-  if (fromArray.length > 0) return fromArray;
-  if (vehicle.photoUrl?.trim()) return [vehicle.photoUrl.trim()];
-  return [];
+  const urls = fromArray.length > 0
+    ? fromArray
+    : vehicle.photoUrl?.trim()
+      ? [vehicle.photoUrl.trim()]
+      : [];
+
+  return urls.map(resolveVehiclePhotoUrl);
 }
 
 export async function fetchVehicles(): Promise<Vehicle[]> {

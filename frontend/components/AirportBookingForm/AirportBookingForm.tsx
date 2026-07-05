@@ -1,9 +1,10 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useLocale } from 'next-intl';
 import { motion } from 'framer-motion';
 import CustomSelect from '@/components/ui/CustomSelect/CustomSelect';
+import PhoneInput from '@/components/ui/PhoneInput/PhoneInput';
 import VehicleSelector from '@/components/VehicleSelector/VehicleSelector';
 import { getMinBookingDate, getBookingDateError, isBookingDateValid } from '@/lib/booking-date';
 import { clampPassengers, parsePassengersInput } from '@/lib/booking-passengers';
@@ -14,6 +15,11 @@ import {
   getDriverPreferenceOptions,
   type DriverPreference,
 } from '@/lib/driver-preference';
+import { getPhoneValidationError } from '@/lib/phone';
+import {
+  buildYandexRouteMapUrl,
+  getAirportRoutePoints,
+} from '@/lib/airport-route';
 import styles from '../RouteBookingForm/RouteBookingForm.module.scss';
 
 interface Props {
@@ -42,6 +48,7 @@ export default function AirportBookingForm({ initialVehicleId, selectedAirport }
     luggage: 2,
     meetSign: false,
     meetSignText: '',
+    useTollRoads: false,
     notes: '',
     driverPreference: DEFAULT_DRIVER_PREFERENCE as DriverPreference,
   });
@@ -50,6 +57,8 @@ export default function AirportBookingForm({ initialVehicleId, selectedAirport }
   const [dateError, setDateError] = useState<string | null>(null);
   const [vehicleError, setVehicleError] = useState<string | null>(null);
   const [meetSignError, setMeetSignError] = useState<string | null>(null);
+  const [phoneError, setPhoneError] = useState<string | null>(null);
+  const [mapOpen, setMapOpen] = useState(false);
   const [vehicleMaxPassengers, setVehicleMaxPassengers] = useState<number | null>(null);
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
 
@@ -96,9 +105,30 @@ export default function AirportBookingForm({ initialVehicleId, selectedAirport }
     luggage: 2,
     meetSign: false,
     meetSignText: '',
+    useTollRoads: false,
     notes: '',
     driverPreference: DEFAULT_DRIVER_PREFERENCE as DriverPreference,
   });
+
+  const routePoints = useMemo(
+    () =>
+      getAirportRoutePoints({
+        airportCode: selectedAirport,
+        address: formData.address,
+        serviceType: formData.serviceType as 'pickup' | 'dropoff',
+        ru,
+      }),
+    [selectedAirport, formData.address, formData.serviceType, ru],
+  );
+
+  const mapUrl = useMemo(
+    () => (routePoints ? buildYandexRouteMapUrl(routePoints.from, routePoints.to, ru) : null),
+    [routePoints, ru],
+  );
+
+  useEffect(() => {
+    setMapOpen(false);
+  }, [formData.address, formData.serviceType, selectedAirport]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -119,10 +149,17 @@ export default function AirportBookingForm({ initialVehicleId, selectedAirport }
       return;
     }
 
+    const phoneValidationError = getPhoneValidationError(formData.phone, locale);
+    if (phoneValidationError) {
+      setPhoneError(phoneValidationError);
+      return;
+    }
+
     setIsSubmitting(true);
     setStatus('idle');
     setVehicleError(null);
     setMeetSignError(null);
+    setPhoneError(null);
 
     try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/bookings/airport`, {
@@ -138,6 +175,7 @@ export default function AirportBookingForm({ initialVehicleId, selectedAirport }
             formData.serviceType === 'pickup' && formData.meetSign
               ? formData.meetSignText.trim()
               : null,
+          useTollRoads: formData.useTollRoads,
         }),
       });
 
@@ -230,13 +268,14 @@ export default function AirportBookingForm({ initialVehicleId, selectedAirport }
               <label className={styles.label}>
                 {ru ? 'Телефон' : 'Phone'}
               </label>
-              <input
-                type="tel"
-                name="phone"
+              <PhoneInput
                 value={formData.phone}
-                onChange={handleChange}
-                placeholder="+7 999 123 45 67"
-                className={styles.input}
+                onChange={(value) => {
+                  setFormData((prev) => ({ ...prev, phone: value }));
+                  setPhoneError(null);
+                }}
+                onBlur={(phone) => setPhoneError(getPhoneValidationError(phone, locale))}
+                error={phoneError}
                 required
               />
             </div>
@@ -300,6 +339,73 @@ export default function AirportBookingForm({ initialVehicleId, selectedAirport }
             />
           </div>
 
+          {routePoints && (
+            <div className={styles.routeExtras}>
+              <div className={styles.formGroup}>
+                <label className={styles.label}>
+                  {ru ? 'Платные дороги' : 'Toll roads'}
+                </label>
+                <CustomSelect
+                  variant="boxed"
+                  name="useTollRoads"
+                  value={formData.useTollRoads ? 'yes' : 'no'}
+                  onChange={(value) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      useTollRoads: value === 'yes',
+                    }))
+                  }
+                  options={[
+                    {
+                      value: 'no',
+                      label: ru ? 'Без платных дорог' : 'Avoid toll roads',
+                    },
+                    {
+                      value: 'yes',
+                      label: ru ? 'Можно по платным' : 'Toll roads OK',
+                    },
+                  ]}
+                />
+              </div>
+
+              <div className={styles.tollNotice}>
+                <span className={styles.tollNoticeIcon} aria-hidden>⚠</span>
+                <span>
+                  {formData.useTollRoads
+                    ? (ru
+                        ? 'Маршрут может проходить по платным участкам (М-11, М-4, ЦКАД и др.). Стоимость проезда не включена в цену и оплачивается отдельно.'
+                        : 'The route may use toll roads (M-11, M-4, CKAD, etc.). Toll fees are not included and are paid separately.')
+                    : (ru
+                        ? 'Построим маршрут без платных дорог, где это возможно. Это может увеличить время в пути.'
+                        : 'We will plan a route avoiding toll roads where possible. This may increase travel time.')}
+                </span>
+              </div>
+
+              <button
+                type="button"
+                className={styles.mapToggleBtn}
+                onClick={() => setMapOpen((open) => !open)}
+              >
+                {mapOpen
+                  ? (ru ? '✕ Скрыть карту' : '✕ Hide map')
+                  : (ru ? '🗺 Показать маршрут на карте' : '🗺 Show route on map')}
+              </button>
+
+              {mapOpen && mapUrl && (
+                <div className={styles.mapWrap}>
+                  <iframe
+                    title={ru ? 'Маршрут до аэропорта' : 'Route to airport'}
+                    src={mapUrl}
+                    className={styles.mapFrame}
+                    allowFullScreen
+                    loading="lazy"
+                    referrerPolicy="no-referrer-when-downgrade"
+                  />
+                </div>
+              )}
+            </div>
+          )}
+
           <div className={styles.row}>
             <div className={styles.formGroup}>
               <label className={styles.label}>
@@ -354,7 +460,7 @@ export default function AirportBookingForm({ initialVehicleId, selectedAirport }
             {formData.serviceType === 'pickup' && (
               <div className={styles.formGroup}>
                 <label className={styles.label}>
-                  {ru ? 'Встреча с табличкой' : 'Meet & greet sign'}
+                  {ru ? 'Способ встречи' : 'Meeting option'}
                 </label>
                 <CustomSelect
                   variant="boxed"
@@ -369,7 +475,7 @@ export default function AirportBookingForm({ initialVehicleId, selectedAirport }
                     }))
                   }
                   options={[
-                    { value: 'no', label: ru ? 'Без таблички' : 'No sign' },
+                    { value: 'no', label: ru ? 'По звонку' : 'Phone call on arrival' },
                     { value: 'yes', label: ru ? 'С табличкой' : 'With sign' },
                   ]}
                 />

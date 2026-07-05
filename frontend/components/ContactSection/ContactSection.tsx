@@ -39,7 +39,7 @@ export default function ContactSection() {
       key: 'phone',
       label: ru ? 'Телефон' : 'Phone',
       value: SITE_CONTACTS.phoneDisplay,
-      hint: ru ? 'Ежедневно, 9:00–21:00' : 'Daily, 9:00 AM–9:00 PM',
+      hint: ru ? 'Ежедневно: 9:00–21:00' : 'Daily: 9:00 AM–9:00 PM',
       href: phoneHref(),
       icon: Phone,
       external: false,

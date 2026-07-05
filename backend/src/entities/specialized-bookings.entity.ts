@@ -110,6 +110,9 @@ export class AirportBooking {
   @Column({ type: 'varchar', nullable: true })
   meetSignText: string | null;
 
+  @Column({ default: false })
+  useTollRoads: boolean;
+
   @Column({ type: 'text', nullable: true })
   notes: string;
 

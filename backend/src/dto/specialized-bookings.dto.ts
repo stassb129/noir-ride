@@ -112,6 +112,10 @@ export class CreateAirportBookingDto {
   @IsNotEmpty()
   meetSignText?: string;
 
+  @IsBoolean()
+  @IsOptional()
+  useTollRoads?: boolean;
+
   @IsString()
   @IsOptional()
   notes?: string;

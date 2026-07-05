@@ -126,7 +126,12 @@ export class TelegramService {
       `🚘 Автомобиль: ${b.vehicleName || '—'}`,
       `👥 Пассажиров: ${b.passengers}`,
       `🧳 Багаж: ${b.luggage}`,
-      b.meetSign ? `🪧 Табличка: ${b.meetSignText || b.name}` : null,
+      b.serviceType === 'pickup'
+        ? (b.meetSign
+            ? `🪧 Табличка: ${b.meetSignText || b.name}`
+            : '📞 Встреча: по звонку')
+        : null,
+      `🛣 Платные дороги: ${b.useTollRoads ? 'можно' : 'без платных'}`,
       `👨‍✈️ Водитель: ${this.driverLabel(b.driverPreference)}`,
       b.notes ? `💬 Комментарий: ${b.notes}` : null,
       ``,

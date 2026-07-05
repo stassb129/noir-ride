@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { fetchWithAuth } from '@/lib/utils/fetchWithAuth';
+import { getVehiclePhotos } from '@/lib/api/vehicles';
 import styles from './fleet.module.scss';
 
 interface Vehicle {
@@ -157,10 +158,12 @@ export default function FleetPage() {
         <p className={styles.empty}>Автопарк пуст. Нажмите «Заполнить стандартными» или добавьте вручную.</p>
       ) : (
         <div className={styles.grid}>
-          {vehicles.map((v) => (
+          {vehicles.map((v) => {
+            const coverPhoto = getVehiclePhotos(v)[0];
+            return (
             <div key={v.id} className={styles.card}>
-              {v.photoUrl ? (
-                <img src={v.photoUrl} alt={v.model} className={styles.cardPhoto} />
+              {coverPhoto ? (
+                <img src={coverPhoto} alt={v.model} className={styles.cardPhoto} />
               ) : (
                 <div className={styles.cardPhotoPlaceholder}>🚗</div>
               )}
@@ -199,7 +202,8 @@ export default function FleetPage() {
                 </div>
               </div>
             </div>
-          ))}
+            );
+          })}
         </div>
       )}
 
@@ -234,7 +238,7 @@ export default function FleetPage() {
                   }}
                   className={`${styles.input} ${styles.textarea}`}
                   rows={4}
-                  placeholder="https://example.com/photo1.jpg&#10;https://example.com/photo2.jpg"
+                  placeholder="/fleet/Mercedes-Benz E-Class 213.png&#10;/fleet/Mercedes-Benz E-Class 214.png"
                 />
               </div>
               {textarea('description', 'Описание автомобиля')}

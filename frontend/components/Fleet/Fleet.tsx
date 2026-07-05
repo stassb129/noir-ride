@@ -138,23 +138,19 @@ export default function Fleet() {
                     variants={vehicleVariants}
                     whileHover="hover"
                   >
-                    <motion.div
-                      className={styles.vehicleImage}
-                      style={
-                        coverPhoto
-                          ? {
-                              background: `linear-gradient(135deg, rgba(10, 10, 10, 0.4), rgba(10, 10, 10, 0.7)), url(${coverPhoto})`,
-                              backgroundSize: 'cover',
-                              backgroundPosition: 'center',
-                            }
-                          : undefined
-                      }
-                      whileHover={{ scale: 1.05 }}
-                      transition={{ duration: 0.6, ease: EASE_OUT_EXPO }}
-                    >
-                      {!coverPhoto && <span className={styles.photoPlaceholder}>🚗</span>}
-                    </motion.div>
-                    <div className={styles.vehicleOverlay} />
+                    <div className={styles.vehicleImageWrap}>
+                      {coverPhoto ? (
+                        <motion.img
+                          src={coverPhoto}
+                          alt={`${vehicle.brand} ${vehicle.model}`}
+                          className={styles.vehiclePhoto}
+                          whileHover={{ scale: 1.03 }}
+                          transition={{ duration: 0.6, ease: EASE_OUT_EXPO }}
+                        />
+                      ) : (
+                        <span className={styles.photoPlaceholder}>🚗</span>
+                      )}
+                    </div>
 
                     <div className={styles.vehicleContent}>
                       <h3 className={styles.vehicleName}>

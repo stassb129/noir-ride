@@ -11,6 +11,12 @@
   z-index: 2000;
   padding: $spacing-lg;
   backdrop-filter: blur(6px);
+  overscroll-behavior: none;
+
+  @include mobile {
+    align-items: stretch;
+    padding: 0;
+  }
 }
 
 /* ─── Modal shell ──────────────────────────────── */
@@ -25,10 +31,16 @@
   display: flex;
   flex-direction: column;
   position: relative;
+  min-height: 0;
 
   @include mobile {
     width: 100%;
-    max-height: 95vh;
+    max-width: 100%;
+    max-height: 100dvh;
+    height: 100dvh;
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
   }
 }
 
@@ -51,6 +63,11 @@
   z-index: 10;
   backdrop-filter: blur(4px);
 
+  @include mobile {
+    top: calc($spacing-md + env(safe-area-inset-top, 0px));
+    right: $spacing-md;
+  }
+
   &:hover {
     background: rgba($accent-gold, 0.15);
     border-color: rgba($accent-gold, 0.4);
@@ -66,9 +83,10 @@
   overflow: hidden;
   align-items: stretch;
 
-  @media (max-width: 720px) {
+  @include mobile {
     grid-template-columns: 1fr;
-    overflow-y: auto;
+    grid-template-rows: auto minmax(0, 1fr);
+    overflow: hidden;
   }
 }
 
@@ -81,10 +99,14 @@
   padding: $spacing-2xl $spacing-xl;
   border-right: 1px solid $border-subtle;
 
-  @media (max-width: 720px) {
-    padding: $spacing-lg;
+  @include mobile {
+    padding: $spacing-lg $spacing-lg $spacing-md;
+    padding-top: calc($spacing-lg + env(safe-area-inset-top, 0px));
     border-right: none;
     border-bottom: 1px solid $border-subtle;
+    flex-shrink: 0;
+    max-height: 42dvh;
+    overflow: hidden;
   }
 }
 
@@ -94,34 +116,45 @@
   flex-direction: column;
   min-height: 0;
   overflow: hidden;
+
+  @include mobile {
+    min-height: 0;
+  }
 }
 
 /* ─── Scrollable content ───────────────────────── */
 .contentCol {
   flex: 1;
+  min-height: 0;
   overflow-y: auto;
+  overflow-x: hidden;
   padding: $spacing-2xl $spacing-2xl $spacing-lg;
   display: flex;
   flex-direction: column;
   gap: $spacing-lg;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+  touch-action: pan-y;
 
   scrollbar-width: thin;
-  scrollbar-color: rgba($accent-gold, 0.3) transparent;
+  scrollbar-color: rgba($accent-gold, 0.45) rgba($text-muted, 0.12);
 
   &::-webkit-scrollbar {
-    width: 4px;
+    width: 6px;
   }
   &::-webkit-scrollbar-track {
-    background: transparent;
+    background: rgba($text-muted, 0.08);
+    border-radius: 3px;
   }
   &::-webkit-scrollbar-thumb {
-    background: rgba($accent-gold, 0.3);
-    border-radius: 2px;
+    background: rgba($accent-gold, 0.45);
+    border-radius: 3px;
   }
 
-  @media (max-width: 720px) {
+  @include mobile {
     padding: $spacing-lg;
-    overflow: visible;
+    padding-bottom: calc($spacing-md + env(safe-area-inset-bottom, 0px));
+    overflow-y: scroll;
   }
 }
 
@@ -132,8 +165,9 @@
   border-top: 1px solid $border-subtle;
   background: $bg-secondary;
 
-  @media (max-width: 720px) {
-    padding: $spacing-md $spacing-lg $spacing-lg;
+  @include mobile {
+    padding: $spacing-md $spacing-lg;
+    padding-bottom: calc($spacing-lg + env(safe-area-inset-bottom, 0px));
   }
 }
 

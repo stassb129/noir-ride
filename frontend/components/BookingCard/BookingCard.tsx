@@ -7,6 +7,8 @@ import { apiClient, Booking } from '@/lib/api/client';
 import { getMinBookingDate, getBookingDateError, isBookingDateValid } from '@/lib/booking-date';
 import { EASE_OUT_EXPO } from '@/lib/motion-easing';
 import CustomSelect from '@/components/ui/CustomSelect/CustomSelect';
+import PhoneInput from '@/components/ui/PhoneInput/PhoneInput';
+import { getPhoneValidationError } from '@/lib/phone';
 import styles from './BookingCard.module.scss';
 
 export default function BookingCard() {
@@ -18,6 +20,8 @@ export default function BookingCard() {
   const [dateError, setDateError] = useState<string | null>(null);
   const [serviceType, setServiceType] = useState<Booking['serviceType']>('intercity');
   const [vehicleType, setVehicleType] = useState('business');
+  const [phone, setPhone] = useState('');
+  const [phoneError, setPhoneError] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -26,6 +30,12 @@ export default function BookingCard() {
     const dateValidationError = getBookingDateError(date, locale, minDate);
     if (!isBookingDateValid(date, minDate)) {
       setDateError(dateValidationError);
+      return;
+    }
+
+    const phoneValidationError = getPhoneValidationError(phone, locale);
+    if (phoneValidationError) {
+      setPhoneError(phoneValidationError);
       return;
     }
 
@@ -44,7 +54,7 @@ export default function BookingCard() {
         passengers: parseInt(formData.get('passengers') as string, 10),
         customerName: formData.get('name') as string,
         customerEmail: formData.get('email') as string,
-        customerPhone: formData.get('phone') as string,
+        customerPhone: phone,
         notes: formData.get('notes') as string,
         price: 0,
       };
@@ -55,6 +65,8 @@ export default function BookingCard() {
       e.currentTarget.reset();
       setDate('');
       setDateError(null);
+      setPhone('');
+      setPhoneError(null);
       setServiceType('intercity');
       setVehicleType('business');
     } catch (err: any) {
@@ -106,14 +118,15 @@ export default function BookingCard() {
           <label className={styles.label}>
             {locale === 'ru' ? 'Телефон' : 'Phone'}
           </label>
-          <input
-            type="tel"
-            name="phone"
-            placeholder="+7 999 123 45 67"
-            pattern="^\+?[1-9]\d{1,14}$"
-            className={styles.input}
+          <PhoneInput
+            value={phone}
+            onChange={(value) => {
+              setPhone(value);
+              setPhoneError(null);
+            }}
+            onBlur={(phone) => setPhoneError(getPhoneValidationError(phone, locale))}
+            error={phoneError}
             required
-            title={locale === 'ru' ? 'Введите корректный номер телефона' : 'Enter a valid phone number'}
           />
         </div>
 

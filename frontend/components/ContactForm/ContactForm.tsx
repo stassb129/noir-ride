@@ -3,6 +3,8 @@
 import { useState } from 'react';
 import { useLocale } from 'next-intl';
 import { motion } from 'framer-motion';
+import PhoneInput from '@/components/ui/PhoneInput/PhoneInput';
+import { getPhoneValidationError } from '@/lib/phone';
 import { EASE_OUT_EXPO } from '@/lib/motion-easing';
 import styles from './ContactForm.module.scss';
 
@@ -10,13 +12,22 @@ export default function ContactForm() {
   const locale = useLocale();
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
+  const [phoneError, setPhoneError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [status, setStatus] = useState<'idle' | 'success' | 'error'>('idle');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    const phoneValidationError = getPhoneValidationError(phone, locale);
+    if (phoneValidationError) {
+      setPhoneError(phoneValidationError);
+      return;
+    }
+
     setIsSubmitting(true);
     setStatus('idle');
+    setPhoneError(null);
 
     try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/contacts`, {
@@ -75,12 +86,14 @@ export default function ContactForm() {
           <label className={styles.label}>
             {locale === 'ru' ? 'Введите ваш телефон:' : 'Enter your phone:'}
           </label>
-          <input
-            type="tel"
+          <PhoneInput
             value={phone}
-            onChange={(e) => setPhone(e.target.value)}
-            placeholder="+7 (000) 000-00-00"
-            className={styles.input}
+            onChange={(value) => {
+              setPhone(value);
+              setPhoneError(null);
+            }}
+            onBlur={(phone) => setPhoneError(getPhoneValidationError(phone, locale))}
+            error={phoneError}
             required
           />
         </div>

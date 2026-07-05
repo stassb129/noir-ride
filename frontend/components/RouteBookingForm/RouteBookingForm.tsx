@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { useLocale } from 'next-intl';
 import { motion } from 'framer-motion';
 import CustomSelect from '@/components/ui/CustomSelect/CustomSelect';
+import PhoneInput from '@/components/ui/PhoneInput/PhoneInput';
 import VehicleSelector from '@/components/VehicleSelector/VehicleSelector';
 import { fetchVehicles, type Vehicle } from '@/lib/api/vehicles';
 import {
@@ -18,6 +19,7 @@ import {
 import { clampPassengers, parsePassengersInput } from '@/lib/booking-passengers';
 import { getPrefilledPassengers, useVehiclePrefill } from '@/lib/use-vehicle-prefill';
 import { getMinBookingDate, getBookingDateError, isBookingDateValid } from '@/lib/booking-date';
+import { getPhoneValidationError } from '@/lib/phone';
 import {
   collectKnownCities,
   collectTypoCandidates,
@@ -102,6 +104,7 @@ export default function RouteBookingForm({ prefilledData, initialVehicleId }: Pr
 
   const [dateError, setDateError] = useState<string | null>(null);
   const [vehicleError, setVehicleError] = useState<string | null>(null);
+  const [phoneError, setPhoneError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [status, setStatus] = useState<'idle' | 'success' | 'error'>('idle');
   const [typoSuggestions, setTypoSuggestions] = useState<{ from: string | null; to: string | null }>({
@@ -262,6 +265,11 @@ export default function RouteBookingForm({ prefilledData, initialVehicleId }: Pr
       setVehicleError(ru ? 'Выберите автомобиль' : 'Please choose a vehicle');
       return;
     }
+    const phoneValidationError = getPhoneValidationError(form.phone, ru ? 'ru' : 'en');
+    if (phoneValidationError) {
+      setPhoneError(phoneValidationError);
+      return;
+    }
     if (!isDistanceOk) {
       return;
     }
@@ -272,6 +280,7 @@ export default function RouteBookingForm({ prefilledData, initialVehicleId }: Pr
     setIsSubmitting(true);
     setStatus('idle');
     setVehicleError(null);
+    setPhoneError(null);
 
     try {
       const res = await fetch(`${API_URL}/bookings/route`, {
@@ -514,7 +523,16 @@ export default function RouteBookingForm({ prefilledData, initialVehicleId }: Pr
             </div>
             <div className={styles.formGroup}>
               <label className={styles.label}>{ru ? 'Телефон *' : 'Phone *'}</label>
-              <input className={styles.input} type="tel" value={form.phone} onChange={(e) => set('phone', e.target.value)} required />
+              <PhoneInput
+                value={form.phone}
+                onChange={(value) => {
+                  set('phone', value);
+                  setPhoneError(null);
+                }}
+                onBlur={(phone) => setPhoneError(getPhoneValidationError(phone, ru ? 'ru' : 'en'))}
+                error={phoneError}
+                required
+              />
             </div>
           </div>
 

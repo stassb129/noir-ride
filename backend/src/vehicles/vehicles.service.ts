@@ -3,10 +3,14 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Vehicle } from '../entities/vehicle.entity';
 
+const fleetPhoto = (filename: string) => `/fleet/${filename}`;
+
 const SEED_VEHICLES: Partial<Vehicle>[] = [
   {
     brand: 'Mercedes-Benz',
     model: 'E-Class 213',
+    photoUrl: fleetPhoto('Mercedes-Benz E-Class 213.png'),
+    photos: [fleetPhoto('Mercedes-Benz E-Class 213.png')],
     category: 'Бизнес-класс',
     description:
       'MERCEDES-BENZ E-CLASS W213 — это эталон бизнес-класса среди седанов. ' +
@@ -26,6 +30,8 @@ const SEED_VEHICLES: Partial<Vehicle>[] = [
   {
     brand: 'Mercedes-Benz',
     model: 'E-Class 213 Рестайлинг',
+    photoUrl: fleetPhoto('Mercedes-Benz E-Class 213 Рестайлинг.png'),
+    photos: [fleetPhoto('Mercedes-Benz E-Class 213 Рестайлинг.png')],
     category: 'Бизнес-класс',
     description:
       'MERCEDES-BENZ E-CLASS W213 РЕСТАЙЛИНГ — обновлённое поколение флагманского ' +
@@ -45,6 +51,8 @@ const SEED_VEHICLES: Partial<Vehicle>[] = [
   {
     brand: 'Mercedes-Benz',
     model: 'E-Class 214',
+    photoUrl: fleetPhoto('Mercedes-Benz E-Class 214.png'),
+    photos: [fleetPhoto('Mercedes-Benz E-Class 214.png')],
     category: 'Бизнес-класс',
     description:
       'MERCEDES-BENZ E-CLASS W214 — абсолютно новое поколение с революционным ' +
@@ -64,6 +72,8 @@ const SEED_VEHICLES: Partial<Vehicle>[] = [
   {
     brand: 'Mercedes-Benz',
     model: 'S-Class 222',
+    photoUrl: fleetPhoto('Mercedes-Benz S-Class 222.png'),
+    photos: [fleetPhoto('Mercedes-Benz S-Class 222.png')],
     category: 'Представительский',
     description:
       'MERCEDES-BENZ S-CLASS W222 — флагман представительского класса, задающий ' +
@@ -83,6 +93,8 @@ const SEED_VEHICLES: Partial<Vehicle>[] = [
   {
     brand: 'Mercedes-Benz',
     model: 'S-Class 223',
+    photoUrl: fleetPhoto('Mercedes-Benz S-Class 223.png'),
+    photos: [fleetPhoto('Mercedes-Benz S-Class 223.png')],
     category: 'Представительский',
     description:
       'MERCEDES-BENZ S-CLASS W223 — актуальное поколение самого передового седана ' +
@@ -102,6 +114,8 @@ const SEED_VEHICLES: Partial<Vehicle>[] = [
   {
     brand: 'Mercedes-Benz',
     model: 'Maybach 222',
+    photoUrl: fleetPhoto('Maybach 222.png'),
+    photos: [fleetPhoto('Maybach 222.png')],
     category: 'Ультра-люкс',
     description:
       'MERCEDES-MAYBACH S-CLASS W222 — это вершина роскоши в сегменте седанов. ' +
@@ -121,6 +135,8 @@ const SEED_VEHICLES: Partial<Vehicle>[] = [
   {
     brand: 'Mercedes-Benz',
     model: 'Maybach 223',
+    photoUrl: fleetPhoto('Maybach 223.png'),
+    photos: [fleetPhoto('Maybach 223.png')],
     category: 'Ультра-люкс',
     description:
       'MERCEDES-MAYBACH S-CLASS W223 — новейшее воплощение ультра-роскоши с ' +
@@ -140,6 +156,8 @@ const SEED_VEHICLES: Partial<Vehicle>[] = [
   {
     brand: 'Mercedes-Benz',
     model: 'G-Class 463',
+    photoUrl: fleetPhoto('G-Class 463.png'),
+    photos: [fleetPhoto('G-Class 463.png')],
     category: 'Внедорожник',
     description:
       'MERCEDES-BENZ G-CLASS W463 — легендарный внедорожник с культовым дизайном, ' +
@@ -159,6 +177,8 @@ const SEED_VEHICLES: Partial<Vehicle>[] = [
   {
     brand: 'Mercedes-Benz',
     model: 'V-Class',
+    photoUrl: fleetPhoto('Mercedes V class.png'),
+    photos: [fleetPhoto('Mercedes V class.png')],
     category: 'Минивэн',
     description:
       'MERCEDES-BENZ V-CLASS — премиальный минивэн для поездок компанией до шести человек. ' +
@@ -247,6 +267,8 @@ export class VehiclesService {
           priceHourly: v.priceHourly,
           pricePerKm: v.pricePerKm,
           sortOrder: v.sortOrder,
+          photoUrl: v.photoUrl,
+          photos: v.photos,
         });
       } else {
         await this.repo.save(this.repo.create(v));

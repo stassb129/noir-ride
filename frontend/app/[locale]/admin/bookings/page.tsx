@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { fetchWithAuth } from '@/lib/utils/fetchWithAuth';
 import CustomSelect from '@/components/ui/CustomSelect/CustomSelect';
+import PhoneInput from '@/components/ui/PhoneInput/PhoneInput';
 import { getDriverPreferenceLabel, getDriverPreferenceOptions } from '@/lib/driver-preference';
 import styles from './bookings.module.scss';
 
@@ -47,6 +48,7 @@ interface AirportBooking extends BaseBooking {
   luggage: number;
   meetSign?: boolean;
   meetSignText?: string | null;
+  useTollRoads?: boolean;
 }
 
 interface HourlyBooking extends BaseBooking {
@@ -190,6 +192,7 @@ export default function AllBookingsPage() {
           luggage: 1,
           meetSign: false,
           meetSignText: '',
+          useTollRoads: false,
           notes: '',
           driverPreference: 'any',
         },
@@ -349,12 +352,12 @@ export default function AllBookingsPage() {
                   onChange={(e) => setCreateData({ ...createData, name: e.target.value })}
                   className={styles.statusSelect}
                 />
-                <input
-                  placeholder="Телефон"
-                  value={createData.phone || ''}
-                  onChange={(e) => setCreateData({ ...createData, phone: e.target.value })}
-                  className={styles.statusSelect}
-                />
+                <div>
+                  <PhoneInput
+                    value={createData.phone || ''}
+                    onChange={(value) => setCreateData({ ...createData, phone: value })}
+                  />
+                </div>
                 {bookingType !== 'contacts' ? (
                   <input
                     placeholder="Email"
@@ -439,6 +442,17 @@ export default function AllBookingsPage() {
                   {bookingType === 'airport' && (
                     <input type="number" min={0} placeholder="Багаж" value={createData.luggage || 1} onChange={(e) => setCreateData({ ...createData, luggage: Number(e.target.value) })} className={styles.statusSelect} />
                   )}
+                  {bookingType === 'airport' && (
+                    <CustomSelect
+                      value={createData.useTollRoads ? 'yes' : 'no'}
+                      onChange={(value) => setCreateData({ ...createData, useTollRoads: value === 'yes' })}
+                      options={[
+                        { value: 'no', label: 'Без платных' },
+                        { value: 'yes', label: 'Можно платные' },
+                      ]}
+                      variant="boxed"
+                    />
+                  )}
                   <input placeholder="Заметки" value={createData.notes || ''} onChange={(e) => setCreateData({ ...createData, notes: e.target.value })} className={styles.statusSelect} />
                 </div>
               )}
@@ -463,7 +477,8 @@ export default function AllBookingsPage() {
                 {bookingType === 'airport' && <th>Адрес</th>}
                 {bookingType === 'airport' && <th>Дата/Время</th>}
                 {bookingType === 'airport' && <th>Рейс</th>}
-                {bookingType === 'airport' && <th>Табличка</th>}
+                {bookingType === 'airport' && <th>Встреча</th>}
+                {bookingType === 'airport' && <th>Платные</th>}
                 {bookingType === 'hourly' && <th>Адрес подачи</th>}
                 {bookingType === 'hourly' && <th>Дата/Время</th>}
                 {bookingType === 'hourly' && <th>Часов</th>}
@@ -514,9 +529,14 @@ export default function AllBookingsPage() {
                       </td>
                       <td>{(booking as AirportBooking).flightNumber || '—'}</td>
                       <td>
-                        {(booking as AirportBooking).meetSign
-                          ? ((booking as AirportBooking).meetSignText || '—')
+                        {(booking as AirportBooking).serviceType === 'pickup'
+                          ? ((booking as AirportBooking).meetSign
+                              ? ((booking as AirportBooking).meetSignText || '—')
+                              : 'По звонку')
                           : '—'}
+                      </td>
+                      <td>
+                        {(booking as AirportBooking).useTollRoads ? 'Можно' : 'Нет'}
                       </td>
                     </>
                   )}
