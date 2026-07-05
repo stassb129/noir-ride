@@ -21,6 +21,7 @@ import {
   buildYandexRouteMapUrl,
   getAirportRoutePoints,
 } from '@/lib/airport-route';
+import { calcAirportBookingPrice, formatBookingPrice } from '@/lib/booking-price';
 import styles from '../RouteBookingForm/RouteBookingForm.module.scss';
 
 interface Props {
@@ -89,6 +90,10 @@ export default function AirportBookingForm({ initialVehicleId, selectedAirport }
     : null;
   const maxPassengers = vehicleMaxPassengers
     ?? (selectedVehicle ? (selectedVehicle.passengers ?? 3) : null);
+
+  const totalPrice = selectedVehicle
+    ? calcAirportBookingPrice(selectedVehicle.priceAirport, selectedAirport)
+    : null;
 
   const resetForm = () => ({
     name: '',
@@ -177,6 +182,7 @@ export default function AirportBookingForm({ initialVehicleId, selectedAirport }
               ? formData.meetSignText.trim()
               : null,
           useTollRoads: formData.useTollRoads,
+          price: totalPrice ?? 0,
         }),
       });
 
@@ -573,6 +579,17 @@ export default function AirportBookingForm({ initialVehicleId, selectedAirport }
               rows={3}
             />
           </div>
+
+          {selectedVehicle && totalPrice !== null && (
+            <div className={styles.priceBlock}>
+              <div className={styles.priceDetails}>
+                <div className={`${styles.priceRow} ${styles.priceTotal}`}>
+                  <span className={styles.priceRowLabel}>{ru ? 'Предварительно:' : 'Estimated:'}</span>
+                  <span className={styles.priceTotalValue}>{formatBookingPrice(totalPrice)}</span>
+                </div>
+              </div>
+            </div>
+          )}
 
           {status === 'success' && (
             <motion.p

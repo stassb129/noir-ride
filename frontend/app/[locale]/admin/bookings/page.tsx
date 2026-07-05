@@ -5,6 +5,7 @@ import { fetchWithAuth } from '@/lib/utils/fetchWithAuth';
 import CustomSelect from '@/components/ui/CustomSelect/CustomSelect';
 import PhoneInput from '@/components/ui/PhoneInput/PhoneInput';
 import { getDriverPreferenceLabel, getDriverPreferenceOptions } from '@/lib/driver-preference';
+import { formatBookingPrice } from '@/lib/booking-price';
 import styles from './bookings.module.scss';
 
 type BookingType = 'contacts' | 'routes' | 'airport' | 'hourly';
@@ -19,6 +20,7 @@ interface BaseBooking {
   createdAt: string;
   notes?: string;
   driverPreference?: string;
+  price?: number | string | null;
 }
 
 interface Contact extends BaseBooking {
@@ -33,6 +35,7 @@ interface RouteBooking extends BaseBooking {
   vehicleClass?: string;
   vehicleName?: string;
   passengers: number;
+  distanceKm?: number | null;
 }
 
 interface AirportBooking extends BaseBooking {
@@ -483,6 +486,7 @@ export default function AllBookingsPage() {
                 {bookingType === 'hourly' && <th>Дата/Время</th>}
                 {bookingType === 'hourly' && <th>Часов</th>}
                 {bookingType !== 'contacts' && <th>Водитель</th>}
+                {bookingType !== 'contacts' && <th>Цена</th>}
                 <th>Статус</th>
                 <th>Создано</th>
                 <th>Действия</th>
@@ -553,6 +557,17 @@ export default function AllBookingsPage() {
 
                   {bookingType !== 'contacts' && (
                     <td>{getDriverPreferenceLabel(booking.driverPreference)}</td>
+                  )}
+
+                  {bookingType !== 'contacts' && (
+                    <td>
+                      <strong>{formatBookingPrice(Number(booking.price))}</strong>
+                      {bookingType === 'routes' && (booking as RouteBooking).distanceKm ? (
+                        <div className={styles.clientContact}>
+                          {(booking as RouteBooking).distanceKm} км
+                        </div>
+                      ) : null}
+                    </td>
                   )}
                   
                   <td>

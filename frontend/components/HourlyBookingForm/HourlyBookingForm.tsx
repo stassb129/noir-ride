@@ -17,6 +17,7 @@ import {
   type DriverPreference,
 } from '@/lib/driver-preference';
 import { getPhoneValidationError } from '@/lib/phone';
+import { calcHourlyPrice, formatBookingPrice } from '@/lib/booking-price';
 import styles from '../RouteBookingForm/RouteBookingForm.module.scss';
 
 export default function HourlyBookingForm({ initialVehicleId }: { initialVehicleId?: number | null }) {
@@ -68,6 +69,10 @@ export default function HourlyBookingForm({ initialVehicleId }: { initialVehicle
   const maxPassengers = vehicleMaxPassengers
     ?? (selectedVehicle ? (selectedVehicle.passengers ?? 3) : null);
 
+  const totalPrice = selectedVehicle
+    ? calcHourlyPrice(formData.hours, selectedVehicle.priceHourly)
+    : null;
+
   const ru = locale === 'ru';
   const hourOptions = [3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((h) => ({
     value: String(h),
@@ -105,7 +110,10 @@ export default function HourlyBookingForm({ initialVehicleId }: { initialVehicle
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/bookings/hourly`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+          ...formData,
+          price: totalPrice ?? 0,
+        }),
       });
 
       if (!response.ok) throw new Error('Failed to submit');
@@ -348,9 +356,28 @@ export default function HourlyBookingForm({ initialVehicleId }: { initialVehicle
             className={styles.textarea}
             rows={3}
           />
-        </div>
+          </div>
 
-        {status === 'success' && (
+          {selectedVehicle && (
+            <div className={styles.priceBlock}>
+              <div className={styles.priceDetails}>
+                <div className={styles.priceRow}>
+                  <span className={styles.priceRowLabel}>{ru ? 'Тариф:' : 'Rate:'}</span>
+                  <span className={styles.priceRowValue}>
+                    {Number(selectedVehicle.priceHourly ?? 0).toLocaleString('ru-RU')} ₽/ч × {formData.hours}
+                  </span>
+                </div>
+                {totalPrice !== null && (
+                  <div className={`${styles.priceRow} ${styles.priceTotal}`}>
+                    <span className={styles.priceRowLabel}>{ru ? 'Предварительно:' : 'Estimated:'}</span>
+                    <span className={styles.priceTotalValue}>{formatBookingPrice(totalPrice)}</span>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+
+          {status === 'success' && (
           <motion.p
             className={styles.success}
             initial={{ opacity: 0, y: -10 }}

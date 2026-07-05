@@ -83,6 +83,17 @@ export class TelegramService {
     }
   }
 
+  private formatPreliminaryPrice(price: number | string | null | undefined): string | null {
+    const amount = Number(price);
+    if (!Number.isFinite(amount) || amount <= 0) return null;
+    return `💰 Предварительная цена: <b>${amount.toLocaleString('ru-RU')} ₽</b>`;
+  }
+
+  private formatEmail(email: string | null | undefined): string | null {
+    if (!email?.trim()) return null;
+    return `📧 ${email}`;
+  }
+
   private adminLink(section: string, id: number): string {
     return `${this.adminUrl}/ru/admin/bookings`;
   }
@@ -93,14 +104,14 @@ export class TelegramService {
       ``,
       `👤 <b>${b.name}</b>`,
       `📞 ${b.phone}`,
-      `📧 ${b.email}`,
+      this.formatEmail(b.email),
       ``,
       `📍 Маршрут: <b>${b.from} → ${b.to}</b>`,
       `📅 Дата: ${b.date}  🕐 Время: ${b.time}`,
       `🚘 Автомобиль: ${b.vehicleName || '—'}`,
       `👥 Пассажиров: ${b.passengers}`,
       b.distanceKm ? `📏 Расстояние: ${b.distanceKm} км` : null,
-      b.price ? `💰 Сумма: ${Number(b.price).toLocaleString('ru-RU')} ₽` : null,
+      this.formatPreliminaryPrice(b.price),
       `👨‍✈️ Водитель: ${this.driverLabel(b.driverPreference)}`,
       b.notes ? `💬 Комментарий: ${b.notes}` : null,
       ``,
@@ -116,7 +127,7 @@ export class TelegramService {
       ``,
       `👤 <b>${b.name}</b>`,
       `📞 ${b.phone}`,
-      `📧 ${b.email}`,
+      this.formatEmail(b.email),
       ``,
       `🔄 Тип: <b>${type}</b>`,
       `🏢 Аэропорт: ${b.airport}`,
@@ -126,6 +137,7 @@ export class TelegramService {
       `🚘 Автомобиль: ${b.vehicleName || '—'}`,
       `👥 Пассажиров: ${b.passengers}`,
       `🧳 Багаж: ${b.luggage}`,
+      this.formatPreliminaryPrice(b.price),
       b.serviceType === 'pickup'
         ? (b.meetSign
             ? `🪧 Табличка: ${b.meetSignText || b.name}`
@@ -146,13 +158,14 @@ export class TelegramService {
       ``,
       `👤 <b>${b.name}</b>`,
       `📞 ${b.phone}`,
-      `📧 ${b.email}`,
+      this.formatEmail(b.email),
       ``,
       `📍 Адрес подачи: ${b.pickupAddress}`,
       `📅 Дата: ${b.date}  🕐 Время: ${b.time}`,
       `⏳ Часов: ${b.hours}`,
       `🚘 Автомобиль: ${b.vehicleName || '—'}`,
       `👥 Пассажиров: ${b.passengers}`,
+      this.formatPreliminaryPrice(b.price),
       `👨‍✈️ Водитель: ${this.driverLabel(b.driverPreference)}`,
       b.notes ? `💬 Комментарий: ${b.notes}` : null,
       ``,

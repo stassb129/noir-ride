@@ -51,6 +51,14 @@ export class CreateRouteBookingDto {
   @IsOptional()
   @IsIn(DRIVER_PREFERENCES)
   driverPreference?: string;
+
+  @IsNumber()
+  @IsOptional()
+  distanceKm?: number;
+
+  @IsNumber()
+  @IsOptional()
+  price?: number;
 }
 
 export class CreateAirportBookingDto {
@@ -126,6 +134,10 @@ export class CreateAirportBookingDto {
   @IsOptional()
   @IsIn(DRIVER_PREFERENCES)
   driverPreference?: string;
+
+  @IsNumber()
+  @IsOptional()
+  price?: number;
 }
 
 export class CreateHourlyBookingDto {
@@ -176,4 +188,8 @@ export class CreateHourlyBookingDto {
   @IsOptional()
   @IsIn(DRIVER_PREFERENCES)
   driverPreference?: string;
+
+  @IsNumber()
+  @IsOptional()
+  price?: number;
 }
