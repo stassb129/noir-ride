@@ -1,7 +1,7 @@
 'use client';
 
 import { useLocale } from 'next-intl';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import { EASE_OUT_EXPO } from '@/lib/motion-easing';
 import ContactForm from '../ContactForm/ContactForm';
@@ -25,40 +25,49 @@ const staggerContainer = {
 export default function Hero() {
   const locale = useLocale();
   const videoRef = useRef<HTMLDivElement>(null);
+  const [showVideo, setShowVideo] = useState(false);
 
   useEffect(() => {
+    // Only load video on desktop to avoid LCP penalty on mobile
+    if (window.innerWidth >= 768) {
+      setShowVideo(true);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!showVideo) return;
+
     const handleScroll = () => {
       if (!videoRef.current) return;
-      
       const scrollY = window.scrollY;
-      const parallaxSpeed = 0.5;
-      
       requestAnimationFrame(() => {
         if (videoRef.current) {
-          videoRef.current.style.transform = `translate3d(0, ${scrollY * parallaxSpeed}px, 0)`;
+          videoRef.current.style.transform = `translate3d(0, ${scrollY * 0.5}px, 0)`;
         }
       });
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  }, [showVideo]);
 
   return (
     <section className={styles.hero}>
       <div ref={videoRef} className={styles.videoContainer}>
         <div className={styles.overlay} />
-        <video
-          autoPlay
-          loop
-          muted
-          playsInline
-          preload="auto"
-          disablePictureInPicture
-          className={styles.videoBackground}
-        >
-          <source src="/luxury-car-video.mp4" type="video/mp4" />
-        </video>
+        {showVideo && (
+          <video
+            autoPlay
+            loop
+            muted
+            playsInline
+            preload="metadata"
+            disablePictureInPicture
+            className={styles.videoBackground}
+          >
+            <source src="/luxury-car-video.mp4" type="video/mp4" />
+          </video>
+        )}
       </div>
 
       <div className={styles.container}>

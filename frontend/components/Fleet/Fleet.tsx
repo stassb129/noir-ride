@@ -1,10 +1,10 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import Image from 'next/image';
 import { useLocale } from 'next-intl';
 import { motion } from 'framer-motion';
 import { Users, Luggage, Zap, CarFront } from 'lucide-react';
-import { EASE_OUT_EXPO } from '@/lib/motion-easing';
 import { fetchVehicles, getVehiclePhotos, type Vehicle } from '@/lib/api/vehicles';
 import VehicleModal from '@/components/VehicleModal/VehicleModal';
 import ServicePickerModal from '@/components/ServicePickerModal/ServicePickerModal';
@@ -140,12 +140,13 @@ export default function Fleet() {
                   >
                     <div className={styles.vehicleImageWrap}>
                       {coverPhoto ? (
-                        <motion.img
+                        <Image
                           src={coverPhoto}
                           alt={`${vehicle.brand} ${vehicle.model}`}
+                          fill
+                          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 400px"
                           className={styles.vehiclePhoto}
-                          whileHover={{ scale: 1.03 }}
-                          transition={{ duration: 0.6, ease: EASE_OUT_EXPO }}
+                          style={{ objectFit: 'contain' }}
                         />
                       ) : (
                         <span className={styles.photoPlaceholder}>🚗</span>
