@@ -32,6 +32,15 @@ export async function generateMetadata({
     },
     description,
     manifest: '/site.webmanifest',
+    icons: {
+      icon: [
+        { url: '/favicon.ico', sizes: '48x48' },
+        { url: '/favicon-32x32.png', sizes: '32x32', type: 'image/png' },
+        { url: '/favicon-16x16.png', sizes: '16x16', type: 'image/png' },
+        { url: '/android-chrome-192x192.png', sizes: '192x192', type: 'image/png' },
+      ],
+      apple: '/apple-touch-icon.png',
+    },
     robots: { index: true, follow: true },
     verification: {
       yandex: 'd7abdb2582f8cf00',
