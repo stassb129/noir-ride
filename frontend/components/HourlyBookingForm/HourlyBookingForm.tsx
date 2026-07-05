@@ -177,6 +177,7 @@ export default function HourlyBookingForm({ initialVehicleId }: { initialVehicle
       </section>
 
       <motion.div
+        id="booking-details"
         className={styles.form}
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}

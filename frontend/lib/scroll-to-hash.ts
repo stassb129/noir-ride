@@ -10,6 +10,15 @@ export function scrollToHash(hash: string, updateUrl?: string): boolean {
   return true;
 }
 
+export function scrollToBookingDetails() {
+  window.setTimeout(() => {
+    document.getElementById('booking-details')?.scrollIntoView({
+      behavior: 'smooth',
+      block: 'start',
+    });
+  }, 150);
+}
+
 export function isSamePageHashLink(pathname: string, href: string): string | null {
   const hashIndex = href.indexOf('#');
   if (hashIndex === -1) return null;

@@ -368,6 +368,7 @@ export default function RouteBookingForm({ prefilledData, initialVehicleId }: Pr
       </section>
 
       <motion.div
+        id="booking-details"
         className={styles.form}
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}

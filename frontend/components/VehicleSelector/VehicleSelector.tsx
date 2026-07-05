@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useLocale } from 'next-intl';
 import { fetchVehicles, getVehiclePhotos, type Vehicle, type ServiceType } from '@/lib/api/vehicles';
 import { getAirportPrice } from '@/lib/airport-pricing';
+import { scrollToBookingDetails } from '@/lib/scroll-to-hash';
 import VehicleModal from '@/components/VehicleModal/VehicleModal';
 import styles from './VehicleSelector.module.scss';
 
@@ -49,6 +50,18 @@ export default function VehicleSelector({
   const [modalVehicle, setModalVehicle] = useState<Vehicle | null>(null);
 
   const rootClass = `${styles.wrapper} ${variant === 'wide' ? styles.wide : ''}`;
+
+  const handleSelect = (
+    id: number,
+    name: string,
+    price: number,
+    maxPassengers: number,
+  ) => {
+    onChange(id, name, price, maxPassengers);
+    if (variant === 'wide') {
+      scrollToBookingDetails();
+    }
+  };
 
   useEffect(() => {
     let cancelled = false;
@@ -99,7 +112,7 @@ export default function VehicleSelector({
               <div
                 key={v.id}
                 className={`${styles.card} ${isSelected ? styles.selected : ''}`}
-                onClick={() => onChange(v.id, `${v.brand} ${v.model}`, price ?? 0, v.passengers ?? 3)}
+                onClick={() => handleSelect(v.id, `${v.brand} ${v.model}`, price ?? 0, v.passengers ?? 3)}
               >
                 {isSelected && <span className={styles.selectedDot} />}
 
@@ -132,7 +145,7 @@ export default function VehicleSelector({
                   <button
                     type="button"
                     className={`${styles.selectBtn} ${isSelected ? styles.selectBtnActive : ''}`}
-                    onClick={(e) => { e.stopPropagation(); onChange(v.id, `${v.brand} ${v.model}`, price ?? 0, v.passengers); }}
+                    onClick={(e) => { e.stopPropagation(); handleSelect(v.id, `${v.brand} ${v.model}`, price ?? 0, v.passengers); }}
                   >
                     {isSelected ? (ru ? 'Выбрано ✓' : 'Selected ✓') : (ru ? 'Забронировать' : 'Book')}
                   </button>
@@ -150,7 +163,7 @@ export default function VehicleSelector({
           airportCode={airportCode}
           onClose={() => setModalVehicle(null)}
           onSelect={(id, name, price) => {
-            onChange(id, name, price, modalVehicle.passengers);
+            handleSelect(id, name, price, modalVehicle.passengers);
             setModalVehicle(null);
           }}
         />
