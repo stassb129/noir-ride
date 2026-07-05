@@ -11,9 +11,10 @@ export class CreateRouteBookingDto {
   @IsNotEmpty()
   phone: string;
 
+  @IsOptional()
+  @ValidateIf((_, value) => value != null && value !== '')
   @IsEmail()
-  @IsNotEmpty()
-  email: string;
+  email?: string;
 
   @IsString()
   @IsNotEmpty()
@@ -61,9 +62,10 @@ export class CreateAirportBookingDto {
   @IsNotEmpty()
   phone: string;
 
+  @IsOptional()
+  @ValidateIf((_, value) => value != null && value !== '')
   @IsEmail()
-  @IsNotEmpty()
-  email: string;
+  email?: string;
 
   @IsString()
   @IsNotEmpty()
@@ -135,9 +137,10 @@ export class CreateHourlyBookingDto {
   @IsNotEmpty()
   phone: string;
 
+  @IsOptional()
+  @ValidateIf((_, value) => value != null && value !== '')
   @IsEmail()
-  @IsNotEmpty()
-  email: string;
+  email?: string;
 
   @IsString()
   @IsNotEmpty()

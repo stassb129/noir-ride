@@ -52,6 +52,12 @@
   gap: $spacing-lg;
 }
 
+.formHint {
+  font-size: 13px;
+  color: $text-muted;
+  margin: 0 0 $spacing-sm;
+}
+
 /* ─── Route row ────────────────────────────────── */
 .routeRow {
   display: grid;

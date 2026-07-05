@@ -5,9 +5,10 @@ import { useLocale } from 'next-intl';
 import { motion } from 'framer-motion';
 import CustomSelect from '@/components/ui/CustomSelect/CustomSelect';
 import PhoneInput from '@/components/ui/PhoneInput/PhoneInput';
+import FormLabel from '@/components/ui/FormLabel/FormLabel';
 import VehicleSelector from '@/components/VehicleSelector/VehicleSelector';
 import { getMinBookingDate, getBookingDateError, isBookingDateValid } from '@/lib/booking-date';
-import { clampPassengers, parsePassengersInput } from '@/lib/booking-passengers';
+import { clampPassengers, getPassengerSelectOptions } from '@/lib/booking-passengers';
 import { fetchVehicles, type Vehicle } from '@/lib/api/vehicles';
 import { getPrefilledPassengers, useVehiclePrefill } from '@/lib/use-vehicle-prefill';
 import {
@@ -198,14 +199,7 @@ export default function AirportBookingForm({ initialVehicleId, selectedAirport }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value, type } = e.target;
-    if (name === 'passengers') {
-      if (!maxPassengers) return;
-      setFormData((prev) => ({
-        ...prev,
-        passengers: parsePassengersInput(value, maxPassengers),
-      }));
-      return;
-    }
+    if (name === 'passengers') return;
     const nextValue = type === 'number' ? (value === '' ? '' : Number(value)) : value;
     setFormData((prev) => ({ ...prev, [name]: nextValue }));
     if (name === 'date') setDateError(getBookingDateError(value, locale, minDate));
@@ -248,13 +242,16 @@ export default function AirportBookingForm({ initialVehicleId, selectedAirport }
         <h3 className={styles.title}>
           {ru ? 'Заказать трансфер' : 'Book airport transfer'}
         </h3>
+        <p className={styles.formHint}>
+          {ru ? 'Поля, отмеченные *, обязательны для заполнения' : 'Fields marked with * are required'}
+        </p>
 
         <form onSubmit={handleSubmit} className={styles.formContent}>
           <div className={styles.row}>
             <div className={styles.formGroup}>
-              <label className={styles.label}>
+              <FormLabel required>
                 {ru ? 'Ваше имя' : 'Your name'}
-              </label>
+              </FormLabel>
               <input
                 type="text"
                 name="name"
@@ -267,9 +264,9 @@ export default function AirportBookingForm({ initialVehicleId, selectedAirport }
             </div>
 
             <div className={styles.formGroup}>
-              <label className={styles.label}>
+              <FormLabel required>
                 {ru ? 'Телефон' : 'Phone'}
-              </label>
+              </FormLabel>
               <PhoneInput
                 value={formData.phone}
                 onChange={(value) => {
@@ -285,7 +282,7 @@ export default function AirportBookingForm({ initialVehicleId, selectedAirport }
 
           <div className={styles.row}>
             <div className={styles.formGroup}>
-              <label className={styles.label}>Email</label>
+              <FormLabel optional>Email</FormLabel>
               <input
                 type="email"
                 name="email"
@@ -293,14 +290,13 @@ export default function AirportBookingForm({ initialVehicleId, selectedAirport }
                 onChange={handleChange}
                 placeholder="example@email.com"
                 className={styles.input}
-                required
               />
             </div>
 
             <div className={styles.formGroup}>
-              <label className={styles.label}>
+              <FormLabel required>
                 {ru ? 'Тип услуги' : 'Service type'}
-              </label>
+              </FormLabel>
               <CustomSelect
                 variant="boxed"
                 name="serviceType"
@@ -323,9 +319,9 @@ export default function AirportBookingForm({ initialVehicleId, selectedAirport }
           </div>
 
           <div className={styles.formGroup}>
-            <label className={styles.label}>
+            <FormLabel required>
               {ru ? 'Адрес' : 'Address'}
-            </label>
+            </FormLabel>
             <input
               type="text"
               name="address"
@@ -410,9 +406,9 @@ export default function AirportBookingForm({ initialVehicleId, selectedAirport }
 
           <div className={styles.row}>
             <div className={styles.formGroup}>
-              <label className={styles.label}>
+              <FormLabel required>
                 {ru ? 'Дата' : 'Date'}
-              </label>
+              </FormLabel>
               <input
                 type="date"
                 name="date"
@@ -427,9 +423,9 @@ export default function AirportBookingForm({ initialVehicleId, selectedAirport }
             </div>
 
             <div className={styles.formGroup}>
-              <label className={styles.label}>
+              <FormLabel required>
                 {ru ? 'Время' : 'Time'}
-              </label>
+              </FormLabel>
               <input
                 type="time"
                 name="time"
@@ -443,9 +439,9 @@ export default function AirportBookingForm({ initialVehicleId, selectedAirport }
 
           <div className={styles.row}>
             <div className={styles.formGroup}>
-              <label className={styles.label}>
+              <FormLabel required>
                 {ru ? 'Номер рейса' : 'Flight number'}
-              </label>
+              </FormLabel>
               <input
                 type="text"
                 name="flightNumber"
@@ -488,9 +484,9 @@ export default function AirportBookingForm({ initialVehicleId, selectedAirport }
           {formData.serviceType === 'pickup' && formData.meetSign && (
             <div className={styles.row}>
               <div className={styles.formGroup}>
-                <label className={styles.label}>
-                  {ru ? 'Текст на табличке *' : 'Sign text *'}
-                </label>
+                <FormLabel required>
+                  {ru ? 'Текст на табличке' : 'Sign text'}
+                </FormLabel>
                 <input
                   type="text"
                   name="meetSignText"
@@ -508,28 +504,31 @@ export default function AirportBookingForm({ initialVehicleId, selectedAirport }
 
           <div className={styles.row}>
             <div className={styles.formGroup}>
-              <label className={styles.label}>
+              <FormLabel required>
                 {maxPassengers
                   ? (ru ? `Пассажиров (макс. ${maxPassengers})` : `Passengers (max ${maxPassengers})`)
                   : (ru ? 'Пассажиров (выберите авто)' : 'Passengers (select vehicle)')}
-              </label>
-              <input
-                type="number"
+              </FormLabel>
+              <CustomSelect
+                variant="boxed"
                 name="passengers"
-                value={formData.passengers}
-                onChange={handleChange}
-                min="1"
-                max={maxPassengers ?? 1}
+                value={String(formData.passengers)}
                 disabled={!maxPassengers}
-                className={styles.input}
                 required
+                onChange={(value) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    passengers: clampPassengers(Number(value), maxPassengers),
+                  }))
+                }
+                options={getPassengerSelectOptions(maxPassengers, ru)}
               />
             </div>
 
             <div className={styles.formGroup}>
-              <label className={styles.label}>
+              <FormLabel required>
                 {ru ? 'Количество багажа' : 'Luggage pieces'}
-              </label>
+              </FormLabel>
               <input
                 type="number"
                 name="luggage"

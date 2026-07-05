@@ -5,6 +5,7 @@ import { useLocale } from 'next-intl';
 import { motion } from 'framer-motion';
 import CustomSelect from '@/components/ui/CustomSelect/CustomSelect';
 import PhoneInput from '@/components/ui/PhoneInput/PhoneInput';
+import FormLabel from '@/components/ui/FormLabel/FormLabel';
 import VehicleSelector from '@/components/VehicleSelector/VehicleSelector';
 import { fetchVehicles, type Vehicle } from '@/lib/api/vehicles';
 import {
@@ -16,7 +17,7 @@ import {
   MAX_CUSTOM_DISTANCE_KM,
   type InterCityDestination,
 } from '@/lib/api/intercity';
-import { clampPassengers, parsePassengersInput } from '@/lib/booking-passengers';
+import { clampPassengers, getPassengerSelectOptions } from '@/lib/booking-passengers';
 import { getPrefilledPassengers, useVehiclePrefill } from '@/lib/use-vehicle-prefill';
 import { getMinBookingDate, getBookingDateError, isBookingDateValid } from '@/lib/booking-date';
 import { getPhoneValidationError } from '@/lib/phone';
@@ -377,13 +378,16 @@ export default function RouteBookingForm({ prefilledData, initialVehicleId }: Pr
         <h3 className={styles.title}>
           {ru ? 'Детали поездки' : 'Trip details'}
         </h3>
+        <p className={styles.formHint}>
+          {ru ? 'Поля, отмеченные *, обязательны для заполнения' : 'Fields marked with * are required'}
+        </p>
 
         <form onSubmit={handleSubmit} className={styles.formContent}>
 
           {/* From / To */}
           <div className={styles.routeRow}>
             <div className={styles.formGroup}>
-              <label className={styles.label}>{ru ? 'Откуда *' : 'From *'}</label>
+              <FormLabel required>{ru ? 'Откуда' : 'From'}</FormLabel>
               <input
                 list="from-list"
                 className={styles.input}
@@ -401,7 +405,7 @@ export default function RouteBookingForm({ prefilledData, initialVehicleId }: Pr
             <div className={styles.routeArrowDivider}>→</div>
 
             <div className={styles.formGroup}>
-              <label className={styles.label}>{ru ? 'Куда *' : 'To *'}</label>
+              <FormLabel required>{ru ? 'Куда' : 'To'}</FormLabel>
               <input
                 list="to-list"
                 className={styles.input}
@@ -489,7 +493,7 @@ export default function RouteBookingForm({ prefilledData, initialVehicleId }: Pr
           {/* Date / Time */}
           <div className={styles.row}>
             <div className={styles.formGroup}>
-              <label className={styles.label}>{ru ? 'Дата *' : 'Date *'}</label>
+              <FormLabel required>{ru ? 'Дата' : 'Date'}</FormLabel>
               <input
                 type="date"
                 className={styles.input}
@@ -506,12 +510,13 @@ export default function RouteBookingForm({ prefilledData, initialVehicleId }: Pr
             </div>
 
             <div className={styles.formGroup}>
-              <label className={styles.label}>{ru ? 'Время' : 'Time'}</label>
+              <FormLabel required>{ru ? 'Время' : 'Time'}</FormLabel>
               <input
                 type="time"
                 className={styles.input}
                 value={form.time}
                 onChange={(e) => set('time', e.target.value)}
+                required
               />
             </div>
           </div>
@@ -519,11 +524,11 @@ export default function RouteBookingForm({ prefilledData, initialVehicleId }: Pr
           {/* Name / Phone / Email */}
           <div className={styles.row}>
             <div className={styles.formGroup}>
-              <label className={styles.label}>{ru ? 'Имя *' : 'Name *'}</label>
+              <FormLabel required>{ru ? 'Имя' : 'Name'}</FormLabel>
               <input className={styles.input} value={form.name} onChange={(e) => set('name', e.target.value)} required />
             </div>
             <div className={styles.formGroup}>
-              <label className={styles.label}>{ru ? 'Телефон *' : 'Phone *'}</label>
+              <FormLabel required>{ru ? 'Телефон' : 'Phone'}</FormLabel>
               <PhoneInput
                 value={form.phone}
                 onChange={(value) => {
@@ -539,23 +544,25 @@ export default function RouteBookingForm({ prefilledData, initialVehicleId }: Pr
 
           <div className={styles.row}>
             <div className={styles.formGroup}>
-              <label className={styles.label}>{ru ? 'Email *' : 'Email *'}</label>
-              <input className={styles.input} type="email" value={form.email} onChange={(e) => set('email', e.target.value)} required />
+              <FormLabel optional>Email</FormLabel>
+              <input className={styles.input} type="email" value={form.email} onChange={(e) => set('email', e.target.value)} />
             </div>
             <div className={styles.formGroup}>
-              <label className={styles.label}>
+              <FormLabel required>
                 {selectedVehicle
                   ? (ru ? `Пассажиров (макс. ${maxPassengers})` : `Passengers (max ${maxPassengers})`)
                   : (ru ? 'Пассажиров' : 'Passengers')}
-              </label>
-              <input
-                className={styles.input}
-                type="number"
-                min={1}
-                max={maxPassengers}
-                value={form.passengers}
+              </FormLabel>
+              <CustomSelect
+                variant="boxed"
+                name="passengers"
+                value={String(form.passengers)}
                 disabled={!selectedVehicle}
-                onChange={(e) => set('passengers', parsePassengersInput(e.target.value, maxPassengers))}
+                required
+                onChange={(value) =>
+                  set('passengers', clampPassengers(Number(value), maxPassengers))
+                }
+                options={getPassengerSelectOptions(maxPassengers, ru)}
               />
             </div>
           </div>

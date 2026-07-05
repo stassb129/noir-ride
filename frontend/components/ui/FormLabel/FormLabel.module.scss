@@ -1,0 +1,16 @@
+@use '../../../styles/scss/variables' as *;
+
+.label {
+  font-size: 13px;
+  font-weight: 500;
+  color: $text-secondary;
+}
+
+.requiredMark {
+  color: $accent-gold;
+}
+
+.optionalHint {
+  color: $text-muted;
+  font-weight: 400;
+}

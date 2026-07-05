@@ -55,10 +55,16 @@ export default function VehicleSelector({
     id: number,
     name: string,
     price: number,
-    maxPassengers: number,
+    maxPassengers: number | null | undefined,
   ) => {
-    onChange(id, name, price, maxPassengers);
-    if (variant === 'wide') {
+    const seats = maxPassengers ?? 3;
+    const isNewSelection = value !== id;
+
+    if (isNewSelection) {
+      onChange(id, name, price, seats);
+    }
+
+    if (variant === 'wide' && isNewSelection) {
       scrollToBookingDetails();
     }
   };
@@ -145,7 +151,7 @@ export default function VehicleSelector({
                   <button
                     type="button"
                     className={`${styles.selectBtn} ${isSelected ? styles.selectBtnActive : ''}`}
-                    onClick={(e) => { e.stopPropagation(); handleSelect(v.id, `${v.brand} ${v.model}`, price ?? 0, v.passengers); }}
+                    onClick={(e) => { e.stopPropagation(); handleSelect(v.id, `${v.brand} ${v.model}`, price ?? 0, v.passengers ?? 3); }}
                   >
                     {isSelected ? (ru ? 'Выбрано ✓' : 'Selected ✓') : (ru ? 'Забронировать' : 'Book')}
                   </button>
@@ -163,7 +169,7 @@ export default function VehicleSelector({
           airportCode={airportCode}
           onClose={() => setModalVehicle(null)}
           onSelect={(id, name, price) => {
-            handleSelect(id, name, price, modalVehicle.passengers);
+            handleSelect(id, name, price, modalVehicle.passengers ?? 3);
             setModalVehicle(null);
           }}
         />

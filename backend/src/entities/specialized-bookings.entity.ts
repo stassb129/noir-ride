@@ -11,7 +11,7 @@ export class RouteBooking {
   @Column()
   phone: string;
 
-  @Column()
+  @Column({ nullable: true })
   email: string;
 
   @Column()
@@ -68,7 +68,7 @@ export class AirportBooking {
   @Column()
   phone: string;
 
-  @Column()
+  @Column({ nullable: true })
   email: string;
 
   @Column()
@@ -140,7 +140,7 @@ export class HourlyBooking {
   @Column()
   phone: string;
 
-  @Column()
+  @Column({ nullable: true })
   email: string;
 
   @Column()
