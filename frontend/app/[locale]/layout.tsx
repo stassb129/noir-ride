@@ -33,6 +33,9 @@ export async function generateMetadata({
     description,
     manifest: '/site.webmanifest',
     robots: { index: true, follow: true },
+    verification: {
+      yandex: 'd7abdb2582f8cf00',
+    },
     openGraph: {
       type: 'website',
       locale: ru ? 'ru_RU' : 'en_US',

@@ -19,6 +19,7 @@ interface PhoneInputProps {
   className?: string;
   onBlur?: (value: string) => void;
   error?: string | null;
+  label?: string;
 }
 
 export default function PhoneInput({
@@ -31,6 +32,7 @@ export default function PhoneInput({
   className,
   onBlur,
   error,
+  label,
 }: PhoneInputProps) {
   const locale = useLocale();
   const labels = locale === 'ru' ? ruLabels : enLabels;
@@ -67,6 +69,7 @@ export default function PhoneInput({
           disabled,
           id,
           name,
+          'aria-label': label ?? (locale === 'ru' ? 'Номер телефона' : 'Phone number'),
         }}
       />
       {error && <p className={styles.error}>{error}</p>}
