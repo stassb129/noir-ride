@@ -874,6 +874,7 @@ export default function BookingWizard({
       <VehicleSelector
         serviceType={state.serviceType === 'route' ? 'intercity' : (state.serviceType as 'airport' | 'hourly')}
         variant="wide"
+        hideLabel
         value={state.vehicleId}
         airportCode={state.serviceType === 'airport' ? state.airport : undefined}
         onChange={(id, name, _price, maxP) => {

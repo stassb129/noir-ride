@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { useLocale } from 'next-intl';
 import { getVehiclePhotos, type Vehicle, type ServiceType } from '@/lib/api/vehicles';
 import { getAirportPrice } from '@/lib/airport-pricing';
@@ -11,6 +12,7 @@ interface VehicleModalProps {
   vehicle: Vehicle;
   serviceType?: ServiceType;
   airportCode?: string;
+  isSelected?: boolean;
   onClose: () => void;
   onSelect?: (id: number, name: string, price: number) => void;
   onOrder?: () => void;
@@ -35,6 +37,7 @@ export default function VehicleModal({
   vehicle,
   serviceType,
   airportCode,
+  isSelected = false,
   onClose,
   onSelect,
   onOrder,
@@ -93,7 +96,7 @@ export default function VehicleModal({
 
   const photos = getVehiclePhotos(vehicle);
 
-  return (
+  return createPortal(
     <div className={styles.overlay} onClick={(e) => e.target === e.currentTarget && onClose()}>
       <div className={styles.modal}>
         <button className={styles.closeBtn} onClick={onClose} aria-label="Закрыть">✕</button>
@@ -189,7 +192,9 @@ export default function VehicleModal({
             <div className={styles.footer}>
               {onSelect && (
                 <button className={styles.selectBtn} onClick={handleSelect}>
-                  {ru ? 'Выбрать этот автомобиль' : 'Select this vehicle'}
+                  {isSelected
+                    ? (ru ? 'Выбрано ✓' : 'Selected ✓')
+                    : (ru ? 'Выбрать этот автомобиль' : 'Select this vehicle')}
                 </button>
               )}
               {!onSelect && onOrder && (
@@ -201,6 +206,7 @@ export default function VehicleModal({
           </div>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 }

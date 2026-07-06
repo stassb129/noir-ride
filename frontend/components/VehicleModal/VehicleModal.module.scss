@@ -98,15 +98,24 @@
   justify-content: center;
   padding: $spacing-2xl $spacing-xl;
   border-right: 1px solid $border-subtle;
+  min-height: 320px;
+  overflow: hidden;
+
+  > * {
+    width: 100%;
+    max-width: 100%;
+  }
+  min-height: 420px;
+  overflow: hidden;
 
   @include mobile {
-    padding: $spacing-lg $spacing-lg $spacing-md;
+    padding: $spacing-lg;
     padding-top: calc($spacing-lg + env(safe-area-inset-top, 0px));
     border-right: none;
     border-bottom: 1px solid $border-subtle;
     flex-shrink: 0;
-    max-height: 42dvh;
-    overflow: hidden;
+    min-height: 0;
+    max-height: 38dvh;
   }
 }
 
