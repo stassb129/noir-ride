@@ -61,6 +61,12 @@ export class RouteBooking {
   @Column({ type: 'decimal', precision: 10, scale: 2, nullable: true })
   price: number;
 
+  @Column({ nullable: true, type: 'varchar', length: 64 })
+  paymentId: string | null;
+
+  @Column({ nullable: true, type: 'varchar', length: 32 })
+  paymentStatus: string | null;
+
   @CreateDateColumn()
   createdAt: Date;
 }
@@ -140,6 +146,12 @@ export class AirportBooking {
   @Column({ type: 'decimal', precision: 10, scale: 2, nullable: true })
   price: number;
 
+  @Column({ nullable: true, type: 'varchar', length: 64 })
+  paymentId: string | null;
+
+  @Column({ nullable: true, type: 'varchar', length: 32 })
+  paymentStatus: string | null;
+
   @CreateDateColumn()
   createdAt: Date;
 }
@@ -200,6 +212,12 @@ export class HourlyBooking {
 
   @Column({ type: 'decimal', precision: 10, scale: 2, nullable: true })
   price: number;
+
+  @Column({ nullable: true, type: 'varchar', length: 64 })
+  paymentId: string | null;
+
+  @Column({ nullable: true, type: 'varchar', length: 32 })
+  paymentStatus: string | null;
 
   @CreateDateColumn()
   createdAt: Date;

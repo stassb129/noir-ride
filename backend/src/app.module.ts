@@ -28,6 +28,7 @@ import { VehiclesModule } from './vehicles/vehicles.module';
 import { InterCityModule } from './intercity/intercity.module';
 import { TelegramModule } from './telegram/telegram.module';
 import { UsersModule } from './users/users.module';
+import { PaymentModule } from './payment/payment.module';
 import { TelegramService } from './telegram/telegram.service';
 
 @Module({
@@ -73,6 +74,7 @@ import { TelegramService } from './telegram/telegram.service';
     InterCityModule,
     TelegramModule,
     UsersModule,
+    PaymentModule,
   ],
   controllers: [AppController],
   providers: [AppService, TelegramService],
