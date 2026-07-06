@@ -20,6 +20,8 @@ import {
 import { clampPassengers, getPassengerSelectOptions } from '@/lib/booking-passengers';
 import { getPrefilledPassengers, useVehiclePrefill } from '@/lib/use-vehicle-prefill';
 import { getMinBookingDate, getBookingDateError, isBookingDateValid } from '@/lib/booking-date';
+import { useUser } from '@/lib/hooks/useUser';
+import { getAuthHeaders } from '@/lib/user-auth';
 import { getPhoneValidationError } from '@/lib/phone';
 import {
   collectKnownCities,
@@ -83,6 +85,7 @@ export default function RouteBookingForm({ prefilledData, initialVehicleId }: Pr
   const locale = useLocale();
   const ru = locale === 'ru';
   const minDate = getMinBookingDate();
+  const { user } = useUser();
 
   /* ── state ─────────────────────────────────── */
   const [destinations, setDestinations] = useState<InterCityDestination[]>([]);
@@ -98,6 +101,18 @@ export default function RouteBookingForm({ prefilledData, initialVehicleId }: Pr
     vehicleId: null as number | null,
     vehicleName: '',
   });
+
+  // Prefill from user profile
+  useEffect(() => {
+    if (user) {
+      setForm((prev) => ({
+        ...prev,
+        name: prev.name || user.name || '',
+        phone: prev.phone || user.phone || '',
+        email: prev.email || user.email || '',
+      }));
+    }
+  }, [user]);
 
   const [distanceKm, setDistanceKm] = useState<number | null>(null);
   const [distanceLoading, setDistanceLoading] = useState(false);
@@ -286,13 +301,14 @@ export default function RouteBookingForm({ prefilledData, initialVehicleId }: Pr
     try {
       const res = await fetch(`${API_URL}/bookings/route`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
         body: JSON.stringify({
           ...form,
           from: resolvedFrom,
           to: resolvedTo,
           distanceKm,
           price: totalPrice ?? 0,
+          userId: user?.id ?? undefined,
         }),
       });
 

@@ -18,11 +18,14 @@ import {
 } from '@/lib/driver-preference';
 import { getPhoneValidationError } from '@/lib/phone';
 import { calcHourlyPrice, formatBookingPrice } from '@/lib/booking-price';
+import { useUser } from '@/lib/hooks/useUser';
+import { getAuthHeaders } from '@/lib/user-auth';
 import styles from '../RouteBookingForm/RouteBookingForm.module.scss';
 
 export default function HourlyBookingForm({ initialVehicleId }: { initialVehicleId?: number | null }) {
   const locale = useLocale();
   const minDate = getMinBookingDate();
+  const { user } = useUser();
 
   const [formData, setFormData] = useState({
     name: '',
@@ -38,6 +41,18 @@ export default function HourlyBookingForm({ initialVehicleId }: { initialVehicle
     notes: '',
     driverPreference: DEFAULT_DRIVER_PREFERENCE as DriverPreference,
   });
+
+  // Prefill from user profile
+  useEffect(() => {
+    if (user) {
+      setFormData((prev) => ({
+        ...prev,
+        name: prev.name || user.name || '',
+        phone: prev.phone || user.phone || '',
+        email: prev.email || user.email || '',
+      }));
+    }
+  }, [user]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [status, setStatus] = useState<'idle' | 'success' | 'error'>('idle');
   const [dateError, setDateError] = useState<string | null>(null);
@@ -113,6 +128,7 @@ export default function HourlyBookingForm({ initialVehicleId }: { initialVehicle
         body: JSON.stringify({
           ...formData,
           price: totalPrice ?? 0,
+          userId: user?.id ?? undefined,
         }),
       });
 

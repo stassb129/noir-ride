@@ -7,6 +7,7 @@ import { usePathname } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence, type Variants } from 'framer-motion';
 import { EASE_OUT_EXPO } from '@/lib/motion-easing';
+import { useUser } from '@/lib/hooks/useUser';
 import styles from './Navbar.module.scss';
 
 const navbarVariants: Variants = {
@@ -60,14 +61,16 @@ export default function Navbar() {
     window.location.href = path;
   };
 
+  const { user } = useUser();
+
   const navLinks = [
-    { href: `/${locale}/routes`, label: locale === 'ru' ? 'Маршруты' : 'Routes' },
-    { href: `/${locale}/airport`, label: locale === 'ru' ? 'Аэропорт' : 'Airport' },
-    { href: `/${locale}/hourly`, label: locale === 'ru' ? 'Почасовая' : 'Hourly' },
+    { href: `/${locale}#routes`, label: locale === 'ru' ? 'Маршруты' : 'Routes' },
+    { href: `/${locale}#airport`, label: locale === 'ru' ? 'Аэропорт' : 'Airport' },
+    { href: `/${locale}#hourly`, label: locale === 'ru' ? 'Почасовая' : 'Hourly' },
     { href: `/${locale}#contacts`, label: locale === 'ru' ? 'Контакты' : 'Contact' },
   ];
 
-  const bookingHref = `/${locale}#booking-form`;
+  const bookingHref = `/${locale}/booking`;
 
   return (
     <motion.nav
@@ -93,10 +96,21 @@ export default function Navbar() {
           })}
 
           <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-            <HashLink href={bookingHref} className={styles.ctaButton}>
+            <Link href={bookingHref} className={styles.ctaButton}>
               {locale === 'ru' ? 'Забронировать' : 'Book'}
-            </HashLink>
+            </Link>
           </motion.div>
+
+          <Link
+            href={`/${locale}/account`}
+            className={styles.accountLink}
+            title={locale === 'ru' ? 'Личный кабинет' : 'Account'}
+            suppressHydrationWarning
+          >
+            {!user
+              ? (locale === 'ru' ? 'Войти' : 'Sign in')
+              : (user.name ? user.name.split(' ')[0] : (locale === 'ru' ? 'Кабинет' : 'Account'))}
+          </Link>
 
           <button onClick={switchLocale} className={styles.langSwitch}>
             {locale === 'ru' ? 'EN' : 'RU'}
@@ -154,13 +168,13 @@ export default function Navbar() {
                 initial="hidden"
                 animate="visible"
               >
-                <HashLink
+                <Link
                   href={bookingHref}
                   className={styles.ctaButton}
                   onClick={() => setIsMenuOpen(false)}
                 >
                   {locale === 'ru' ? 'Забронировать' : 'Book'}
-                </HashLink>
+                </Link>
               </motion.div>
               <motion.button
                 onClick={switchLocale}
@@ -172,6 +186,23 @@ export default function Navbar() {
               >
                 {locale === 'ru' ? 'EN' : 'RU'}
               </motion.button>
+              <motion.div
+                custom={navLinks.length + 2}
+                variants={linkVariants}
+                initial="hidden"
+                animate="visible"
+              >
+                <Link
+                  href={`/${locale}/account`}
+                  className={styles.navLink}
+                  onClick={() => setIsMenuOpen(false)}
+                  suppressHydrationWarning
+                >
+                  {!user
+                    ? (locale === 'ru' ? 'Войти' : 'Sign in')
+                    : (user.name ? user.name.split(' ')[0] : (locale === 'ru' ? 'Кабинет' : 'Account'))}
+                </Link>
+              </motion.div>
             </div>
           </motion.div>
         )}

@@ -1,7 +1,7 @@
 export type BookingService = 'intercity' | 'airport' | 'hourly';
 
-const SERVICE_PATHS: Record<BookingService, string> = {
-  intercity: 'routes',
+const SERVICE_TYPES: Record<BookingService, string> = {
+  intercity: 'route',
   airport: 'airport',
   hourly: 'hourly',
 };
@@ -11,7 +11,7 @@ export function buildBookingUrl(
   service: BookingService,
   vehicleId: number,
 ): string {
-  return `/${locale}/${SERVICE_PATHS[service]}?vehicleId=${vehicleId}`;
+  return `/${locale}/booking?type=${SERVICE_TYPES[service]}&vehicleId=${vehicleId}`;
 }
 
 export function parseVehicleIdParam(value: string | null | undefined): number | null {

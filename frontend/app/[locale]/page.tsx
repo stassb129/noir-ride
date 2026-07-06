@@ -1,6 +1,9 @@
 import type { Metadata } from 'next';
 import Hero from '@/components/Hero/Hero';
 import Services from '@/components/Services/Services';
+import IntercitySection from '@/components/IntercitySection/IntercitySection';
+import AirportSection from '@/components/AirportSection/AirportSection';
+import HourlySection from '@/components/HourlySection/HourlySection';
 import Benefits from '@/components/Benefits/Benefits';
 import Stats from '@/components/Stats/Stats';
 import Fleet from '@/components/Fleet/Fleet';
@@ -87,7 +90,7 @@ function LocalBusinessJsonLd({ locale }: { locale: string }) {
               itemOffered: {
                 '@type': 'Service',
                 name: ru ? 'Трансфер в аэропорт' : 'Airport transfer',
-                url: `${SITE_URL}/${locale}/airport`,
+                url: `${SITE_URL}/${locale}#airport`,
               },
             },
             {
@@ -95,7 +98,7 @@ function LocalBusinessJsonLd({ locale }: { locale: string }) {
               itemOffered: {
                 '@type': 'Service',
                 name: ru ? 'Межгородские поездки' : 'Intercity trips',
-                url: `${SITE_URL}/${locale}/routes`,
+                url: `${SITE_URL}/${locale}#routes`,
               },
             },
             {
@@ -103,7 +106,7 @@ function LocalBusinessJsonLd({ locale }: { locale: string }) {
               itemOffered: {
                 '@type': 'Service',
                 name: ru ? 'Почасовая аренда' : 'Hourly rental',
-                url: `${SITE_URL}/${locale}/hourly`,
+                url: `${SITE_URL}/${locale}#hourly`,
               },
             },
           ],
@@ -140,6 +143,9 @@ export default async function HomePage({
       <LocalBusinessJsonLd locale={locale} />
       <Hero />
       <Services />
+      <IntercitySection />
+      <AirportSection />
+      <HourlySection />
       <Benefits />
       <Stats />
       <Fleet />

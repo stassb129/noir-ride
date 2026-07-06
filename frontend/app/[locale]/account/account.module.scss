@@ -1,112 +1,333 @@
 @use '../../../styles/scss/variables' as *;
 @use '../../../styles/scss/mixins' as *;
 
-.accountPage {
+.page {
   min-height: 100vh;
-  padding: 140px 0 $spacing-2xl;
   background: $bg-primary;
+  padding: 120px $spacing-lg $spacing-3xl;
+
+  @include mobile {
+    padding-top: 100px;
+    padding-left: $spacing-md;
+    padding-right: $spacing-md;
+  }
 }
 
 .container {
-  max-width: $container-max;
+  max-width: 900px;
   margin: 0 auto;
-  padding: 0 $spacing-lg;
 }
 
-.heading {
-  font-family: $font-family-display;
-  font-size: clamp(48px, 6vw, 64px);
-  font-weight: 800;
+/* ─── Hero banner ─────────────────────────────── */
+.hero {
+  position: relative;
+  background: linear-gradient(135deg, $bg-secondary 0%, rgba($accent-gold, 0.06) 100%);
+  border: 1px solid $border-subtle;
+  border-radius: $radius-xl;
+  padding: $spacing-2xl;
   margin-bottom: $spacing-2xl;
-  color: $text-primary;
-  letter-spacing: -0.03em;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: -60px;
+    right: -60px;
+    width: 200px;
+    height: 200px;
+    background: radial-gradient(circle, rgba($accent-gold, 0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  @include mobile {
+    padding: $spacing-lg;
+    border-radius: $radius-lg;
+  }
 }
 
-.bookingsList {
-  display: flex;
-  flex-direction: column;
-  gap: $spacing-sm;
-}
-
-.bookingCard {
+.heroInner {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: $spacing-lg;
-  border: 1px solid $border-subtle;
-  transition: $transition;
-  flex-wrap: wrap;
-  gap: $spacing-md;
+  gap: $spacing-lg;
+  position: relative;
+  z-index: 1;
 
   @include mobile {
     flex-direction: column;
     align-items: flex-start;
-  }
-
-  &:hover {
-    border-color: $accent-gold;
-    box-shadow: 0 0 20px rgba($accent-gold, 0.15);
+    gap: $spacing-md;
   }
 }
 
-.bookingInfo {
-  flex: 1;
-  min-width: 280px;
-}
-
-.bookingRoute {
+.avatar {
+  flex-shrink: 0;
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, $accent-gold, #a8893f);
   display: flex;
   align-items: center;
-  gap: $spacing-md;
-  margin-bottom: $spacing-xs;
-  flex-wrap: wrap;
+  justify-content: center;
+  font-family: $font-family-display;
+  font-size: 28px;
+  font-weight: 800;
+  color: $bg-primary;
+  letter-spacing: 0.02em;
+  box-shadow: 0 0 32px rgba($accent-gold, 0.25);
 }
 
-.bookingCity {
-  font-size: 20px;
+.heroText {
+  flex: 1;
+  min-width: 0;
+}
+
+.heroEyebrow {
+  font-size: 12px;
   font-weight: 600;
-  color: $text-primary;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: $accent-gold;
+  margin-bottom: $spacing-xs;
 }
 
-.bookingArrow {
+.heroTitle {
+  font-family: $font-family-display;
+  font-size: clamp(22px, 3.5vw, 32px);
+  font-weight: 700;
+  color: $text-primary;
+  letter-spacing: -0.02em;
+  margin-bottom: 4px;
+}
+
+.heroPhone {
+  font-size: 14px;
   color: $text-muted;
 }
 
-.bookingDate {
-  font-size: 14px;
-  color: $text-secondary;
-}
-
-.bookingMeta {
+.heroActions {
   display: flex;
-  align-items: center;
-  gap: $spacing-xl;
+  gap: $spacing-sm;
+  flex-shrink: 0;
 
   @include mobile {
     width: 100%;
-    justify-content: space-between;
   }
 }
 
-.bookingStatus {
-  font-size: 16px;
+.logoutBtn {
+  background: transparent;
+  border: 1px solid $border-subtle;
+  border-radius: $radius-main;
+  color: $text-muted;
+  padding: 10px 18px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: $transition;
+  white-space: nowrap;
+
+  &:hover {
+    color: #EF4444;
+    border-color: rgba(239, 68, 68, 0.35);
+    background: rgba(239, 68, 68, 0.06);
+  }
+
+  @include mobile {
+    flex: 1;
+    text-align: center;
+  }
+}
+
+/* ─── Quick actions ───────────────────────────── */
+.quickActions {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: $spacing-sm;
+  margin-bottom: $spacing-2xl;
+
+  @include mobile {
+    grid-template-columns: 1fr;
+  }
+}
+
+.quickAction {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: $spacing-md $spacing-lg;
+  background: $bg-secondary;
+  border: 1px solid $border-subtle;
+  border-radius: $radius-lg;
+  text-decoration: none;
+  transition: $transition;
+
+  &:hover {
+    border-color: rgba($accent-gold, 0.35);
+    background: rgba($accent-gold, 0.04);
+    transform: translateY(-2px);
+  }
+}
+
+.quickActionLabel {
+  font-size: 14px;
   font-weight: 600;
+  color: $text-primary;
 }
 
-.statusConfirmed {
-  color: $accent-gold;
-}
-
-.statusPending {
-  color: $text-secondary;
-}
-
-.statusCancelled {
+.quickActionHint {
+  font-size: 12px;
   color: $text-muted;
 }
 
-.bookingPrice {
-  font-size: 24px;
+/* ─── Sections grid ───────────────────────────── */
+.grid {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-lg;
+}
+
+.panel {
+  background: $bg-secondary;
+  border: 1px solid $border-subtle;
+  border-radius: $radius-xl;
+  padding: $spacing-xl;
+  height: 100%;
+
+  @include mobile {
+    padding: $spacing-lg;
+    border-radius: $radius-lg;
+  }
+}
+
+.bookingsPanel {
+  min-height: 280px;
+}
+
+.panelHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: $spacing-lg;
+  padding-bottom: $spacing-md;
+  border-bottom: 1px solid $border-subtle;
+}
+
+.panelTitle {
+  font-size: 13px;
   font-weight: 600;
+  color: $text-secondary;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.panelBadge {
+  font-size: 11px;
+  font-weight: 600;
+  color: $accent-gold;
+  background: rgba($accent-gold, 0.1);
+  padding: 3px 10px;
+  border-radius: 20px;
+  letter-spacing: 0.04em;
+}
+
+/* ─── Profile form ────────────────────────────── */
+.formFields {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: $spacing-md;
+
+  @include mobile {
+    grid-template-columns: 1fr;
+  }
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.label {
+  font-size: 12px;
+  font-weight: 500;
+  color: $text-muted;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.input {
+  background: $glass-input-bg;
+  border: 1px solid $border-subtle;
+  border-radius: $radius-main;
+  padding: 12px 16px;
+  font-size: 15px;
   color: $text-primary;
+  transition: $transition;
+  outline: none;
+  width: 100%;
+  box-sizing: border-box;
+
+  &::placeholder {
+    color: $text-muted;
+  }
+
+  &:focus {
+    border-color: rgba($accent-gold, 0.5);
+    background: $glass-input-bg-focus;
+  }
+
+  &[readonly] {
+    color: $text-muted;
+    cursor: default;
+    background: rgba(255, 255, 255, 0.02);
+  }
+}
+
+.formFooter {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+  margin-top: $spacing-lg;
+  padding-top: $spacing-md;
+  border-top: 1px solid $border-subtle;
+}
+
+.saveBtn {
+  padding: 11px 28px;
+  background: $accent-gold;
+  color: $bg-primary;
+  font-size: 14px;
+  font-weight: 600;
+  border: none;
+  border-radius: $radius-main;
+  cursor: pointer;
+  transition: $transition;
+  letter-spacing: 0.02em;
+
+  &:hover:not(:disabled) {
+    background: $accent-gold-hover;
+    box-shadow: 0 4px 16px rgba($accent-gold, 0.3);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: default;
+  }
+}
+
+.saveSuccess {
+  font-size: 13px;
+  color: #22C55E;
+  font-weight: 500;
+}
+
+.loadingPage {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: $bg-primary;
+  font-size: 15px;
+  color: $text-muted;
+  padding-top: 80px;
 }
