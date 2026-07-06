@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { useLocale } from 'next-intl';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, type Variants } from 'framer-motion';
 import Link from 'next/link';
 import VehicleSelector, { type Vehicle } from '@/components/VehicleSelector/VehicleSelector';
 import PhoneInput from '@/components/ui/PhoneInput/PhoneInput';
@@ -73,9 +73,9 @@ const AIRPORTS = [
 
 // ─── Animation variants ───────────────────────────────────────────────────────
 
-const slideVariants = {
+const slideVariants: Variants = {
   enter: (dir: number) => ({ x: dir > 0 ? 80 : -80, opacity: 0 }),
-  center: { x: 0, opacity: 1, transition: { duration: 0.35, ease: [0.25, 0.1, 0.25, 1] } },
+  center: { x: 0, opacity: 1, transition: { duration: 0.35, ease: [0.25, 0.1, 0.25, 1] as const } },
   exit: (dir: number) => ({ x: dir > 0 ? -80 : 80, opacity: 0, transition: { duration: 0.25, ease: 'easeIn' } }),
 };
 
