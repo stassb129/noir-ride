@@ -59,6 +59,10 @@ export class CreateRouteBookingDto {
   @IsNumber()
   @IsOptional()
   price?: number;
+
+  @IsNumber()
+  @IsOptional()
+  userId?: number;
 }
 
 export class CreateAirportBookingDto {
@@ -138,6 +142,10 @@ export class CreateAirportBookingDto {
   @IsNumber()
   @IsOptional()
   price?: number;
+
+  @IsNumber()
+  @IsOptional()
+  userId?: number;
 }
 
 export class CreateHourlyBookingDto {
@@ -192,4 +200,8 @@ export class CreateHourlyBookingDto {
   @IsNumber()
   @IsOptional()
   price?: number;
+
+  @IsNumber()
+  @IsOptional()
+  userId?: number;
 }

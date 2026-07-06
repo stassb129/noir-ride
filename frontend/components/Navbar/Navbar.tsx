@@ -7,6 +7,7 @@ import { usePathname } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence, type Variants } from 'framer-motion';
 import { EASE_OUT_EXPO } from '@/lib/motion-easing';
+import { useUser } from '@/lib/hooks/useUser';
 import styles from './Navbar.module.scss';
 
 const navbarVariants: Variants = {
@@ -60,6 +61,8 @@ export default function Navbar() {
     window.location.href = path;
   };
 
+  const { user } = useUser();
+
   const navLinks = [
     { href: `/${locale}/routes`, label: locale === 'ru' ? 'Маршруты' : 'Routes' },
     { href: `/${locale}/airport`, label: locale === 'ru' ? 'Аэропорт' : 'Airport' },
@@ -97,6 +100,17 @@ export default function Navbar() {
               {locale === 'ru' ? 'Забронировать' : 'Book'}
             </HashLink>
           </motion.div>
+
+          <Link
+            href={`/${locale}/account`}
+            className={styles.accountLink}
+            title={locale === 'ru' ? 'Личный кабинет' : 'Account'}
+            suppressHydrationWarning
+          >
+            {!user
+              ? (locale === 'ru' ? 'Войти' : 'Sign in')
+              : (user.name ? user.name.split(' ')[0] : (locale === 'ru' ? 'Кабинет' : 'Account'))}
+          </Link>
 
           <button onClick={switchLocale} className={styles.langSwitch}>
             {locale === 'ru' ? 'EN' : 'RU'}
@@ -172,6 +186,23 @@ export default function Navbar() {
               >
                 {locale === 'ru' ? 'EN' : 'RU'}
               </motion.button>
+              <motion.div
+                custom={navLinks.length + 2}
+                variants={linkVariants}
+                initial="hidden"
+                animate="visible"
+              >
+                <Link
+                  href={`/${locale}/account`}
+                  className={styles.navLink}
+                  onClick={() => setIsMenuOpen(false)}
+                  suppressHydrationWarning
+                >
+                  {!user
+                    ? (locale === 'ru' ? 'Войти' : 'Sign in')
+                    : (user.name ? user.name.split(' ')[0] : (locale === 'ru' ? 'Кабинет' : 'Account'))}
+                </Link>
+              </motion.div>
             </div>
           </motion.div>
         )}

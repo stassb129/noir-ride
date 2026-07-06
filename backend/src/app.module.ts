@@ -12,6 +12,7 @@ import { HourlyPricing } from './entities/hourly-pricing.entity';
 import { AirportPricing } from './entities/airport-pricing.entity';
 import { IntercityPricing } from './entities/intercity-pricing.entity';
 import { AdminUser } from './entities/admin-user.entity';
+import { User } from './entities/user.entity';
 import { Contact } from './entities/contact.entity';
 import { RouteBooking, AirportBooking, HourlyBooking } from './entities/specialized-bookings.entity';
 import { Vehicle } from './entities/vehicle.entity';
@@ -26,6 +27,7 @@ import { ContactsModule } from './contacts/contacts.module';
 import { VehiclesModule } from './vehicles/vehicles.module';
 import { InterCityModule } from './intercity/intercity.module';
 import { TelegramModule } from './telegram/telegram.module';
+import { UsersModule } from './users/users.module';
 import { TelegramService } from './telegram/telegram.service';
 
 @Module({
@@ -47,6 +49,7 @@ import { TelegramService } from './telegram/telegram.service';
         AirportPricing,
         IntercityPricing,
         AdminUser,
+        User,
         Contact,
         RouteBooking,
         AirportBooking,
@@ -69,6 +72,7 @@ import { TelegramService } from './telegram/telegram.service';
     VehiclesModule,
     InterCityModule,
     TelegramModule,
+    UsersModule,
   ],
   controllers: [AppController],
   providers: [AppService, TelegramService],

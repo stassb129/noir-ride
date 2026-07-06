@@ -1,9 +1,17 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, ManyToOne, JoinColumn } from 'typeorm';
+import { User } from './user.entity';
 
 @Entity('route_bookings')
 export class RouteBooking {
   @PrimaryGeneratedColumn()
   id: number;
+
+  @Column({ nullable: true, type: 'int' })
+  userId: number | null;
+
+  @ManyToOne(() => User, { nullable: true, onDelete: 'SET NULL' })
+  @JoinColumn({ name: 'userId' })
+  user: User;
 
   @Column()
   name: string;
@@ -61,6 +69,13 @@ export class RouteBooking {
 export class AirportBooking {
   @PrimaryGeneratedColumn()
   id: number;
+
+  @Column({ nullable: true, type: 'int' })
+  userId: number | null;
+
+  @ManyToOne(() => User, { nullable: true, onDelete: 'SET NULL' })
+  @JoinColumn({ name: 'userId' })
+  user: User;
 
   @Column()
   name: string;
@@ -133,6 +148,13 @@ export class AirportBooking {
 export class HourlyBooking {
   @PrimaryGeneratedColumn()
   id: number;
+
+  @Column({ nullable: true, type: 'int' })
+  userId: number | null;
+
+  @ManyToOne(() => User, { nullable: true, onDelete: 'SET NULL' })
+  @JoinColumn({ name: 'userId' })
+  user: User;
 
   @Column()
   name: string;

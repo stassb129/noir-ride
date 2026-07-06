@@ -1,0 +1,163 @@
+@use '../../styles/scss/variables' as *;
+@use '../../styles/scss/mixins' as *;
+
+.section {
+  margin-top: $spacing-xl;
+}
+
+.embedded {
+  margin-top: 0;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.panelHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: $spacing-lg;
+  padding-bottom: $spacing-md;
+  border-bottom: 1px solid $border-subtle;
+}
+
+.panelTitle {
+  font-size: 13px;
+  font-weight: 600;
+  color: $text-secondary;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin: 0;
+}
+
+.countBadge {
+  font-size: 11px;
+  font-weight: 600;
+  color: $accent-gold;
+  background: rgba($accent-gold, 0.1);
+  padding: 3px 10px;
+  border-radius: 20px;
+}
+
+.sectionTitle {
+  font-size: 14px;
+  font-weight: 600;
+  color: $text-secondary;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: $spacing-md;
+}
+
+.empty {
+  font-size: 14px;
+  color: $text-muted;
+  line-height: 1.5;
+}
+
+.emptyState {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: $spacing-xl 0;
+  text-align: center;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-sm;
+}
+
+.card {
+  background: $bg-surface-light;
+  border: 1px solid $border-subtle;
+  border-radius: $radius-main;
+  padding: $spacing-md $spacing-lg;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: $spacing-sm;
+  align-items: start;
+  transition: $transition;
+
+  &:hover {
+    border-color: rgba($accent-gold, 0.2);
+  }
+}
+
+.cardMain {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.cardRoute {
+  font-size: 15px;
+  font-weight: 600;
+  color: $text-primary;
+}
+
+.cardMeta {
+  font-size: 13px;
+  color: $text-muted;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.cardMetaDot {
+  color: $border-medium;
+}
+
+.cardRight {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+}
+
+.price {
+  font-size: 15px;
+  font-weight: 700;
+  color: $accent-gold;
+}
+
+.statusBadge {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  padding: 3px 8px;
+  border-radius: 20px;
+  text-transform: uppercase;
+
+  &.pending {
+    background: rgba(234, 179, 8, 0.12);
+    color: #EAB308;
+  }
+
+  &.confirmed {
+    background: rgba(34, 197, 94, 0.12);
+    color: #22C55E;
+  }
+
+  &.completed {
+    background: rgba(156, 163, 175, 0.12);
+    color: #9CA3AF;
+  }
+
+  &.cancelled {
+    background: rgba(239, 68, 68, 0.1);
+    color: #EF4444;
+  }
+}
+
+.loading {
+  font-size: 14px;
+  color: $text-muted;
+}
+
+.loadError {
+  font-size: 14px;
+  color: #EF4444;
+}

@@ -22,6 +22,8 @@ import {
   getAirportRoutePoints,
 } from '@/lib/airport-route';
 import { calcAirportBookingPrice, formatBookingPrice } from '@/lib/booking-price';
+import { useUser } from '@/lib/hooks/useUser';
+import { getAuthHeaders } from '@/lib/user-auth';
 import styles from '../RouteBookingForm/RouteBookingForm.module.scss';
 
 interface Props {
@@ -33,6 +35,7 @@ export default function AirportBookingForm({ initialVehicleId, selectedAirport }
   const locale = useLocale();
   const ru = locale === 'ru';
   const minDate = getMinBookingDate();
+  const { user } = useUser();
 
   const [formData, setFormData] = useState({
     name: '',
@@ -54,6 +57,18 @@ export default function AirportBookingForm({ initialVehicleId, selectedAirport }
     notes: '',
     driverPreference: DEFAULT_DRIVER_PREFERENCE as DriverPreference,
   });
+
+  // Prefill from user profile
+  useEffect(() => {
+    if (user) {
+      setFormData((prev) => ({
+        ...prev,
+        name: prev.name || user.name || '',
+        phone: prev.phone || user.phone || '',
+        email: prev.email || user.email || '',
+      }));
+    }
+  }, [user]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [status, setStatus] = useState<'idle' | 'success' | 'error'>('idle');
   const [dateError, setDateError] = useState<string | null>(null);
@@ -183,6 +198,7 @@ export default function AirportBookingForm({ initialVehicleId, selectedAirport }
               : null,
           useTollRoads: formData.useTollRoads,
           price: totalPrice ?? 0,
+          userId: user?.id ?? undefined,
         }),
       });
 
