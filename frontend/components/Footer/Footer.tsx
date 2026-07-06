@@ -95,7 +95,14 @@ export default function Footer() {
 
         <div className={styles.bottom}>
           <p className={styles.copyright}>
-            © 2026 NOIR RIDE. {ru ? 'Все права защищены' : 'All rights reserved'}.
+            © 2026 NOIR RIDE. {ru ? 'Все права защищены' : 'All rights reserved'}.{' '}
+            <Link href={`/${locale}/oferta`} className={styles.legalLink}>
+              {ru ? 'Оферта' : 'Terms'}
+            </Link>
+            {' · '}
+            <Link href={`/${locale}/rekvizity`} className={styles.legalLink}>
+              {ru ? 'Реквизиты' : 'Legal info'}
+            </Link>
           </p>
         </div>
       </div>

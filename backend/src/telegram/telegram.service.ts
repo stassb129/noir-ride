@@ -48,6 +48,10 @@ export class TelegramService {
     return err.message;
   }
 
+  async sendRaw(text: string): Promise<void> {
+    return this.send(text);
+  }
+
   private async send(text: string): Promise<void> {
     if (!this.enabled) return;
     try {

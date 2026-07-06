@@ -1,0 +1,108 @@
+@use '../../../styles/scss/variables' as *;
+@use '../../../styles/scss/mixins' as *;
+
+.page {
+  min-height: 100vh;
+  background: $bg-primary;
+  padding: 120px $spacing-md $spacing-3xl;
+}
+
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xl;
+
+  h2 {
+    font-size: 18px;
+    font-weight: 700;
+    color: $text-primary;
+    margin: $spacing-sm 0 $spacing-sm;
+  }
+
+  h3 {
+    font-size: 15px;
+    font-weight: 600;
+    color: $text-secondary;
+    margin: $spacing-sm 0 6px;
+  }
+
+  p {
+    font-size: 14px;
+    line-height: 1.75;
+    color: $text-secondary;
+  }
+
+  ul {
+    padding-left: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+
+    li {
+      font-size: 14px;
+      line-height: 1.65;
+      color: $text-secondary;
+    }
+  }
+}
+
+.title {
+  font-family: $font-family-display;
+  font-size: clamp(22px, 3.5vw, 34px);
+  font-weight: 700;
+  color: $text-primary;
+  letter-spacing: -0.02em;
+  border-bottom: 1px solid $border-subtle;
+  padding-bottom: $spacing-lg;
+}
+
+.date {
+  font-size: 13px;
+  color: $text-muted;
+  margin-top: -$spacing-md;
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-sm;
+  padding-bottom: $spacing-lg;
+  border-bottom: 1px solid $border-subtle;
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+
+  tr {
+    border-bottom: 1px solid $border-subtle;
+
+    &:last-child {
+      border-bottom: none;
+    }
+  }
+
+  td {
+    padding: 10px 0;
+    line-height: 1.5;
+    vertical-align: top;
+
+    &:first-child {
+      color: $text-muted;
+      width: 180px;
+      padding-right: $spacing-md;
+    }
+
+    &:last-child {
+      color: $text-primary;
+      font-weight: 500;
+    }
+  }
+}

@@ -535,12 +535,43 @@ export default function BookingWizard({
         body = { ...baseBody, pickupAddress: state.pickupAddress, hours: state.hours };
       }
 
-      const res = await fetch(url, {
+      const bookingRes = await fetch(url, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
         body: JSON.stringify(body),
       });
-      if (!res.ok) throw new Error();
+      if (!bookingRes.ok) throw new Error('booking_failed');
+      const booking = await bookingRes.json() as { id: number };
+
+      // If price is known — redirect to YooKassa payment
+      const price = totalPrice ?? 0;
+      if (price > 0 && booking.id) {
+        const locale = typeof window !== 'undefined'
+          ? window.location.pathname.split('/')[1] || 'ru'
+          : 'ru';
+        const returnUrl = `${window.location.origin}/${locale}/booking/success?paymentId=__PAYMENT_ID__&bookingId=${booking.id}&bookingType=${state.serviceType}`;
+
+        const payRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/payment/create`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
+          body: JSON.stringify({
+            bookingId: booking.id,
+            bookingType: state.serviceType,
+            amount: price,
+            returnUrl,
+          }),
+        });
+
+        if (payRes.ok) {
+          const { confirmationUrl } = await payRes.json() as { confirmationUrl: string };
+          if (confirmationUrl) {
+            window.location.href = confirmationUrl;
+            return;
+          }
+        }
+      }
+
+      // Fallback: no price configured — show inline success
       setSubmitStatus('success');
     } catch {
       setSubmitStatus('error');
@@ -1060,14 +1091,20 @@ export default function BookingWizard({
             whileTap={{ scale: 0.98 }}
           >
             {submitting
-              ? (ru ? 'Отправка...' : 'Sending...')
-              : (ru ? '✓ Подтвердить бронирование' : '✓ Confirm booking')}
+              ? (ru ? 'Подождите...' : 'Please wait...')
+              : totalPrice && totalPrice > 0
+                ? (ru ? '💳 Перейти к оплате' : '💳 Proceed to payment')
+                : (ru ? '✓ Подтвердить бронирование' : '✓ Confirm booking')}
           </motion.button>
 
           <p className={styles.priceNotice}>
-            {ru
-              ? 'Цена будет подтверждена менеджером. Нажимая кнопку, вы соглашаетесь с условиями бронирования.'
-              : 'Price will be confirmed by our manager. By clicking, you agree to the booking terms.'}
+            {totalPrice && totalPrice > 0
+              ? (ru
+                ? 'Вы будете перенаправлены на защищённую страницу оплаты ЮKassa.'
+                : 'You will be redirected to the secure YooKassa payment page.')
+              : (ru
+                ? 'Цена будет подтверждена менеджером. Нажимая кнопку, вы соглашаетесь с условиями бронирования.'
+                : 'Price will be confirmed by our manager. By clicking, you agree to the booking terms.')}
           </p>
         </div>
 
