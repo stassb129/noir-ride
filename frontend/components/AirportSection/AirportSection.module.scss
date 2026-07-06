@@ -1,0 +1,169 @@
+@use '../../styles/scss/variables' as *;
+@use '../../styles/scss/mixins' as *;
+
+.section {
+  padding: $section-padding 0;
+  background: $bg-primary;
+  scroll-margin-top: 100px;
+
+  @include mobile {
+    padding: 80px 0;
+  }
+}
+
+.container {
+  max-width: $container-max;
+  margin: 0 auto;
+  padding: 0 $container-padding;
+}
+
+.features {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: $spacing-md;
+  margin-bottom: $spacing-2xl;
+
+  @include mobile {
+    grid-template-columns: 1fr;
+    gap: $spacing-sm;
+  }
+}
+
+.feature {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  column-gap: $spacing-md;
+  row-gap: 4px;
+  align-items: start;
+  padding: $spacing-md $spacing-lg;
+  border-radius: $radius-main;
+  border: 1px solid $border-subtle;
+  background: rgba(255, 255, 255, 0.03);
+  text-align: left;
+
+  h3 {
+    font-size: 15px;
+    font-weight: 600;
+    color: $text-primary;
+    margin: 0;
+    line-height: 1.3;
+    grid-column: 2;
+  }
+
+  p {
+    font-size: 13px;
+    color: $text-muted;
+    line-height: 1.45;
+    margin: 0;
+    grid-column: 2;
+  }
+}
+
+.featureIcon {
+  width: 22px;
+  height: 22px;
+  color: $accent-gold;
+  grid-row: 1 / 3;
+  margin-top: 2px;
+}
+
+.seoNote {
+  font-size: 15px;
+  line-height: 1.7;
+  color: $text-secondary;
+  max-width: 820px;
+  margin: 0 0 $spacing-2xl;
+  padding: $spacing-lg $spacing-xl;
+  border-left: 3px solid $accent-gold;
+  background: rgba($accent-gold, 0.04);
+  border-radius: 0 $radius-main $radius-main 0;
+}
+
+.seoBlock {
+  margin-bottom: $spacing-3xl;
+}
+
+.seoTitle {
+  font-size: clamp(22px, 3vw, 28px);
+  font-weight: 700;
+  color: $text-primary;
+  margin-bottom: $spacing-md;
+}
+
+.seoText {
+  font-size: 15px;
+  line-height: 1.75;
+  color: $text-muted;
+  max-width: 820px;
+}
+
+.airportGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: $spacing-lg;
+  margin-bottom: $spacing-2xl;
+
+  @include mobile {
+    grid-template-columns: 1fr;
+  }
+}
+
+.airportCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: $spacing-xl $spacing-lg;
+  border: 1px solid $border-subtle;
+  border-radius: $radius-lg;
+  background: $bg-secondary;
+  text-decoration: none;
+  transition: $transition;
+
+  &:hover {
+    border-color: $accent-gold;
+    box-shadow: 0 8px 32px rgba($accent-gold, 0.12);
+    transform: translateY(-2px);
+  }
+}
+
+.airportCode {
+  font-size: 28px;
+  font-weight: 700;
+  color: $text-primary;
+  letter-spacing: 0.05em;
+}
+
+.airportName {
+  font-size: 14px;
+  color: $text-secondary;
+}
+
+.airportCta {
+  margin-top: $spacing-sm;
+  font-size: 13px;
+  font-weight: 600;
+  color: $accent-gold;
+}
+
+.ctaRow {
+  display: flex;
+  justify-content: center;
+}
+
+.ctaBtn {
+  display: inline-flex;
+  padding: 16px 40px;
+  background: $accent-gold;
+  color: $bg-primary;
+  font-size: 16px;
+  font-weight: 600;
+  border-radius: $radius-main;
+  text-decoration: none;
+  transition: $transition;
+
+  &:hover {
+    background: $accent-gold-hover;
+    box-shadow: 0 4px 24px rgba($accent-gold, 0.3);
+  }
+}

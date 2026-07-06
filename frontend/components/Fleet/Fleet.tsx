@@ -83,7 +83,7 @@ export default function Fleet() {
     : 'Premium vehicles for your journey';
 
   return (
-    <section className={styles.fleet}>
+    <section id="fleet" className={styles.fleet}>
       <div className={styles.container}>
         <SectionHeading
           eyebrow={ru ? 'Автопарк' : 'Fleet'}

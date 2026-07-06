@@ -48,13 +48,13 @@ export default function Footer() {
           <div className={styles.column}>
             <h4>{ru ? 'Услуги' : 'Services'}</h4>
             <div className={styles.links}>
-              <Link href={`/${locale}/routes`} className={styles.link}>
+              <Link href={`/${locale}#routes`} className={styles.link}>
                 {ru ? 'Маршруты' : 'Routes'}
               </Link>
-              <Link href={`/${locale}/airport`} className={styles.link}>
+              <Link href={`/${locale}#airport`} className={styles.link}>
                 {ru ? 'Аэропорт' : 'Airport'}
               </Link>
-              <Link href={`/${locale}/hourly`} className={styles.link}>
+              <Link href={`/${locale}#hourly`} className={styles.link}>
                 {ru ? 'Почасовая' : 'Hourly'}
               </Link>
             </div>

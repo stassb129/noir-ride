@@ -64,13 +64,13 @@ export default function Navbar() {
   const { user } = useUser();
 
   const navLinks = [
-    { href: `/${locale}/routes`, label: locale === 'ru' ? 'Маршруты' : 'Routes' },
-    { href: `/${locale}/airport`, label: locale === 'ru' ? 'Аэропорт' : 'Airport' },
-    { href: `/${locale}/hourly`, label: locale === 'ru' ? 'Почасовая' : 'Hourly' },
+    { href: `/${locale}#routes`, label: locale === 'ru' ? 'Маршруты' : 'Routes' },
+    { href: `/${locale}#airport`, label: locale === 'ru' ? 'Аэропорт' : 'Airport' },
+    { href: `/${locale}#hourly`, label: locale === 'ru' ? 'Почасовая' : 'Hourly' },
     { href: `/${locale}#contacts`, label: locale === 'ru' ? 'Контакты' : 'Contact' },
   ];
 
-  const bookingHref = `/${locale}#booking-form`;
+  const bookingHref = `/${locale}/booking`;
 
   return (
     <motion.nav
@@ -96,9 +96,9 @@ export default function Navbar() {
           })}
 
           <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-            <HashLink href={bookingHref} className={styles.ctaButton}>
+            <Link href={bookingHref} className={styles.ctaButton}>
               {locale === 'ru' ? 'Забронировать' : 'Book'}
-            </HashLink>
+            </Link>
           </motion.div>
 
           <Link
@@ -168,13 +168,13 @@ export default function Navbar() {
                 initial="hidden"
                 animate="visible"
               >
-                <HashLink
+                <Link
                   href={bookingHref}
                   className={styles.ctaButton}
                   onClick={() => setIsMenuOpen(false)}
                 >
                   {locale === 'ru' ? 'Забронировать' : 'Book'}
-                </HashLink>
+                </Link>
               </motion.div>
               <motion.button
                 onClick={switchLocale}
