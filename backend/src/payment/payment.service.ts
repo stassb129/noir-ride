@@ -1,4 +1,4 @@
-import { Injectable, Logger, BadRequestException } from '@nestjs/common';
+import { Injectable, Logger, BadRequestException, ForbiddenException, NotFoundException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -46,17 +46,36 @@ export class PaymentService {
     return 'Basic ' + Buffer.from(`${shopId}:${secretKey}`).toString('base64');
   }
 
-  async createPayment(dto: CreatePaymentDto): Promise<{ paymentId: string; confirmationUrl: string }> {
-    const { bookingId, bookingType, amount, returnUrl } = dto;
+  async createPayment(
+    userId: number,
+    dto: CreatePaymentDto,
+  ): Promise<{ paymentId: string; confirmationUrl: string }> {
+    const { bookingId, bookingType, returnUrl } = dto;
 
-    if (amount <= 0) throw new BadRequestException('Amount must be greater than 0');
+    const booking = await this.findBooking(bookingId, bookingType);
+    if (!booking) throw new NotFoundException('Booking not found');
+    if (booking.userId !== userId) throw new ForbiddenException('Access denied');
+
+    if (booking.status !== 'pending') {
+      throw new BadRequestException('Booking is not awaiting payment');
+    }
+    if (booking.paymentStatus === 'succeeded') {
+      throw new BadRequestException('Booking already paid');
+    }
+
+    const amount = Number(booking.price);
+    if (!Number.isFinite(amount) || amount <= 0) {
+      throw new BadRequestException('Booking has no price set');
+    }
 
     const idempotenceKey = `${bookingType}-${bookingId}-${Date.now()}`;
+    const expiresAt = new Date(Date.now() + 15 * 60 * 1000).toISOString();
 
     const body = {
       amount: { value: amount.toFixed(2), currency: 'RUB' },
       confirmation: { type: 'redirect', return_url: returnUrl },
       capture: true,
+      expires_at: expiresAt,
       description: `NOIR RIDE — заказ #${bookingId} (${this.typeLabel(bookingType)})`,
       metadata: { bookingId: String(bookingId), bookingType },
     };
@@ -132,8 +151,8 @@ export class PaymentService {
       await this.notifyPaymentSuccess(bookingId, bookingType, payment.id);
     }
 
-    if (payment.status === 'cancelled') {
-      this.logger.warn(`Payment ${payment.id} cancelled for ${bookingType} #${bookingId}`);
+    if (payment.status === 'canceled' || payment.status === 'cancelled') {
+      this.logger.warn(`Payment ${payment.id} canceled for ${bookingType} #${bookingId}`);
     }
   }
 
@@ -151,8 +170,21 @@ export class PaymentService {
     return response.json() as Promise<YooKassaPayment>;
   }
 
+  private async findBooking(
+    id: number,
+    type: CreatePaymentDto['bookingType'],
+  ): Promise<RouteBooking | AirportBooking | HourlyBooking | null> {
+    switch (type) {
+      case 'route': return this.routeRepo.findOne({ where: { id } });
+      case 'airport': return this.airportRepo.findOne({ where: { id } });
+      case 'hourly': return this.hourlyRepo.findOne({ where: { id } });
+      default: return null;
+    }
+  }
+
   private async savePaymentId(id: number, type: string, paymentId: string, paymentStatus: string) {
-    const update = { paymentId, paymentStatus };
+    const normalizedStatus = paymentStatus === 'cancelled' ? 'canceled' : paymentStatus;
+    const update = { paymentId, paymentStatus: normalizedStatus };
     switch (type) {
       case 'route': await this.routeRepo.update(id, update); break;
       case 'airport': await this.airportRepo.update(id, update); break;

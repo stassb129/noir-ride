@@ -2,10 +2,14 @@ import {
   Controller,
   Get,
   Patch,
+  Delete,
   Body,
+  Param,
   Req,
   UseGuards,
   ValidationPipe,
+  BadRequestException,
+  NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -58,5 +62,45 @@ export class UsersController {
       airports: airports.map((b) => ({ ...b, type: 'airport' })),
       hourly: hourly.map((b) => ({ ...b, type: 'hourly' })),
     };
+  }
+
+  @UseGuards(UserJwtAuthGuard)
+  @Delete('me/bookings/:type/:id')
+  async cancelBooking(
+    @Req() req: { user: { id: number } },
+    @Param('type') type: string,
+    @Param('id') id: string,
+  ) {
+    const bookingId = parseInt(id, 10);
+    if (!['route', 'airport', 'hourly'].includes(type)) {
+      throw new BadRequestException('Invalid booking type');
+    }
+
+    const booking = await this.findUserBooking(req.user.id, type, bookingId);
+    if (!booking) throw new NotFoundException('Booking not found');
+
+    if (booking.status !== 'pending') {
+      throw new BadRequestException('Only pending bookings can be cancelled');
+    }
+    if (booking.paymentStatus === 'succeeded') {
+      throw new BadRequestException('Paid bookings cannot be cancelled online');
+    }
+
+    const repo = this.getRepo(type);
+    await repo.update(bookingId, { status: 'cancelled', paymentStatus: 'canceled' });
+    return { ok: true };
+  }
+
+  private getRepo(type: string): Repository<RouteBooking | AirportBooking | HourlyBooking> {
+    if (type === 'route') return this.routeRepo;
+    if (type === 'airport') return this.airportRepo;
+    return this.hourlyRepo;
+  }
+
+  private async findUserBooking(userId: number, type: string, id: number) {
+    const repo = this.getRepo(type);
+    const booking = await repo.findOne({ where: { id } });
+    if (!booking || booking.userId !== userId) return null;
+    return booking;
   }
 }
