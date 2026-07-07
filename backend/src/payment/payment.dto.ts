@@ -1,4 +1,4 @@
-import { IsIn, IsNotEmpty, IsNumber, IsPositive, IsString, IsUrl } from 'class-validator';
+import { IsIn, IsNotEmpty, IsNumber, IsOptional, IsPositive, IsString, IsUrl } from 'class-validator';
 
 export class CreatePaymentDto {
   @IsNumber()
@@ -7,9 +7,10 @@ export class CreatePaymentDto {
   @IsIn(['route', 'airport', 'hourly'])
   bookingType: 'route' | 'airport' | 'hourly';
 
+  @IsOptional()
   @IsNumber()
   @IsPositive()
-  amount: number;
+  amount?: number;
 
   @IsString()
   @IsNotEmpty()

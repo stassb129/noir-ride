@@ -26,7 +26,7 @@ function usePaymentStatus(paymentId: string | null): PaymentStatus {
         if (res.ok) {
           const data = await res.json() as { status: string };
           if (data.status === 'succeeded') { setStatus('succeeded'); return; }
-          if (data.status === 'cancelled') { setStatus('cancelled'); return; }
+          if (data.status === 'cancelled' || data.status === 'canceled') { setStatus('cancelled'); return; }
         }
       } catch { /* ignore */ }
 
@@ -75,11 +75,11 @@ export default function PaymentSuccessPage() {
           <h1 className={styles.title}>{ru ? 'Оплата отменена' : 'Payment cancelled'}</h1>
           <p className={styles.desc}>
             {ru
-              ? 'Платёж был отменён. Вы можете попробовать снова.'
-              : 'The payment was cancelled. You can try again.'}
+              ? 'Срок оплаты истёк или платёж был отменён. Заказ сохранён — оплатите его в личном кабинете.'
+              : 'Payment expired or was cancelled. Your booking is saved — pay it from your account.'}
           </p>
-          <Link href={`/${locale}/booking`} className={styles.btn}>
-            {ru ? 'Попробовать ещё раз' : 'Try again'}
+          <Link href={`/${locale}/account`} className={styles.btn}>
+            {ru ? 'Перейти в личный кабинет' : 'Go to account'}
           </Link>
         </div>
       </div>

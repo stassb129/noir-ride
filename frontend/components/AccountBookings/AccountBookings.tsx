@@ -4,6 +4,13 @@ import { useState, useEffect } from 'react';
 import { useLocale } from 'next-intl';
 import { getToken } from '@/lib/user-auth';
 import { formatBookingPrice } from '@/lib/booking-price';
+import { createBookingPayment } from '@/lib/payment';
+import {
+  cancelUserBooking,
+  getBookingDisplayStatus,
+  isBookingCancellable,
+  isBookingPayable,
+} from '@/lib/bookings';
 import styles from './AccountBookings.module.scss';
 
 interface BookingBase {
@@ -14,6 +21,7 @@ interface BookingBase {
   passengers: number;
   price?: number | string | null;
   status: string;
+  paymentStatus?: string | null;
   createdAt: string;
 }
 
@@ -40,20 +48,35 @@ interface HourlyBooking extends BookingBase {
 
 type AnyBooking = RouteBooking | AirportBooking | HourlyBooking;
 
-function StatusBadge({ status, ru }: { status: string; ru: boolean }) {
-  const labels: Record<string, { ru: string; en: string }> = {
-    pending:   { ru: 'Новая',       en: 'Pending' },
-    confirmed: { ru: 'Подтверждена', en: 'Confirmed' },
-    completed: { ru: 'Завершена',    en: 'Completed' },
-    cancelled: { ru: 'Отменена',     en: 'Cancelled' },
-  };
-  const label = labels[status]?.[ru ? 'ru' : 'en'] ?? status;
+function StatusBadge({ booking, ru }: { booking: AnyBooking; ru: boolean }) {
+  const display = getBookingDisplayStatus(booking, ru);
   return (
-    <span className={`${styles.statusBadge} ${styles[status] ?? ''}`}>{label}</span>
+    <div className={styles.statusWrap}>
+      <span className={`${styles.statusBadge} ${styles[display.tone] ?? ''}`}>
+        {display.label}
+      </span>
+      {display.hint && <p className={styles.statusHint}>{display.hint}</p>}
+    </div>
   );
 }
 
-function BookingCard({ booking, ru }: { booking: AnyBooking; ru: boolean }) {
+function BookingCard({
+  booking,
+  ru,
+  locale,
+  onChanged,
+}: {
+  booking: AnyBooking;
+  ru: boolean;
+  locale: string;
+  onChanged: () => void;
+}) {
+  const [paying, setPaying] = useState(false);
+  const [cancelling, setCancelling] = useState(false);
+  const [actionError, setActionError] = useState<string | null>(null);
+  const canPay = isBookingPayable(booking);
+  const canCancel = isBookingCancellable(booking);
+
   const routeLabel = (() => {
     if (booking.type === 'route') return `${booking.from} → ${booking.to}`;
     if (booking.type === 'airport') {
@@ -75,8 +98,46 @@ function BookingCard({ booking, ru }: { booking: AnyBooking; ru: boolean }) {
     day: 'numeric', month: 'short', year: 'numeric',
   });
 
+  const handlePay = async () => {
+    if (!canPay || paying) return;
+    setPaying(true);
+    setActionError(null);
+    try {
+      const url = await createBookingPayment({
+        bookingId: booking.id,
+        bookingType: booking.type,
+        amount: Number(booking.price),
+        locale,
+      });
+      window.location.href = url;
+    } catch (err) {
+      setActionError(err instanceof Error ? err.message : String(err));
+      setPaying(false);
+    }
+  };
+
+  const handleCancel = async () => {
+    if (!canCancel || cancelling) return;
+    const confirmed = window.confirm(
+      ru
+        ? 'Отменить этот заказ? Это действие нельзя отменить.'
+        : 'Cancel this booking? This cannot be undone.',
+    );
+    if (!confirmed) return;
+
+    setCancelling(true);
+    setActionError(null);
+    try {
+      await cancelUserBooking(booking.type, booking.id);
+      onChanged();
+    } catch (err) {
+      setActionError(err instanceof Error ? err.message : String(err));
+      setCancelling(false);
+    }
+  };
+
   return (
-    <div className={styles.card}>
+    <div className={`${styles.card} ${canPay ? styles.cardPayable : ''}`}>
       <div className={styles.cardMain}>
         <p className={styles.cardRoute}>{routeLabel}</p>
         <div className={styles.cardMeta}>
@@ -90,12 +151,39 @@ function BookingCard({ booking, ru }: { booking: AnyBooking; ru: boolean }) {
             </>
           )}
         </div>
+        {actionError && <p className={styles.payError}>{actionError}</p>}
       </div>
       <div className={styles.cardRight}>
         {booking.price && Number(booking.price) > 0 && (
           <span className={styles.price}>{formatBookingPrice(Number(booking.price))}</span>
         )}
-        <StatusBadge status={booking.status} ru={ru} />
+        <StatusBadge booking={booking} ru={ru} />
+        <div className={styles.cardActions}>
+          {canPay && (
+            <button
+              type="button"
+              className={styles.payBtn}
+              onClick={handlePay}
+              disabled={paying || cancelling}
+            >
+              {paying
+                ? (ru ? 'Переход...' : 'Redirecting...')
+                : (ru ? '💳 Оплатить' : '💳 Pay')}
+            </button>
+          )}
+          {canCancel && (
+            <button
+              type="button"
+              className={styles.cancelBtn}
+              onClick={handleCancel}
+              disabled={paying || cancelling}
+            >
+              {cancelling
+                ? (ru ? 'Отмена...' : 'Cancelling...')
+                : (ru ? 'Отменить' : 'Cancel')}
+            </button>
+          )}
+        </div>
       </div>
     </div>
   );
@@ -113,10 +201,11 @@ export default function AccountBookings({ embedded = false }: { embedded?: boole
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
+  const loadBookings = () => {
     const token = getToken();
     if (!token) { setIsLoading(false); return; }
 
+    setIsLoading(true);
     fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/me/bookings`, {
       headers: { Authorization: `Bearer ${token}` },
     })
@@ -127,6 +216,10 @@ export default function AccountBookings({ embedded = false }: { embedded?: boole
       .then((data) => setBookings(data))
       .catch(() => setError(ru ? 'Не удалось загрузить заказы' : 'Failed to load bookings'))
       .finally(() => setIsLoading(false));
+  };
+
+  useEffect(() => {
+    loadBookings();
   }, [ru]);
 
   if (isLoading) return <p className={styles.loading}>{ru ? 'Загрузка заказов...' : 'Loading bookings...'}</p>;
@@ -165,7 +258,13 @@ export default function AccountBookings({ embedded = false }: { embedded?: boole
       ) : (
         <div className={styles.list}>
           {all.map((b) => (
-            <BookingCard key={`${b.type}-${b.id}`} booking={b} ru={ru} />
+            <BookingCard
+              key={`${b.type}-${b.id}`}
+              booking={b}
+              ru={ru}
+              locale={locale}
+              onChanged={loadBookings}
+            />
           ))}
         </div>
       )}

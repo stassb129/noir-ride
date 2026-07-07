@@ -85,6 +85,10 @@
   }
 }
 
+.cardPayable {
+  border-color: rgba($accent-gold, 0.15);
+}
+
 .cardMain {
   display: flex;
   flex-direction: column;
@@ -152,6 +156,30 @@
   }
 }
 
+.statusWrap {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+  max-width: 220px;
+}
+
+.statusHint {
+  margin: 0;
+  font-size: 11px;
+  line-height: 1.4;
+  color: $text-muted;
+  text-align: right;
+}
+
+.cardActions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+  margin-top: 6px;
+}
+
 .loading {
   font-size: 14px;
   color: $text-muted;
@@ -160,4 +188,56 @@
 .loadError {
   font-size: 14px;
   color: #EF4444;
+}
+
+.payBtn {
+  padding: 6px 14px;
+  background: $accent-gold;
+  color: $bg-primary;
+  border: none;
+  border-radius: $radius-sm;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: $transition;
+  white-space: nowrap;
+
+  &:hover:not(:disabled) {
+    opacity: 0.88;
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: wait;
+  }
+}
+
+.cancelBtn {
+  padding: 6px 14px;
+  background: transparent;
+  color: $text-muted;
+  border: 1px solid $border-subtle;
+  border-radius: $radius-sm;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: $transition;
+  white-space: nowrap;
+
+  &:hover:not(:disabled) {
+    border-color: rgba(#EF4444, 0.45);
+    color: #EF4444;
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: wait;
+  }
+}
+
+.payError {
+  margin: 6px 0 0;
+  font-size: 12px;
+  color: #EF4444;
+  line-height: 1.4;
 }
