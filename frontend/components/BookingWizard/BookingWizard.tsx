@@ -490,11 +490,13 @@ export default function BookingWizard({
 
   const [submitting, setSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
+  const [paymentError, setPaymentError] = useState<string | null>(null);
 
   const handleSubmit = async () => {
     if (!validateStep4()) return;
     setSubmitting(true);
     setSubmitStatus('idle');
+    setPaymentError(null);
 
     const baseBody = {
       name: state.name,
@@ -568,12 +570,30 @@ export default function BookingWizard({
             window.location.href = confirmationUrl;
             return;
           }
+          // Got 200 but no URL — treat as payment not configured
+          setSubmitStatus('success');
+          return;
         }
+
+        // Payment creation failed — show error with details
+        let errMsg = '';
+        try {
+          const errBody = await payRes.json() as { message?: string };
+          errMsg = errBody.message ?? String(payRes.status);
+        } catch {
+          errMsg = String(payRes.status);
+        }
+        setPaymentError(ru
+          ? `Не удалось создать платёж (${errMsg}). Заказ сохранён — мы свяжемся с вами.`
+          : `Payment creation failed (${errMsg}). Your booking is saved — we will contact you.`);
+        setSubmitStatus('success');
+        return;
       }
 
-      // Fallback: no price configured — show inline success
+      // No price — show inline success without payment
       setSubmitStatus('success');
-    } catch {
+    } catch (err) {
+      console.error('Booking submit error:', err);
       setSubmitStatus('error');
     } finally {
       setSubmitting(false);
@@ -988,6 +1008,11 @@ export default function BookingWizard({
               ? 'Мы свяжемся с вами в течение 30 минут для подтверждения деталей.'
               : 'We will contact you within 30 minutes to confirm the details.'}
           </p>
+          {paymentError && (
+            <p style={{ fontSize: 13, color: '#f87171', background: 'rgba(248,113,113,0.08)', border: '1px solid rgba(248,113,113,0.25)', borderRadius: 8, padding: '10px 16px', maxWidth: 400, lineHeight: 1.55 }}>
+              ⚠️ {paymentError}
+            </p>
+          )}
           <Link href={`/${locale}/account`} className={styles.btnNext} style={{ marginTop: 24, display: 'inline-flex', textDecoration: 'none' }}>
             {ru ? 'Мои бронирования' : 'My bookings'}
           </Link>
