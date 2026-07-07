@@ -1,4 +1,4 @@
-import { Controller, Post, Get, Body, Param, HttpCode, HttpStatus, Logger } from '@nestjs/common';
+import { Controller, Post, Get, Body, Param, HttpCode, HttpStatus, Logger, ValidationPipe } from '@nestjs/common';
 import { PaymentService } from './payment.service';
 import { CreatePaymentDto } from './payment.dto';
 
@@ -13,7 +13,7 @@ export class PaymentController {
    * Called by the frontend after a booking is saved.
    */
   @Post('create')
-  async createPayment(@Body() dto: CreatePaymentDto) {
+  async createPayment(@Body(ValidationPipe) dto: CreatePaymentDto) {
     return this.paymentService.createPayment(dto);
   }
 
