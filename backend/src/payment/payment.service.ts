@@ -32,10 +32,12 @@ export class PaymentService {
     private telegramService: TelegramService,
   ) {}
 
-  private get credentials() {
+  private get credentials(): { shopId: string; secretKey: string } {
     const shopId = this.configService.get<string>('YOOKASSA_SHOP_ID');
     const secretKey = this.configService.get<string>('YOOKASSA_SECRET_KEY');
-    if (!shopId || !secretKey) throw new BadRequestException('YooKassa credentials not configured');
+    if (!shopId || !secretKey) {
+      throw new BadRequestException('YooKassa credentials not configured (YOOKASSA_SHOP_ID / YOOKASSA_SECRET_KEY missing)');
+    }
     return { shopId, secretKey };
   }
 
@@ -59,20 +61,28 @@ export class PaymentService {
       metadata: { bookingId: String(bookingId), bookingType },
     };
 
-    const response = await fetch(this.apiUrl, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Idempotence-Key': idempotenceKey,
-        Authorization: this.authHeader(),
-      },
-      body: JSON.stringify(body),
-    });
+    let response: Response;
+    try {
+      response = await fetch(this.apiUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Idempotence-Key': idempotenceKey,
+          Authorization: this.authHeader(),
+        },
+        body: JSON.stringify(body),
+        signal: AbortSignal.timeout(15000),
+      });
+    } catch (fetchErr) {
+      const msg = fetchErr instanceof Error ? fetchErr.message : String(fetchErr);
+      this.logger.error(`YooKassa network error: ${msg}`);
+      throw new BadRequestException(`YooKassa network error: ${msg}`);
+    }
 
     if (!response.ok) {
       const text = await response.text();
-      this.logger.error(`YooKassa createPayment error ${response.status}: ${text}`);
-      throw new BadRequestException(`Payment creation failed: ${response.status}`);
+      this.logger.error(`YooKassa API error ${response.status}: ${text}`);
+      throw new BadRequestException(`YooKassa error ${response.status}: ${text.slice(0, 200)}`);
     }
 
     const payment: YooKassaPayment = await response.json();
@@ -82,9 +92,12 @@ export class PaymentService {
       throw new BadRequestException('YooKassa did not return a confirmation URL');
     }
 
-    await this.savePaymentId(bookingId, bookingType, payment.id, 'pending');
-    this.logger.log(`Payment ${payment.id} created for ${bookingType} booking #${bookingId}`);
+    // Save paymentId to DB — non-critical, don't let DB errors block redirect
+    this.savePaymentId(bookingId, bookingType, payment.id, 'pending').catch((err: unknown) => {
+      this.logger.warn(`savePaymentId failed (likely missing DB column — run DB_SYNC=true once): ${String(err)}`);
+    });
 
+    this.logger.log(`Payment ${payment.id} created for ${bookingType} booking #${bookingId}`);
     return { paymentId: payment.id, confirmationUrl };
   }
 
@@ -98,15 +111,24 @@ export class PaymentService {
     const bookingType = meta.bookingType as CreatePaymentDto['bookingType'];
 
     if (!bookingId || !bookingType) {
-      this.logger.warn(`Webhook: missing metadata bookingId/bookingType`);
+      this.logger.warn('Webhook: missing metadata bookingId/bookingType');
       return;
     }
 
     this.logger.log(`Webhook: payment ${payment.id} → ${payment.status} (${bookingType} #${bookingId})`);
-    await this.savePaymentId(bookingId, bookingType, payment.id, payment.status);
+
+    try {
+      await this.savePaymentId(bookingId, bookingType, payment.id, payment.status);
+    } catch (err) {
+      this.logger.warn(`Webhook savePaymentId failed: ${String(err)}`);
+    }
 
     if (payment.status === 'succeeded') {
-      await this.updateBookingStatus(bookingId, bookingType, 'confirmed');
+      try {
+        await this.updateBookingStatus(bookingId, bookingType, 'confirmed');
+      } catch (err) {
+        this.logger.warn(`Webhook updateBookingStatus failed: ${String(err)}`);
+      }
       await this.notifyPaymentSuccess(bookingId, bookingType, payment.id);
     }
 
@@ -116,9 +138,15 @@ export class PaymentService {
   }
 
   async getPayment(paymentId: string): Promise<YooKassaPayment> {
-    const response = await fetch(`${this.apiUrl}/${paymentId}`, {
-      headers: { Authorization: this.authHeader() },
-    });
+    let response: Response;
+    try {
+      response = await fetch(`${this.apiUrl}/${paymentId}`, {
+        headers: { Authorization: this.authHeader() },
+        signal: AbortSignal.timeout(10000),
+      });
+    } catch {
+      throw new BadRequestException('Failed to reach YooKassa');
+    }
     if (!response.ok) throw new BadRequestException('Payment not found');
     return response.json() as Promise<YooKassaPayment>;
   }
