@@ -1,0 +1,23 @@
+@use '../../styles/scss/variables' as *;
+@use '../../styles/scss/mixins' as *;
+
+.section {
+  padding: 84px 0;
+  background: $bg-primary;
+
+  @include mobile {
+    padding: 64px 0;
+  }
+}
+
+.container {
+  max-width: $container-max;
+  margin: 0 auto;
+  padding: 0 $container-padding;
+}
+
+.formWrap {
+  margin: 0 auto;
+  max-width: 560px;
+}
+

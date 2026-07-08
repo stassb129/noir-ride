@@ -9,6 +9,7 @@ import Stats from '@/components/Stats/Stats';
 import Fleet from '@/components/Fleet/Fleet';
 import Guarantees from '@/components/Guarantees/Guarantees';
 import ContactSection from '@/components/ContactSection/ContactSection';
+import LeadFormSection from '@/components/LeadFormSection/LeadFormSection';
 import Steps from '@/components/Steps/Steps';
 import { SITE_CONTACTS } from '@/lib/site-contacts';
 
@@ -143,14 +144,15 @@ export default async function HomePage({
       <LocalBusinessJsonLd locale={locale} />
       <Hero />
       <Services />
+      <Fleet />
       <IntercitySection />
       <AirportSection />
       <HourlySection />
       <Benefits />
       <Stats />
-      <Fleet />
       <Guarantees />
       <ContactSection />
+      <LeadFormSection />
       <Steps />
     </>
   );
