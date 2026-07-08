@@ -5,7 +5,10 @@
   @include glass-effect(0.25, 24px);
   padding: $spacing-2xl;
   border-radius: $radius-xl;
+  width: 100%;
   max-width: 520px;
+  box-sizing: border-box;
+  overflow: hidden;
 
   @include mobile {
     padding: $spacing-xl;
@@ -42,12 +45,14 @@
   display: flex;
   flex-direction: column;
   gap: $spacing-lg;
+  min-width: 0;
 }
 
 .formGroup {
   display: flex;
   flex-direction: column;
   gap: $spacing-xs;
+  min-width: 0;
 }
 
 .label {

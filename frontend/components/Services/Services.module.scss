@@ -30,6 +30,12 @@
   @include mobile {
     gap: $spacing-lg;
   }
+
+  > a {
+    display: flex;
+    text-decoration: none;
+    height: 100%;
+  }
 }
 
 .serviceCard {
@@ -41,9 +47,17 @@
   transition: $transition;
   cursor: pointer;
   text-align: center;
+  width: 100%;
+  height: 100%;
+  min-height: 260px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
 
   @include mobile {
     padding: $spacing-2xl $spacing-lg;
+    min-height: 220px;
   }
 
   &:hover {
