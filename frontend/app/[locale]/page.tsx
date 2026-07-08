@@ -9,7 +9,10 @@ import Stats from '@/components/Stats/Stats';
 import Fleet from '@/components/Fleet/Fleet';
 import Guarantees from '@/components/Guarantees/Guarantees';
 import ContactSection from '@/components/ContactSection/ContactSection';
+import LeadFormSection from '@/components/LeadFormSection/LeadFormSection';
 import Steps from '@/components/Steps/Steps';
+import Experience from '@/components/Experience/Experience';
+import CtaBanner from '@/components/CtaBanner/CtaBanner';
 import { SITE_CONTACTS } from '@/lib/site-contacts';
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://noir-ride.ru';
@@ -76,6 +79,8 @@ function LocalBusinessJsonLd({ locale }: { locale: string }) {
           { '@type': 'Country', name: ru ? 'Россия' : 'Russia' },
         ],
         priceRange: '₽₽₽',
+        currenciesAccepted: 'RUB',
+        paymentAccepted: ru ? 'Банковская карта, онлайн-оплата' : 'Credit Card, Online Payment',
         sameAs: [
           SITE_CONTACTS.telegram,
           SITE_CONTACTS.instagram,
@@ -143,15 +148,18 @@ export default async function HomePage({
       <LocalBusinessJsonLd locale={locale} />
       <Hero />
       <Services />
+      <Steps />
+      <Experience />
+      <Fleet />
       <IntercitySection />
       <AirportSection />
       <HourlySection />
+      <CtaBanner />
       <Benefits />
       <Stats />
-      <Fleet />
       <Guarantees />
       <ContactSection />
-      <Steps />
+      <LeadFormSection />
     </>
   );
 }

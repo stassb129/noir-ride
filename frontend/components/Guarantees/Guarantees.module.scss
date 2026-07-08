@@ -102,56 +102,67 @@
   }
 }
 
-.statsGrid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: $spacing-lg;
+.imageFrame {
+  position: relative;
   width: 100%;
-
-  @include mobile {
-    grid-template-columns: 1fr;
-    gap: $spacing-md;
-  }
-}
-
-.statCard {
-  background: $glass-bg;
-  backdrop-filter: blur(20px);
+  aspect-ratio: 4 / 3;
+  border-radius: $radius-xl;
+  overflow: hidden;
   border: 1px solid $border-subtle;
-  border-radius: $radius-lg;
-  padding: $spacing-2xl;
-  text-align: center;
-  transition: $transition;
+  box-shadow: $shadow-md;
+  isolation: isolate;
 
   @include mobile {
-    padding: $spacing-xl;
-  }
-
-  &:hover {
-    border-color: rgba($accent-gold, 0.3);
-    box-shadow: $shadow-md;
-    transform: translateY(-4px);
+    aspect-ratio: 16 / 11;
   }
 }
 
-.statValue {
+.image {
+  object-fit: cover;
+}
+
+.imageOverlay {
+  @include absolute-fill;
+  background: linear-gradient(0deg, rgba($bg-primary, 0.85) 0%, rgba($bg-primary, 0.1) 55%, rgba($bg-primary, 0) 100%);
+}
+
+.badges {
+  position: absolute;
+  left: $spacing-lg;
+  right: $spacing-lg;
+  bottom: $spacing-lg;
+  display: flex;
+  gap: $spacing-md;
+  flex-wrap: wrap;
+}
+
+.badge {
+  @include glass-effect(0.35, 16px);
+  flex: 1;
+  min-width: 120px;
+  padding: $spacing-md $spacing-lg;
+  border-radius: $radius-lg;
+  border: 1px solid rgba($accent-gold, 0.25);
+  text-align: left;
+}
+
+.badgeValue {
+  display: block;
   font-family: $font-family-display;
-  font-size: clamp(36px, 5vw, 56px);
+  font-size: clamp(28px, 4vw, 40px);
   font-weight: 800;
   color: $accent-gold;
   line-height: 1;
-  margin-bottom: $spacing-sm;
   letter-spacing: -0.02em;
+  margin-bottom: 6px;
 }
 
-.statLabel {
-  font-size: 13px;
+.badgeLabel {
+  display: block;
+  font-size: 12px;
   font-weight: 600;
   color: $text-secondary;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
-
-  @include mobile {
-    font-size: 11px;
-  }
+  letter-spacing: 0.04em;
+  line-height: 1.3;
 }

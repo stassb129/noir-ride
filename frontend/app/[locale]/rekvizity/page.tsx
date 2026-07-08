@@ -1,11 +1,21 @@
 import type { Metadata } from 'next';
 import styles from './page.module.scss';
 
-export const metadata: Metadata = {
-  title: 'Реквизиты — NOIR RIDE',
-  description: 'Реквизиты исполнителя NOIR RIDE — самозанятый, ИНН, контакты.',
-  robots: { index: false },
-};
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://noir-ride.ru';
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  return {
+    title: 'Реквизиты — NOIR RIDE',
+    description: 'Реквизиты исполнителя NOIR RIDE — самозанятый, ИНН, контакты.',
+    robots: { index: false, follow: true },
+    alternates: { canonical: `${SITE_URL}/${locale}/rekvizity` },
+  };
+}
 
 export default function RekvizityPage() {
   return (

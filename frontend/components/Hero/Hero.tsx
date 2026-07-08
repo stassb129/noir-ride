@@ -4,7 +4,7 @@ import { useLocale } from 'next-intl';
 import { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import { EASE_OUT_EXPO } from '@/lib/motion-easing';
-import ContactForm from '../ContactForm/ContactForm';
+import HeroAccessCard from './HeroAccessCard';
 import styles from './Hero.module.scss';
 
 const fadeInUp = {
@@ -92,7 +92,7 @@ export default function Hero() {
           </motion.div>
 
           <motion.div id="booking-form" className={styles.bookingCardWrapper} variants={fadeInUp}>
-            <ContactForm />
+            <HeroAccessCard />
           </motion.div>
         </motion.div>
       </div>

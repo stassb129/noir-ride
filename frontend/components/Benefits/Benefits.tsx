@@ -54,8 +54,8 @@ export default function Benefits() {
       icon: CreditCard,
       title: locale === 'ru' ? 'Прозрачное ценообразование' : 'Transparent pricing',
       description: locale === 'ru' 
-        ? 'Фиксированная стоимость без дополнительных сборов. Оплата наличными или картой.'
-        : 'Fixed price with no hidden fees. Cash or card payment accepted.'
+        ? 'Фиксированная стоимость без дополнительных сборов. Безопасная оплата картой онлайн.'
+        : 'Fixed price with no hidden fees. Secure online card payment.'
     },
     {
       icon: MapPin,

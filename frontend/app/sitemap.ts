@@ -4,12 +4,18 @@ const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://noir-ride.ru';
 
 const locales = ['ru', 'en'] as const;
 
-const publicPages = [
+type ChangeFreq = MetadataRoute.Sitemap[number]['changeFrequency'];
+
+// Only real, indexable pages that return HTTP 200.
+// Note: /routes, /airport and /hourly are server-side redirects to /booking,
+// so they are intentionally excluded — the service content itself lives in the
+// anchored sections of the homepage (#routes, #airport, #hourly).
+// /rekvizity is noindex and /account, /admin, /api are disallowed in robots.
+const publicPages: Array<{ path: string; priority: number; changeFrequency: ChangeFreq }> = [
   { path: '', priority: 1.0, changeFrequency: 'weekly' },
-  { path: '/airport', priority: 0.9, changeFrequency: 'monthly' },
-  { path: '/hourly', priority: 0.9, changeFrequency: 'monthly' },
-  { path: '/routes', priority: 0.9, changeFrequency: 'monthly' },
-] as const;
+  { path: '/booking', priority: 0.7, changeFrequency: 'monthly' },
+  { path: '/oferta', priority: 0.3, changeFrequency: 'yearly' },
+];
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const now = new Date();
@@ -22,6 +28,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
         lastModified: now,
         changeFrequency,
         priority,
+        alternates: {
+          languages: {
+            ru: `${SITE_URL}/ru${path}`,
+            en: `${SITE_URL}/en${path}`,
+          },
+        },
       });
     }
   }

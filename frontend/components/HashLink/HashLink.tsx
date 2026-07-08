@@ -19,7 +19,19 @@ export default function HashLink({ href, onClick, ...props }: HashLinkProps) {
     if (!hash) return;
 
     event.preventDefault();
-    scrollToHash(hash, hrefStr);
+    let attempts = 0;
+    const maxAttempts = 8;
+
+    const tryScroll = () => {
+      attempts += 1;
+      const ok = scrollToHash(hash, hrefStr);
+      if (ok || attempts >= maxAttempts) return;
+      window.setTimeout(tryScroll, 80);
+    };
+
+    // On mobile menu we need a tiny delay so collapsing header
+    // doesn't fight with anchor scroll.
+    window.setTimeout(tryScroll, 120);
   };
 
   return <Link href={href} onClick={handleClick} {...props} />;

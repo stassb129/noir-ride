@@ -1,0 +1,49 @@
+@use '../../styles/scss/variables' as *;
+
+.ring {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(255, 255, 255, 0.55);
+  pointer-events: none;
+  z-index: 2000;
+  opacity: 0;
+  transition:
+    opacity 0.3s ease,
+    width 0.25s cubic-bezier(0.22, 1, 0.36, 1),
+    height 0.25s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.25s ease,
+    background-color 0.25s ease;
+  will-change: transform;
+
+  // The transform is driven per-frame in JS; keep the centering offset here
+  // via the composited translate applied in the component.
+}
+
+.visible {
+  opacity: 1;
+}
+
+.hovering {
+  width: 56px;
+  height: 56px;
+  border-color: rgba($accent-gold, 0.9);
+  background-color: rgba($accent-gold, 0.1);
+}
+
+.pressed {
+  width: 28px;
+  height: 28px;
+  border-color: $accent-gold;
+  background-color: rgba($accent-gold, 0.18);
+}
+
+// Hide entirely for coarse pointers / no-hover devices as a safety net.
+@media (hover: none), (pointer: coarse) {
+  .ring {
+    display: none;
+  }
+}

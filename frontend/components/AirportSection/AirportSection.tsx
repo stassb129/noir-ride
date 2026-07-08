@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { useLocale } from 'next-intl';
 import { Plane, UserCheck, Tag, Clock, Building2 } from 'lucide-react';
 import SectionHeading from '@/components/SectionHeading/SectionHeading';
@@ -62,14 +63,25 @@ export default function AirportSection() {
         </p>
 
         <div className={styles.seoBlock}>
-          <h3 className={styles.seoTitle}>
-            {ru ? 'Трансфер в аэропорт Шереметьево, Домодедово и Внуково' : 'Transfer to Sheremetyevo, Domodedovo and Vnukovo'}
-          </h3>
-          <p className={styles.seoText}>
-            {ru
-              ? 'Закажите трансфер в аэропорт на Mercedes с водителем — вылетите без стресса, а встреча из аэропорта пройдёт так же комфортно. Мы работаем со всеми терминалами SVO, DME и VKO. Укажите номер рейса — водитель будет в курсе задержек. Для встречи с табличкой напишите имя или текст, который должен быть написан. Багаж, детское кресло и платные дороги — по запросу, всё согласуем заранее.'
-              : 'Book a Mercedes airport transfer — depart stress-free, and arrivals are just as comfortable. We serve all SVO, DME and VKO terminals. Provide your flight number — your driver tracks delays. For meet & greet, specify the name or text on the sign. Luggage, child seats and toll roads on request — we agree everything in advance.'}
-          </p>
+          <div className={styles.seoImageWrap}>
+            <Image
+              src="/main-page-photo/airport-meet.png"
+              alt={ru ? 'Водитель встречает пассажира в аэропорту' : 'Chauffeur meeting a passenger at the airport'}
+              fill
+              sizes="(max-width: 768px) 100vw, 45vw"
+              className={styles.seoImage}
+            />
+          </div>
+          <div className={styles.seoText}>
+            <h3 className={styles.seoTitle}>
+              {ru ? 'Трансфер в аэропорт Шереметьево, Домодедово и Внуково' : 'Transfer to Sheremetyevo, Domodedovo and Vnukovo'}
+            </h3>
+            <p>
+              {ru
+                ? 'Закажите трансфер в аэропорт на Mercedes с водителем — вылетите без стресса, а встреча из аэропорта пройдёт так же комфортно. Мы работаем со всеми терминалами SVO, DME и VKO. Укажите номер рейса — водитель будет в курсе задержек. Для встречи с табличкой напишите имя или текст, который должен быть написан. Багаж, детское кресло и платные дороги — по запросу, всё согласуем заранее.'
+                : 'Book a Mercedes airport transfer — depart stress-free, and arrivals are just as comfortable. We serve all SVO, DME and VKO terminals. Provide your flight number — your driver tracks delays. For meet & greet, specify the name or text on the sign. Luggage, child seats and toll roads on request — we agree everything in advance.'}
+            </p>
+          </div>
         </div>
 
         <SectionHeading

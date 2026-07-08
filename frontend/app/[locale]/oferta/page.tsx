@@ -1,10 +1,28 @@
 import type { Metadata } from 'next';
 import styles from './page.module.scss';
 
-export const metadata: Metadata = {
-  title: 'Публичная оферта — NOIR RIDE',
-  description: 'Публичная оферта на оказание транспортных услуг NOIR RIDE.',
-};
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://noir-ride.ru';
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  return {
+    title: 'Публичная оферта — NOIR RIDE',
+    description: 'Публичная оферта на оказание транспортных услуг NOIR RIDE.',
+    openGraph: { url: `${SITE_URL}/${locale}/oferta` },
+    alternates: {
+      canonical: `${SITE_URL}/${locale}/oferta`,
+      languages: {
+        ru: `${SITE_URL}/ru/oferta`,
+        en: `${SITE_URL}/en/oferta`,
+        'x-default': `${SITE_URL}/ru/oferta`,
+      },
+    },
+  };
+}
 
 const today = new Date();
 const dateStr = today.toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' });
@@ -54,9 +72,9 @@ export default function OfertaPage() {
             и указанных на сайте <strong>https://noir-ride.ru</strong>.
           </p>
           <p>
-            Оплата производится в рублях (RUB) в режиме онлайн через платёжный сервис
-            ЮKassa (ООО НКО «ЮМани», лицензия ЦБ РФ № 3510-К от 29.11.2012).
-            Также возможна оплата наличными водителю по согласованию с Исполнителем.
+            Оплата производится в рублях (RUB) в режиме онлайн банковской картой через
+            платёжный сервис ЮKassa (ООО НКО «ЮМани», лицензия ЦБ РФ № 3510-К от 29.11.2012).
+            Наличный расчёт не производится.
           </p>
           <p>
             Чек об оплате формируется и направляется Заказчику оператором фискальных данных

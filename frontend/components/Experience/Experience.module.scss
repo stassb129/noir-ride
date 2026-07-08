@@ -1,0 +1,88 @@
+@use '../../styles/scss/variables' as *;
+@use '../../styles/scss/mixins' as *;
+
+.experience {
+  padding: $section-padding 0;
+  background: $bg-primary;
+
+  @include mobile {
+    padding: 80px 0;
+  }
+}
+
+.container {
+  max-width: $container-max;
+  margin: 0 auto;
+  padding: 0 $container-padding;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: $spacing-xl;
+
+  @include mobile {
+    grid-template-columns: 1fr;
+    gap: $spacing-lg;
+  }
+}
+
+.tile {
+  position: relative;
+  margin: 0;
+  border-radius: $radius-xl;
+  overflow: hidden;
+  border: 1px solid $border-subtle;
+  min-height: 420px;
+  display: flex;
+  align-items: flex-end;
+  isolation: isolate;
+
+  @include mobile {
+    min-height: 340px;
+  }
+
+  &:hover .image {
+    transform: scale(1.06);
+  }
+}
+
+.imageWrap {
+  @include absolute-fill;
+  z-index: -1;
+}
+
+.image {
+  object-fit: cover;
+  transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.overlay {
+  @include absolute-fill;
+  background: linear-gradient(0deg, rgba($bg-primary, 0.94) 0%, rgba($bg-primary, 0.55) 45%, rgba($bg-primary, 0.05) 100%);
+}
+
+.caption {
+  padding: $spacing-2xl;
+
+  @include mobile {
+    padding: $spacing-xl;
+  }
+}
+
+.tileTitle {
+  font-family: $font-family-display;
+  font-size: clamp(22px, 2.6vw, 28px);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: $text-primary;
+  margin: 0 0 $spacing-sm;
+}
+
+.tileText {
+  font-size: 15px;
+  line-height: 1.6;
+  color: $text-secondary;
+  margin: 0;
+  max-width: 44ch;
+}

@@ -1,0 +1,57 @@
+@use '../../styles/scss/variables' as *;
+@use '../../styles/scss/mixins' as *;
+
+.card {
+  @include glass-effect(0.2, 20px);
+  width: 100%;
+  max-width: 520px;
+  border-radius: $radius-xl;
+  padding: $spacing-2xl;
+  box-sizing: border-box;
+
+  @include mobile {
+    padding: $spacing-xl;
+    border-radius: $radius-lg;
+  }
+}
+
+.title {
+  margin: 0 0 $spacing-md;
+  font-family: $font-family-display;
+  font-size: clamp(24px, 3vw, 32px);
+  line-height: 1.15;
+  color: $text-primary;
+  letter-spacing: -0.02em;
+}
+
+.text {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.65;
+  color: $text-secondary;
+}
+
+.actions {
+  margin-top: $spacing-xl;
+  display: flex;
+  gap: $spacing-sm;
+  flex-wrap: wrap;
+}
+
+.primaryBtn,
+.secondaryBtn {
+  height: 44px;
+  padding: 0 $spacing-lg;
+  border-radius: $radius-main;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.primaryBtn {
+  @include btn-outline-fill;
+}
+
+.secondaryBtn {
+  @include btn-outline-fill($color: $text-secondary, $text-on-fill: $bg-primary, $border-width: 1px);
+}
+

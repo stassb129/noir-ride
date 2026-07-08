@@ -52,21 +52,15 @@ export async function generateMetadata({
       siteName: 'NOIR RIDE',
       title,
       description,
-      url: `${SITE_URL}/${locale}`,
     },
     twitter: {
       card: 'summary_large_image',
       title,
       description,
     },
-    alternates: {
-      canonical: `${SITE_URL}/${locale}`,
-      languages: {
-        ru: `${SITE_URL}/ru`,
-        en: `${SITE_URL}/en`,
-        'x-default': `${SITE_URL}/ru`,
-      },
-    },
+    // NOTE: canonical/hreflang and openGraph.url are intentionally set per-page
+    // (see each page's generateMetadata) so sub-pages don't inherit the
+    // homepage canonical.
   };
 }
 

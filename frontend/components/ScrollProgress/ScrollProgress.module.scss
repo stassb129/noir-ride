@@ -1,0 +1,20 @@
+@use '../../styles/scss/variables' as *;
+
+.bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  z-index: 1100;
+  transform-origin: 0 50%;
+  transform: scaleX(0);
+  background: linear-gradient(90deg,
+    rgba($accent-gold, 0.2) 0%,
+    $accent-gold 35%,
+    $accent-gold-hover 70%,
+    #f2e2b3 100%);
+  box-shadow: 0 0 12px rgba($accent-gold, 0.55);
+  pointer-events: none;
+  will-change: transform;
+}

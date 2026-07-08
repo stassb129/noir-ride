@@ -1,0 +1,95 @@
+@use '../../styles/scss/variables' as *;
+@use '../../styles/scss/mixins' as *;
+
+.banner {
+  position: relative;
+  overflow: hidden;
+  min-height: 520px;
+  display: flex;
+  align-items: center;
+  isolation: isolate;
+
+  @include mobile {
+    min-height: 460px;
+  }
+}
+
+.media {
+  @include absolute-fill;
+  z-index: -1;
+}
+
+.image {
+  object-fit: cover;
+  object-position: center 30%;
+  transform: scale(1.02);
+}
+
+.scrim {
+  @include absolute-fill;
+  background:
+    linear-gradient(90deg, rgba($bg-primary, 0.92) 0%, rgba($bg-primary, 0.75) 40%, rgba($bg-primary, 0.25) 100%),
+    linear-gradient(0deg, rgba($bg-primary, 0.85) 0%, rgba($bg-primary, 0.1) 60%);
+}
+
+.container {
+  max-width: $container-max;
+  margin: 0 auto;
+  padding: $spacing-4xl $container-padding;
+  width: 100%;
+}
+
+.content {
+  max-width: 560px;
+}
+
+.eyebrow {
+  display: inline-block;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: $accent-gold;
+  margin-bottom: $spacing-md;
+}
+
+.title {
+  font-family: $font-family-display;
+  font-size: clamp(30px, 4.5vw, 48px);
+  font-weight: 800;
+  line-height: 1.08;
+  letter-spacing: -0.03em;
+  color: $text-primary;
+  margin: 0 0 $spacing-lg;
+}
+
+.text {
+  font-size: clamp(15px, 2vw, 18px);
+  line-height: 1.65;
+  color: $text-secondary;
+  margin: 0 0 $spacing-2xl;
+}
+
+.actions {
+  display: flex;
+  gap: $spacing-md;
+  flex-wrap: wrap;
+}
+
+.primaryBtn {
+  @include btn-outline-fill;
+  height: 52px;
+  padding: 0 $spacing-2xl;
+  font-size: 15px;
+  font-weight: 600;
+  border-radius: $radius-main;
+}
+
+.secondaryBtn {
+  @include btn-outline-fill($color: $text-primary, $text-on-fill: $bg-primary, $border-width: 1px);
+  height: 52px;
+  padding: 0 $spacing-2xl;
+  font-size: 15px;
+  font-weight: 600;
+  border-radius: $radius-main;
+}

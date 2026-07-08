@@ -5,6 +5,7 @@ import { createPortal } from 'react-dom';
 import { useLocale } from 'next-intl';
 import { getVehiclePhotos, type Vehicle, type ServiceType } from '@/lib/api/vehicles';
 import { getAirportPrice } from '@/lib/airport-pricing';
+import { getLenis } from '@/lib/smooth-scroll';
 import VehicleCarousel from '@/components/VehicleCarousel/VehicleCarousel';
 import styles from './VehicleModal.module.scss';
 
@@ -66,12 +67,15 @@ export default function VehicleModal({
     style.top = `-${scrollY}px`;
     style.width = '100%';
 
+    getLenis()?.stop();
+
     return () => {
       style.overflow = prev.overflow;
       style.position = prev.position;
       style.top = prev.top;
       style.width = prev.width;
       window.scrollTo(0, scrollY);
+      getLenis()?.start();
     };
   }, []);
 
@@ -109,7 +113,7 @@ export default function VehicleModal({
 
           {/* ── Right: content + footer ── */}
           <div className={styles.infoCol}>
-            <div className={styles.contentCol}>
+            <div className={styles.contentCol} data-lenis-prevent>
               {vehicle.category && (
                 <p className={styles.category}>{vehicle.category}</p>
               )}
