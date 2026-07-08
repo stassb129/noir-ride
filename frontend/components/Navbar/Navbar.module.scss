@@ -124,20 +124,11 @@
 }
 
 .ctaButton {
+  @include btn-outline-fill;
   padding: 10px 24px;
-  background: $accent-gold;
-  color: $bg-primary;
   font-size: 14px;
   font-weight: 600;
-  transition: $transition;
   border-radius: $radius-sm;
-  display: inline-block;
-
-  &:hover {
-    background: $text-primary;
-    box-shadow: 0 4px 16px rgba($accent-gold, 0.4);
-    transform: translateY(-2px);
-  }
 }
 
 .langSwitch {

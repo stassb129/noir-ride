@@ -40,35 +40,18 @@
 
 .primaryBtn,
 .secondaryBtn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
   height: 44px;
   padding: 0 $spacing-lg;
   border-radius: $radius-main;
   font-size: 14px;
   font-weight: 600;
-  text-decoration: none;
-  transition: $transition;
 }
 
 .primaryBtn {
-  background: $accent-gold;
-  color: $bg-primary;
-
-  &:hover {
-    opacity: 0.9;
-  }
+  @include btn-outline-fill;
 }
 
 .secondaryBtn {
-  border: 1px solid $border-subtle;
-  color: $text-secondary;
-  background: rgba($bg-primary, 0.4);
-
-  &:hover {
-    border-color: rgba($accent-gold, 0.5);
-    color: $accent-gold;
-  }
+  @include btn-outline-fill($color: $text-secondary, $text-on-fill: $bg-primary, $border-width: 1px);
 }
 

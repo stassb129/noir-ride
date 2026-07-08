@@ -1,4 +1,4 @@
-import { redirect } from 'next/navigation';
+import { permanentRedirect } from 'next/navigation';
 
 export default async function AirportPage({
   params,
@@ -6,5 +6,5 @@ export default async function AirportPage({
   params: Promise<{ locale: string }>;
 }) {
   const { locale } = await params;
-  redirect(`/${locale}/booking?type=airport`);
+  permanentRedirect(`/${locale}/booking?type=airport`);
 }

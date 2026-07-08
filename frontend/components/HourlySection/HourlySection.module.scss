@@ -145,18 +145,9 @@
 }
 
 .ctaBtn {
-  display: inline-flex;
+  @include btn-outline-fill;
   padding: 16px 40px;
-  background: $accent-gold;
-  color: $bg-primary;
   font-size: 16px;
   font-weight: 600;
   border-radius: $radius-main;
-  text-decoration: none;
-  transition: $transition;
-
-  &:hover {
-    background: $accent-gold-hover;
-    box-shadow: 0 4px 24px rgba($accent-gold, 0.3);
-  }
 }

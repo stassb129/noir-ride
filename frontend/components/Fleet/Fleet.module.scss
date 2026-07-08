@@ -202,15 +202,8 @@
 }
 
 .orderBtn {
-  border: 1px solid rgba($accent-gold, 0.5);
-  background: rgba($accent-gold, 0.12);
-  color: $accent-gold;
+  @include btn-outline-fill($border-width: 1px);
   font-family: inherit;
-
-  &:hover {
-    background: rgba($accent-gold, 0.22);
-    border-color: $accent-gold;
-  }
 }
 
 .status {
@@ -227,18 +220,9 @@
 }
 
 .loadMoreBtn {
+  @include btn-outline-fill($border-width: 1px);
   padding: 14px 32px;
-  background: transparent;
-  border: 1px solid rgba($accent-gold, 0.45);
   border-radius: $radius-main;
-  color: $accent-gold;
   font-size: 15px;
   font-weight: 600;
-  cursor: pointer;
-  transition: $transition;
-
-  &:hover {
-    background: rgba($accent-gold, 0.1);
-    border-color: $accent-gold;
-  }
 }

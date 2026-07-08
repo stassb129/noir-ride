@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import { motion, type Variants } from 'framer-motion';
 import { CheckCircle } from 'lucide-react';
 import { useLocale } from 'next-intl';
@@ -96,29 +97,27 @@ export default function Guarantees() {
             viewport={{ once: true }}
             transition={{ duration: 0.8, ease: EASE_OUT_EXPO }}
           >
-            <div className={styles.statsGrid}>
-              <div className={styles.statCard}>
-                <div className={styles.statValue}>3</div>
-                <div className={styles.statLabel}>
-                  {locale === 'ru' ? 'года макс. возраст авто' : 'years max car age'}
+            <div className={styles.imageFrame}>
+              <Image
+                src="/main-page-photo/maybach-night.png"
+                alt={locale === 'ru' ? 'Mercedes-Maybach у отеля ночью' : 'Mercedes-Maybach at a hotel at night'}
+                fill
+                sizes="(max-width: 768px) 100vw, 50vw"
+                className={styles.image}
+              />
+              <div className={styles.imageOverlay} />
+              <div className={styles.badges}>
+                <div className={styles.badge}>
+                  <span className={styles.badgeValue}>3</span>
+                  <span className={styles.badgeLabel}>
+                    {locale === 'ru' ? 'года макс. возраст авто' : 'years max car age'}
+                  </span>
                 </div>
-              </div>
-              <div className={styles.statCard}>
-                <div className={styles.statValue}>5+</div>
-                <div className={styles.statLabel}>
-                  {locale === 'ru' ? 'лет опыт водителей' : 'years driver experience'}
-                </div>
-              </div>
-              <div className={styles.statCard}>
-                <div className={styles.statValue}>24/7</div>
-                <div className={styles.statLabel}>
-                  {locale === 'ru' ? 'поддержка клиентов' : 'customer support'}
-                </div>
-              </div>
-              <div className={styles.statCard}>
-                <div className={styles.statValue}>100%</div>
-                <div className={styles.statLabel}>
-                  {locale === 'ru' ? 'гарантия возврата' : 'refund guarantee'}
+                <div className={styles.badge}>
+                  <span className={styles.badgeValue}>100%</span>
+                  <span className={styles.badgeLabel}>
+                    {locale === 'ru' ? 'гарантия возврата' : 'refund guarantee'}
+                  </span>
                 </div>
               </div>
             </div>
