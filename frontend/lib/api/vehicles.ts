@@ -33,6 +33,14 @@ export function resolveVehiclePhotoUrl(url: string): string {
   return dir + encodeURIComponent(file);
 }
 
+/** Cover for cards/lists: prefers photoUrl (fleet studio shot), then first gallery photo. */
+export function getVehicleCover(vehicle: Pick<Vehicle, 'photoUrl' | 'photos'>): string | null {
+  if (vehicle.photoUrl?.trim()) {
+    return resolveVehiclePhotoUrl(vehicle.photoUrl.trim());
+  }
+  return getVehiclePhotos(vehicle)[0] ?? null;
+}
+
 export function getVehiclePhotos(vehicle: Pick<Vehicle, 'photoUrl' | 'photos'>): string[] {
   const fromArray = Array.isArray(vehicle.photos)
     ? vehicle.photos.map((url) => url?.trim()).filter(Boolean)

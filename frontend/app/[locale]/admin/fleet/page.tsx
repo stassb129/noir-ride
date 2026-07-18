@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { fetchWithAuth } from '@/lib/utils/fetchWithAuth';
-import { getVehiclePhotos } from '@/lib/api/vehicles';
+import { getVehicleCover } from '@/lib/api/vehicles';
 import styles from './fleet.module.scss';
 
 interface Vehicle {
@@ -159,7 +159,7 @@ export default function FleetPage() {
       ) : (
         <div className={styles.grid}>
           {vehicles.map((v) => {
-            const coverPhoto = getVehiclePhotos(v)[0];
+            const coverPhoto = getVehicleCover(v);
             return (
             <div key={v.id} className={styles.card}>
               {coverPhoto ? (

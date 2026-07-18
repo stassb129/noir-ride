@@ -5,7 +5,7 @@ import Image from 'next/image';
 import { useLocale } from 'next-intl';
 import { motion } from 'framer-motion';
 import { Users, Luggage, Zap, CarFront } from 'lucide-react';
-import { fetchVehicles, getVehiclePhotos, type Vehicle } from '@/lib/api/vehicles';
+import { fetchVehicles, getVehicleCover, type Vehicle } from '@/lib/api/vehicles';
 import VehicleModal from '@/components/VehicleModal/VehicleModal';
 import ServicePickerModal from '@/components/ServicePickerModal/ServicePickerModal';
 import SectionHeading from '@/components/SectionHeading/SectionHeading';
@@ -112,7 +112,7 @@ export default function Fleet() {
               viewport={{ once: true, margin: '-100px' }}
             >
               {visibleVehicles.map((vehicle) => {
-                const coverPhoto = getVehiclePhotos(vehicle)[0];
+                const coverPhoto = getVehicleCover(vehicle);
                 const subtitle = getCardSubtitle(vehicle);
                 const specs = [
                   {
