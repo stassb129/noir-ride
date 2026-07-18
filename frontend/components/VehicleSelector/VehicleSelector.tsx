@@ -4,7 +4,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { useLocale } from 'next-intl';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { fetchVehicles, getVehiclePhotos, type Vehicle, type ServiceType } from '@/lib/api/vehicles';
+import { fetchVehicles, getVehicleCover, getVehiclePhotos, type Vehicle, type ServiceType } from '@/lib/api/vehicles';
 import { getAirportPrice } from '@/lib/airport-pricing';
 import VehicleCarousel from '@/components/VehicleCarousel/VehicleCarousel';
 import styles from './VehicleSelector.module.scss';
@@ -334,7 +334,7 @@ export default function VehicleSelector({
           {vehicles.map((v) => {
             const price = getPrice(v, serviceType, airportCode);
             const isSelected = value === v.id;
-            const coverPhoto = getVehiclePhotos(v)[0];
+            const coverPhoto = getVehicleCover(v);
             return (
               <button
                 key={v.id}
@@ -394,7 +394,7 @@ export default function VehicleSelector({
       {vehicles.map((v) => {
         const price = getPrice(v, serviceType, airportCode);
         const isSelected = value === v.id;
-        const coverPhoto = getVehiclePhotos(v)[0];
+        const coverPhoto = getVehicleCover(v);
         return (
           <button
             key={v.id}

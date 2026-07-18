@@ -4,13 +4,24 @@ import { Repository } from 'typeorm';
 import { Vehicle } from '../entities/vehicle.entity';
 
 const fleetPhoto = (filename: string) => `/fleet/${filename}`;
+const carouselPhoto = (folder: string, filename: string) => `/carusel/${folder}/${filename}`;
+
+const E_CLASS_213_COVER = fleetPhoto('Mercedes-Benz E-Class 213.png');
+const E_CLASS_213_GALLERY = [
+  E_CLASS_213_COVER,
+  carouselPhoto('e-class213', 'e-class1.jpg'),
+  carouselPhoto('e-class213', 'e-class2.jpg'),
+  carouselPhoto('e-class213', 'e-class3.jpg'),
+  carouselPhoto('e-class213', 'e-class4.jpg'),
+  carouselPhoto('e-class213', 'e-class5.jpg'),
+];
 
 const SEED_VEHICLES: Partial<Vehicle>[] = [
   {
     brand: 'Mercedes-Benz',
     model: 'E-Class 213',
-    photoUrl: fleetPhoto('Mercedes-Benz E-Class 213.png'),
-    photos: [fleetPhoto('Mercedes-Benz E-Class 213.png')],
+    photoUrl: E_CLASS_213_COVER,
+    photos: E_CLASS_213_GALLERY,
     category: 'Бизнес-класс',
     description:
       'MERCEDES-BENZ E-CLASS W213 — это эталон бизнес-класса среди седанов. ' +
