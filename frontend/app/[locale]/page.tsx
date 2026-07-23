@@ -1,18 +1,14 @@
 import type { Metadata } from 'next';
 import Hero from '@/components/Hero/Hero';
 import Services from '@/components/Services/Services';
-import IntercitySection from '@/components/IntercitySection/IntercitySection';
-import AirportSection from '@/components/AirportSection/AirportSection';
-import HourlySection from '@/components/HourlySection/HourlySection';
 import Benefits from '@/components/Benefits/Benefits';
 import Stats from '@/components/Stats/Stats';
 import Fleet from '@/components/Fleet/Fleet';
 import Guarantees from '@/components/Guarantees/Guarantees';
-import ContactSection from '@/components/ContactSection/ContactSection';
-import LeadFormSection from '@/components/LeadFormSection/LeadFormSection';
 import Steps from '@/components/Steps/Steps';
 import Experience from '@/components/Experience/Experience';
 import CtaBanner from '@/components/CtaBanner/CtaBanner';
+import LeadFormSection from '@/components/LeadFormSection/LeadFormSection';
 import { SITE_CONTACTS } from '@/lib/site-contacts';
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://noir-ride.ru';
@@ -95,7 +91,7 @@ function LocalBusinessJsonLd({ locale }: { locale: string }) {
               itemOffered: {
                 '@type': 'Service',
                 name: ru ? 'Трансфер в аэропорт' : 'Airport transfer',
-                url: `${SITE_URL}/${locale}#airport`,
+                url: `${SITE_URL}/${locale}/airport`,
               },
             },
             {
@@ -103,7 +99,7 @@ function LocalBusinessJsonLd({ locale }: { locale: string }) {
               itemOffered: {
                 '@type': 'Service',
                 name: ru ? 'Межгородские поездки' : 'Intercity trips',
-                url: `${SITE_URL}/${locale}#routes`,
+                url: `${SITE_URL}/${locale}/routes`,
               },
             },
             {
@@ -111,7 +107,7 @@ function LocalBusinessJsonLd({ locale }: { locale: string }) {
               itemOffered: {
                 '@type': 'Service',
                 name: ru ? 'Почасовая аренда' : 'Hourly rental',
-                url: `${SITE_URL}/${locale}#hourly`,
+                url: `${SITE_URL}/${locale}/hourly`,
               },
             },
           ],
@@ -151,14 +147,10 @@ export default async function HomePage({
       <Steps />
       <Experience />
       <Fleet />
-      <IntercitySection />
-      <AirportSection />
-      <HourlySection />
       <CtaBanner />
       <Benefits />
       <Stats />
       <Guarantees />
-      <ContactSection />
       <LeadFormSection />
     </>
   );
