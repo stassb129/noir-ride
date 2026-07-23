@@ -2,7 +2,6 @@
 
 import { useLocale } from 'next-intl';
 import Link from 'next/link';
-import HashLink from '@/components/HashLink/HashLink';
 import { SITE_CONTACTS, emailHref, phoneHref } from '@/lib/site-contacts';
 import styles from './Footer.module.scss';
 
@@ -48,13 +47,13 @@ export default function Footer() {
           <div className={styles.column}>
             <h4>{ru ? 'Услуги' : 'Services'}</h4>
             <div className={styles.links}>
-              <Link href={`/${locale}#routes`} className={styles.link}>
+              <Link href={`/${locale}/routes`} className={styles.link}>
                 {ru ? 'Маршруты' : 'Routes'}
               </Link>
-              <Link href={`/${locale}#airport`} className={styles.link}>
+              <Link href={`/${locale}/airport`} className={styles.link}>
                 {ru ? 'Аэропорт' : 'Airport'}
               </Link>
-              <Link href={`/${locale}#hourly`} className={styles.link}>
+              <Link href={`/${locale}/hourly`} className={styles.link}>
                 {ru ? 'Почасовая' : 'Hourly'}
               </Link>
             </div>
@@ -86,9 +85,9 @@ export default function Footer() {
               <a href={emailHref()} className={styles.link}>
                 {SITE_CONTACTS.email}
               </a>
-              <HashLink href={`/${locale}#contacts`} className={styles.link}>
+              <Link href={`/${locale}/contacts`} className={styles.link}>
                 {ru ? 'Все способы связи' : 'All contact options'}
-              </HashLink>
+              </Link>
             </div>
           </div>
         </div>

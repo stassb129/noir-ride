@@ -2,7 +2,6 @@
 
 import { useLocale } from 'next-intl';
 import Link from 'next/link';
-import HashLink from '@/components/HashLink/HashLink';
 import { usePathname } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence, type Variants } from 'framer-motion';
@@ -64,10 +63,10 @@ export default function Navbar() {
   const { user } = useUser();
 
   const navLinks = [
-    { href: `/${locale}#routes`, label: locale === 'ru' ? 'Маршруты' : 'Routes' },
-    { href: `/${locale}#airport`, label: locale === 'ru' ? 'Аэропорт' : 'Airport' },
-    { href: `/${locale}#hourly`, label: locale === 'ru' ? 'Почасовая' : 'Hourly' },
-    { href: `/${locale}#contacts`, label: locale === 'ru' ? 'Контакты' : 'Contact' },
+    { href: `/${locale}/routes`, label: locale === 'ru' ? 'Маршруты' : 'Routes' },
+    { href: `/${locale}/airport`, label: locale === 'ru' ? 'Аэропорт' : 'Airport' },
+    { href: `/${locale}/hourly`, label: locale === 'ru' ? 'Почасовая' : 'Hourly' },
+    { href: `/${locale}/contacts`, label: locale === 'ru' ? 'Контакты' : 'Contact' },
   ];
 
   const bookingHref = `/${locale}/booking`;
@@ -87,11 +86,10 @@ export default function Navbar() {
 
         <div className={styles.nav}>
           {navLinks.map((link) => {
-            const LinkComponent = link.href.includes('#') ? HashLink : Link;
             return (
-              <LinkComponent key={link.href} href={link.href} className={styles.navLink}>
+              <Link key={link.href} href={link.href} className={styles.navLink}>
                 {link.label}
-              </LinkComponent>
+              </Link>
             );
           })}
 
@@ -143,7 +141,6 @@ export default function Navbar() {
           >
             <div className={styles.mobileMenuContent}>
               {navLinks.map((link, i) => {
-                const LinkComponent = link.href.includes('#') ? HashLink : Link;
                 return (
                   <motion.div
                     key={link.href}
@@ -152,13 +149,13 @@ export default function Navbar() {
                     initial="hidden"
                     animate="visible"
                   >
-                    <LinkComponent
+                    <Link
                       href={link.href}
                       className={styles.navLink}
                       onClick={() => setIsMenuOpen(false)}
                     >
                       {link.label}
-                    </LinkComponent>
+                    </Link>
                   </motion.div>
                 );
               })}
