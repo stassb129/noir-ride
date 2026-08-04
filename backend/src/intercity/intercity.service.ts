@@ -3,7 +3,16 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { InterCityDestination } from '../entities/intercity-destination.entity';
 import { resolveCityName } from './city-names';
-import { suggestCityName } from './city-geocoding';
+import { geocodeCity, isServiceCountry, suggestCityName } from './city-geocoding';
+
+export type DistanceResult = {
+  distanceKm: number;
+  found: boolean;
+  /** Почему расстояние не определено: город не найден или вне зоны обслуживания. */
+  reason?: 'not_found' | 'outside_service_area';
+  /** Город, из-за которого маршрут отклонён. */
+  outsideCity?: string;
+};
 
 const SEED_DESTINATIONS = [
   { from: 'Москва', to: 'Санкт-Петербург', distanceKm: 705, basePrice: 70000, sortOrder: 1 },
@@ -61,7 +70,7 @@ export class InterCityService {
   }
 
   /** Рассчитать расстояние между городами через OSRM + Nominatim */
-  async calculateDistance(from: string, to: string): Promise<{ distanceKm: number; found: boolean }> {
+  async calculateDistance(from: string, to: string): Promise<DistanceResult> {
     const knownCities = await this.getKnownCityNames();
     const normalizedFrom = resolveCityName(from, knownCities);
     const normalizedTo = resolveCityName(to, knownCities);
@@ -86,12 +95,27 @@ export class InterCityService {
 
     try {
       const [coordFrom, coordTo] = await Promise.all([
-        this.geocodeCity(effectiveFrom),
-        this.geocodeCity(effectiveTo),
+        geocodeCity(effectiveFrom),
+        geocodeCity(effectiveTo),
       ]);
 
       if (!coordFrom || !coordTo) {
-        return { distanceKm: 0, found: false };
+        return { distanceKm: 0, found: false, reason: 'not_found' };
+      }
+
+      const outsideCity = !isServiceCountry(coordFrom.countryCode)
+        ? effectiveFrom
+        : !isServiceCountry(coordTo.countryCode)
+          ? effectiveTo
+          : null;
+
+      if (outsideCity) {
+        return {
+          distanceKm: 0,
+          found: false,
+          reason: 'outside_service_area',
+          outsideCity,
+        };
       }
 
       const url = `https://router.project-osrm.org/route/v1/driving/${coordFrom.lon},${coordFrom.lat};${coordTo.lon},${coordTo.lat}?overview=false`;
@@ -104,28 +128,12 @@ export class InterCityService {
 
       const data = await res.json() as any;
       const meters = data?.routes?.[0]?.distance;
-      if (!meters) return { distanceKm: 0, found: false };
+      if (!meters) return { distanceKm: 0, found: false, reason: 'not_found' };
 
       const distanceKm = Math.round(meters / 1000);
       return { distanceKm, found: true };
     } catch {
-      return { distanceKm: 0, found: false };
-    }
-  }
-
-  private async geocodeCity(city: string): Promise<{ lat: string; lon: string } | null> {
-    try {
-      const encoded = encodeURIComponent(`${city}, Россия`);
-      const url = `https://nominatim.openstreetmap.org/search?q=${encoded}&format=json&limit=1&addressdetails=0&countrycodes=ru,by`;
-      const res = await fetch(url, {
-        headers: { 'User-Agent': 'noir-ride-app/1.0' },
-        signal: AbortSignal.timeout(6000),
-      });
-      const data = await res.json() as any[];
-      if (!data?.[0]) return null;
-      return { lat: data[0].lat, lon: data[0].lon };
-    } catch {
-      return null;
+      return { distanceKm: 0, found: false, reason: 'not_found' };
     }
   }
 

@@ -45,15 +45,6 @@ export default function ContactSection() {
       external: false,
     },
     {
-      key: 'phone2',
-      label: ru ? 'Телефон' : 'Phone',
-      value: '+7 985 868 2304',
-      hint: ru ? 'Ежедневно: 9:00–21:00' : 'Daily: 9:00 AM–9:00 PM',
-      href: 'tel:+79858682304',
-      icon: Phone,
-      external: false,
-    },
-    {
       key: 'email',
       label: 'Email',
       value: SITE_CONTACTS.email,
@@ -96,7 +87,7 @@ export default function ContactSection() {
         <div className={styles.grid}>
           {channels.map((channel) => {
             const Icon = channel.icon;
-            const isLucide = channel.key === 'phone' || channel.key === 'phone2' || channel.key === 'email';
+            const isLucide = channel.key === 'phone' || channel.key === 'email';
             return (
               <a
                 key={channel.key}

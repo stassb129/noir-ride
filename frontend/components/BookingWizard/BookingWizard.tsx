@@ -5,6 +5,8 @@ import { useLocale } from 'next-intl';
 import { motion, AnimatePresence, type Variants } from 'framer-motion';
 import Link from 'next/link';
 import VehicleSelector, { type Vehicle } from '@/components/VehicleSelector/VehicleSelector';
+import RouteMapPreview from '@/components/RouteMapPreview/RouteMapPreview';
+import { getAirportRoutePoints } from '@/lib/airport-route';
 import PhoneInput from '@/components/ui/PhoneInput/PhoneInput';
 import CustomSelect from '@/components/ui/CustomSelect/CustomSelect';
 import {
@@ -12,6 +14,7 @@ import {
   fetchDistance,
   calcPrice,
   formatPrice,
+  outsideServiceAreaMessage,
   MAX_CUSTOM_DISTANCE_KM,
   type InterCityDestination,
 } from '@/lib/api/intercity';
@@ -338,6 +341,11 @@ export default function BookingWizard({
       lastCalcKeyRef.current = calcKey;
       setDistanceLoading(false);
 
+      if (result.reason === 'outside_service_area') {
+        setDistanceKm(null);
+        setDistanceError(outsideServiceAreaMessage(result.outsideCity, ru));
+        return;
+      }
       if (!result.found || result.distanceKm === 0) {
         setDistanceKm(null);
         setDistanceError(
@@ -710,10 +718,13 @@ export default function BookingWizard({
             <p className={styles.distanceErrorText}>{distanceError}</p>
           )}
           {!distanceLoading && distanceKm !== null && !distanceError && (
-            <div className={styles.distanceInfo}>
-              <span className={styles.distanceLabel}>{ru ? 'Расстояние:' : 'Distance:'}</span>
-              <span className={styles.distanceValue}>{distanceKm.toLocaleString('ru-RU')} км</span>
-            </div>
+            <>
+              <div className={styles.distanceInfo}>
+                <span className={styles.distanceLabel}>{ru ? 'Расстояние:' : 'Distance:'}</span>
+                <span className={styles.distanceValue}>{distanceKm.toLocaleString('ru-RU')} км</span>
+              </div>
+              <RouteMapPreview from={state.from} to={state.to} />
+            </>
           )}
         </div>
       )}
@@ -744,7 +755,15 @@ export default function BookingWizard({
     </div>
   );
 
-  const renderStep2Airport = () => (
+  const renderStep2Airport = () => {
+    const airportRoutePoints = getAirportRoutePoints({
+      airportCode: state.airport,
+      address: state.address,
+      serviceType: state.airportDirection,
+      ru,
+    });
+
+    return (
     <div className={styles.stepBody}>
       <div className={styles.stepHeader}>
         <h2 className={styles.stepTitle}>{ru ? 'Детали трансфера' : 'Transfer details'}</h2>
@@ -855,8 +874,17 @@ export default function BookingWizard({
           {errors.time && <p className={styles.fieldError}>{errors.time}</p>}
         </div>
       </div>
+
+      {airportRoutePoints && (
+        <RouteMapPreview
+          from={airportRoutePoints.from}
+          to={airportRoutePoints.to}
+          title={ru ? 'Маршрут до аэропорта' : 'Route to airport'}
+        />
+      )}
     </div>
-  );
+    );
+  };
 
   const renderStep2Hourly = () => (
     <div className={styles.stepBody}>

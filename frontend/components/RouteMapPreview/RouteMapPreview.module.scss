@@ -1,0 +1,46 @@
+@use '../../styles/scss/variables' as *;
+@use '../../styles/scss/mixins' as *;
+
+.wrap {
+  margin-top: $spacing-md;
+}
+
+.toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 18px;
+  border-radius: $radius-main;
+  border: 1px solid rgba($accent-gold, 0.4);
+  background: transparent;
+  color: $accent-gold;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: $transition;
+
+  &:hover {
+    background: rgba($accent-gold, 0.1);
+    border-color: $accent-gold;
+  }
+}
+
+.frameWrap {
+  margin-top: $spacing-md;
+  border-radius: $radius-lg;
+  overflow: hidden;
+  border: 1px solid $border-subtle;
+  line-height: 0;
+}
+
+.frame {
+  width: 100%;
+  height: 380px;
+  border: none;
+  display: block;
+
+  @include mobile {
+    height: 280px;
+  }
+}

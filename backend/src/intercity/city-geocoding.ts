@@ -9,76 +9,118 @@ function citiesMatch(a: string, b: string): boolean {
   return normalizeKey(a) === normalizeKey(b);
 }
 
-function levenshtein(a: string, b: string): number {
-  const matrix = Array.from({ length: b.length + 1 }, (_, i) => [i]);
-  for (let j = 0; j <= a.length; j++) matrix[0][j] = j;
+type NominatimPlace = {
+  lat: string;
+  lon: string;
+  class?: string;
+  type?: string;
+  importance?: number;
+  name?: string;
+  display_name?: string;
+  address?: Record<string, string>;
+};
 
-  for (let i = 1; i <= b.length; i++) {
-    for (let j = 1; j <= a.length; j++) {
-      const cost = b[i - 1] === a[j - 1] ? 0 : 1;
-      matrix[i][j] = Math.min(
-        matrix[i - 1][j] + 1,
-        matrix[i][j - 1] + 1,
-        matrix[i - 1][j - 1] + cost,
-      );
-    }
-  }
+const SETTLEMENT_TYPES = new Set([
+  'city',
+  'town',
+  'village',
+  'hamlet',
+  'municipality',
+  'borough',
+]);
 
-  return matrix[b.length][a.length];
+/** Бизнес работает по РФ и РБ, поэтому при близкой значимости выбираем местный город. */
+const DOMESTIC_COUNTRIES = new Set(['ru', 'by']);
+const DOMESTIC_BONUS = 0.12;
+
+function isSettlement(item: NominatimPlace): boolean {
+  if (item.class === 'place') return SETTLEMENT_TYPES.has(item.type ?? '');
+  if (item.class === 'boundary') return item.type === 'administrative';
+  return false;
 }
 
-function pickBestRegionalMatch(query: string, candidates: string[]): string | null {
-  const key = normalizeKey(query);
-  if (!key || candidates.length === 0) return null;
+function scorePlace(item: NominatimPlace): number {
+  let score = item.importance ?? 0;
 
-  let best: string | null = null;
-  let bestDistance = Infinity;
+  const country = item.address?.country_code?.toLowerCase();
+  if (country && DOMESTIC_COUNTRIES.has(country)) score += DOMESTIC_BONUS;
 
-  for (const candidate of candidates) {
-    const candidateKey = normalizeKey(candidate);
-    if (!candidateKey) continue;
+  // Точка населённого пункта точнее центроида административной границы.
+  if (item.class === 'place') score += 0.01;
 
-    const distance = levenshtein(key, candidateKey);
-    const threshold = key.length >= 5 ? 1 : 2;
-
-    if (distance <= threshold && distance > 0 && distance < bestDistance) {
-      bestDistance = distance;
-      best = candidate;
-    }
-  }
-
-  return best;
+  return score;
 }
 
-function extractCityLabel(item: Record<string, unknown>): string | null {
-  const address = item.address as Record<string, string> | undefined;
+function extractCityLabel(item: NominatimPlace): string | null {
+  const address = item.address;
   if (address?.city) return address.city;
   if (address?.town) return address.town;
   if (address?.village) return address.village;
   if (address?.municipality) return address.municipality;
 
-  const name = typeof item.name === 'string' ? item.name : null;
-  if (name) return name;
+  if (item.name) return item.name;
 
-  const displayName = typeof item.display_name === 'string' ? item.display_name : null;
-  return displayName?.split(',')[0]?.trim() ?? null;
+  return item.display_name?.split(',')[0]?.trim() ?? null;
 }
 
-async function searchNominatim(query: string): Promise<string[]> {
+/**
+ * Ищем населённые пункты без привязки к стране: запрос вида «Краков, Россия»
+ * с countrycodes=ru,by находил мебельный магазин в Барнауле вместо города в Польше.
+ */
+async function queryNominatim(query: string): Promise<NominatimPlace[]> {
   try {
-    const encoded = encodeURIComponent(`${query}, Россия`);
-    const url = `https://nominatim.openstreetmap.org/search?q=${encoded}&format=json&limit=5&addressdetails=1&countrycodes=ru,by`;
+    const encoded = encodeURIComponent(query);
+    const url = `https://nominatim.openstreetmap.org/search?q=${encoded}&format=json&limit=8&addressdetails=1`;
     const res = await fetch(url, {
       headers: { 'User-Agent': 'noir-ride-app/1.0' },
       signal: AbortSignal.timeout(6000),
     });
-    const data = await res.json() as Record<string, unknown>[];
+    if (!res.ok) return [];
+
+    const data = await res.json() as NominatimPlace[];
+    if (!Array.isArray(data)) return [];
+
     return data
-      .map((item) => extractCityLabel(item))
-      .filter((name): name is string => Boolean(name));
+      .filter(isSettlement)
+      .sort((a, b) => scorePlace(b) - scorePlace(a));
   } catch {
     return [];
   }
+}
+
+/** Страны, по которым выполняются заказы. */
+export const SERVICE_COUNTRIES = new Set(['ru', 'by']);
+
+export function isServiceCountry(countryCode: string | null): boolean {
+  return countryCode !== null && SERVICE_COUNTRIES.has(countryCode);
+}
+
+export type GeocodedCity = {
+  lat: string;
+  lon: string;
+  countryCode: string | null;
+};
+
+/** Координаты города для построения маршрута. */
+export async function geocodeCity(city: string): Promise<GeocodedCity | null> {
+  const trimmed = city.trim();
+  if (!trimmed) return null;
+
+  const [best] = await queryNominatim(trimmed);
+  if (!best?.lat || !best?.lon) return null;
+
+  return {
+    lat: best.lat,
+    lon: best.lon,
+    countryCode: best.address?.country_code?.toLowerCase() ?? null,
+  };
+}
+
+async function searchNominatim(query: string): Promise<string[]> {
+  const places = await queryNominatim(query);
+  return places
+    .map((item) => extractCityLabel(item))
+    .filter((name): name is string => Boolean(name));
 }
 
 async function searchPhoton(query: string): Promise<string[]> {
@@ -143,7 +185,7 @@ export async function suggestCityName(
     return { suggestion: null };
   }
 
-  const regional = pickBestRegionalMatch(trimmed, REGIONAL_CITIES);
+  const regional = pickBestCityMatch(trimmed, REGIONAL_CITIES);
   if (regional && normalizeKey(regional) !== normalizeKey(trimmed)) {
     return { suggestion: regional };
   }

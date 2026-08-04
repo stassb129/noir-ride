@@ -53,11 +53,11 @@ export default function RekvizityPage() {
             <tbody>
               <tr>
                 <td className={styles.key}>Телефон</td>
-                <td className={styles.value}>+7 968 880 4748</td>
+                <td className={styles.value}>+7 985 868 2304</td>
               </tr>
               <tr>
                 <td className={styles.key}>Email</td>
-                <td className={styles.value}>noir.ride999@gmail.com</td>
+                <td className={styles.value}>stassb129@gmail.com</td>
               </tr>
               <tr>
                 <td className={styles.key}>Сайт</td>
