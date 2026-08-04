@@ -7,6 +7,11 @@ import { EASE_OUT_EXPO } from '@/lib/motion-easing';
 import HeroAccessCard from './HeroAccessCard';
 import styles from './Hero.module.scss';
 
+const DESKTOP_VIDEO = '/luxury-car-desktop.mp4';
+const MOBILE_VIDEO = '/luxury-car-mobile.mp4';
+const VIDEO_POSTER = '/luxury-car-poster.jpg';
+const MOBILE_QUERY = '(max-width: 767px)';
+
 const fadeInUp = {
   initial: { opacity: 0, y: 40 },
   animate: { opacity: 1, y: 0 },
@@ -25,17 +30,25 @@ const staggerContainer = {
 export default function Hero() {
   const locale = useLocale();
   const videoRef = useRef<HTMLDivElement>(null);
-  const [showVideo, setShowVideo] = useState(false);
+  const [videoSrc, setVideoSrc] = useState<string | null>(null);
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
-    // Only load video on desktop to avoid LCP penalty on mobile
-    if (window.innerWidth >= 768) {
-      setShowVideo(true);
-    }
+    const query = window.matchMedia(MOBILE_QUERY);
+
+    const applySource = () => {
+      setIsMobile(query.matches);
+      setVideoSrc(query.matches ? MOBILE_VIDEO : DESKTOP_VIDEO);
+    };
+
+    applySource();
+    query.addEventListener('change', applySource);
+    return () => query.removeEventListener('change', applySource);
   }, []);
 
+  // Параллакс только на десктопе: на телефоне он даёт заметный джанк при скролле.
   useEffect(() => {
-    if (!showVideo) return;
+    if (!videoSrc || isMobile) return;
 
     const handleScroll = () => {
       if (!videoRef.current) return;
@@ -48,15 +61,21 @@ export default function Hero() {
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, [showVideo]);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      if (videoRef.current) videoRef.current.style.transform = '';
+    };
+  }, [videoSrc, isMobile]);
 
   return (
     <section className={styles.hero}>
       <div ref={videoRef} className={styles.videoContainer}>
         <div className={styles.overlay} />
-        {showVideo && (
+        {videoSrc && (
           <video
+            key={videoSrc}
+            src={videoSrc}
+            poster={VIDEO_POSTER}
             autoPlay
             loop
             muted
@@ -64,9 +83,7 @@ export default function Hero() {
             preload="metadata"
             disablePictureInPicture
             className={styles.videoBackground}
-          >
-            <source src="/luxury-car-video.mp4" type="video/mp4" />
-          </video>
+          />
         )}
       </div>
 
