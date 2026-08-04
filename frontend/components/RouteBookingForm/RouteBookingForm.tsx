@@ -14,6 +14,7 @@ import {
   fetchCitySuggestion,
   calcPrice,
   formatPrice,
+  outsideServiceAreaMessage,
   MAX_CUSTOM_DISTANCE_KM,
   type InterCityDestination,
 } from '@/lib/api/intercity';
@@ -197,6 +198,14 @@ export default function RouteBookingForm({ prefilledData, initialVehicleId }: Pr
 
       lastCalcKeyRef.current = calcKey;
       setDistanceLoading(false);
+
+      // Город за пределами РФ/РБ — подсказки по опечаткам тут не помогут.
+      if (result.reason === 'outside_service_area') {
+        setDistanceKm(null);
+        setTypoSuggestions({ from: null, to: null });
+        setDistanceError(outsideServiceAreaMessage(result.outsideCity, ru));
+        return;
+      }
 
       if (!result.found || result.distanceKm === 0) {
         setDistanceKm(null);

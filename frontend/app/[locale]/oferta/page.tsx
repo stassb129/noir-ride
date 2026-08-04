@@ -145,8 +145,8 @@ export default function OfertaPage() {
               <tr><td>ФИО</td><td>Тюрина Юлия Сергеевна</td></tr>
               <tr><td>ИНН</td><td>643965505200</td></tr>
               <tr><td>Статус</td><td>Самозанятый</td></tr>
-              <tr><td>Телефон</td><td>+7 968 880 4748</td></tr>
-              <tr><td>Email</td><td>noir.ride999@gmail.com</td></tr>
+              <tr><td>Телефон</td><td>+7 985 868 2304</td></tr>
+              <tr><td>Email</td><td>stassb129@gmail.com</td></tr>
               <tr><td>Сайт</td><td>https://noir-ride.ru</td></tr>
             </tbody>
           </table>

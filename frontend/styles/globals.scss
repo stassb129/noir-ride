@@ -34,7 +34,9 @@ html.lenis body {
   overflow: hidden;
 }
 
-.lenis.lenis-smooth iframe {
+/* Блокируем iframe только на время скролла: с классом lenis-smooth,
+   который висит постоянно, карты и виджеты становятся некликабельными. */
+.lenis.lenis-scrolling iframe {
   pointer-events: none;
 }
 

@@ -16,6 +16,22 @@ export interface InterCityDestination {
 export interface DistanceResult {
   distanceKm: number;
   found: boolean;
+  reason?: 'not_found' | 'outside_service_area';
+  /** Город, из-за которого маршрут отклонён. */
+  outsideCity?: string;
+}
+
+/** Сообщение о городе вне зоны обслуживания. */
+export function outsideServiceAreaMessage(city: string | undefined, ru: boolean): string {
+  const name = city?.trim();
+  if (ru) {
+    return name
+      ? `Мы работаем по России и Беларуси — город «${name}» вне зоны обслуживания.`
+      : 'Мы работаем только по России и Беларуси.';
+  }
+  return name
+    ? `We operate within Russia and Belarus — «${name}» is outside our service area.`
+    : 'We operate within Russia and Belarus only.';
 }
 
 export interface CitySuggestionResult {
@@ -52,10 +68,10 @@ export async function fetchDistance(from: string, to: string): Promise<DistanceR
     const res = await fetch(
       `${API_URL}/intercity/distance?from=${encodeURIComponent(from)}&to=${encodeURIComponent(to)}`,
     );
-    if (!res.ok) return { distanceKm: 0, found: false };
+    if (!res.ok) return { distanceKm: 0, found: false, reason: 'not_found' };
     return await res.json();
   } catch {
-    return { distanceKm: 0, found: false };
+    return { distanceKm: 0, found: false, reason: 'not_found' };
   }
 }
 
